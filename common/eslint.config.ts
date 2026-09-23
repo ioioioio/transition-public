@@ -1,8 +1,8 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import markdown from '@eslint/markdown';
 import { defineConfig } from 'eslint/config';
+import globals from 'globals';
 
 export default defineConfig([
     {
@@ -10,12 +10,15 @@ export default defineConfig([
         plugins: { js },
         extends: ['js/recommended'],
         languageOptions: {
-            globals: globals.node,
-            parserOptions: {
-                tsconfigRootDir: new URL('.', import.meta.url).pathname,
-            },
+            globals: { ...globals.browser, ...globals.node },
+            parserOptions: { tsconfigRootDir: new URL('.', import.meta.url).pathname },
         },
     },
     tseslint.configs.recommended,
-    { files: ['**/*.md'], plugins: { markdown }, language: 'markdown/commonmark', extends: ['markdown/recommended'] },
+    {
+        files: ['**/*.md'],
+        plugins: { markdown },
+        language: 'markdown/commonmark',
+        extends: ['markdown/recommended'],
+    },
 ]);
