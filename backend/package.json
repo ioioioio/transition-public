@@ -4,10 +4,16 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
+        "build": "tsc",
+        "dev": "node --watch --env-file=../.env src/index.ts",
         "format": "npx prettier . -w",
-        "start": "node src/index.js"
+        "start": "node dist/index.js"
     },
     "devDependencies": {
-        "prettier": "3.9.9"
+        "@tsconfig/node24": "24.0.5",
+        "@tsconfig/strictest": "2.0.8",
+        "@types/node": "26.6.2",
+        "prettier": "3.9.9",
+        "typescript": "6.0.3"
     }
 }

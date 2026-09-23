@@ -5,7 +5,9 @@
     "backend"
   ],
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
     "format": "npm run format --workspaces --if-present",
-    "start": "npm start -w backend"
+    "start": "npm start --workspaces --if-present"
   }
 }
