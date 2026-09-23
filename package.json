@@ -2,7 +2,8 @@
   "name": "transition-public",
   "private": true,
   "workspaces": [
-    "backend"
+    "backend",
+    "common"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
