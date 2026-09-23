@@ -1,0 +1,10 @@
+{
+  "name": "transition-public",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "start": "npm start -w backend"
+  }
+}
