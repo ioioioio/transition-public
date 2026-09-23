@@ -3,7 +3,7 @@
     "compilerOptions": {
         "outDir": "dist",
         "rootDir": "src",
-        "rewriteRelativeImportExtensions": true, // Needed to run backend uncompiled in dev
+        "rewriteRelativeImportExtensions": true, // Needed to run backend and common uncompiled
         "erasableSyntaxOnly": true // Needed to run backend uncompiled in dev
     },
     "include": ["src"]

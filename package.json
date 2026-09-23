@@ -11,5 +11,8 @@
     "format": "npm run format --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "start": "npm start --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
   }
 }

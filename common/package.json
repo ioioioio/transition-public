@@ -4,11 +4,16 @@
     "private": true,
     "license": "MIT",
     "type": "module",
-    "exports": "./index.js",
     "scripts": {
         "format": "npx prettier . -w"
     },
     "devDependencies": {
+        "@tsconfig/strictest": "2.0.8",
         "prettier": "3.9.9"
+    },
+    "exports": {
+        ".": {
+            "types": "./src/index.ts"
+        }
     }
 }

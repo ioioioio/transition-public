@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/strictest/tsconfig.json",
+    "compilerOptions": {
+        "lib": ["es2023"],
+        "module": "nodenext",
+        "rootDir": "src",
+        "noEmit": true, // For convenience only: common is used as .ts source, with no build step
+        "allowImportingTsExtensions": true, // Needed to run common uncompiled
+        "erasableSyntaxOnly": true // Needed to run common uncompiled
+    },
+    "include": ["src"]
+}
