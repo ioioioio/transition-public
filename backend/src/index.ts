@@ -1,7 +1,8 @@
 import express from 'express';
+import { getEnv } from './env.ts';
 
 const app = express();
-const port = 3001;
+const port = getEnv('BACKEND_PORT');
 
 app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
