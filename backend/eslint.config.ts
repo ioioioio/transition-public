@@ -9,7 +9,10 @@ export default defineConfig([
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
         plugins: { js },
         extends: ['js/recommended'],
-        languageOptions: { globals: globals.node },
+        languageOptions: {
+            globals: globals.node,
+            parserOptions: { tsconfigRootDir: new URL('.', import.meta.url).pathname },
+        },
     },
     tseslint.configs.recommended,
     { files: ['**/*.md'], plugins: { markdown }, language: 'markdown/commonmark', extends: ['markdown/recommended'] },
