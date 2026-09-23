@@ -20,7 +20,12 @@
     },
     "exports": {
         ".": {
-            "types": "./src/index.ts"
+            "types": "./src/index.ts",
+            "default": "./src/index.ts"
         }
+    },
+    "dependencies": {
+        "zod": "4.6.5",
+        "zod-geojson": "1.7.1"
     }
 }

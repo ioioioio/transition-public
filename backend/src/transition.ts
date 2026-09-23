@@ -1,3 +1,4 @@
+import type { TransitionRouteRequest } from 'common';
 import { getEnv } from './env.ts';
 
 const transitionEndpoint = getEnv('TRANSITION_ENDPOINT');
@@ -18,4 +19,19 @@ export const getTransitionToken = async () => {
         throw new Error(`Authentication on Transition failed: ${response.status} ${token}`);
     }
     return token;
+};
+
+export const getRoute = async (token: string, request: TransitionRouteRequest) => {
+    const response = await fetch(`${transitionEndpoint}/api/v1/route`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(request),
+    });
+    if (!response.ok) {
+        throw new Error(`Transition route request failed: ${response.status} ${await response.text()}`);
+    }
+    return response.json();
 };
