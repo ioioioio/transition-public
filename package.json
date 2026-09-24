@@ -8,12 +8,13 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "dev": "npm run dev --workspaces --if-present",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "format": "npm run format --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "start": "npm start --workspaces --if-present"
   },
   "devDependencies": {
+    "concurrently": "^10.0.5",
     "typescript": "6.0.3"
   }
 }
