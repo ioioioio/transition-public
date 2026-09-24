@@ -1,8 +1,14 @@
 {
-  "name": "common",
-  "version": "0.0.0",
-  "private": true,
-  "license": "MIT",
-  "type": "module",
-  "exports": "./index.js"
+    "name": "common",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "exports": "./index.js",
+    "scripts": {
+        "format": "npx prettier . -w"
+    },
+    "devDependencies": {
+        "prettier": "3.9.9"
+    }
 }
