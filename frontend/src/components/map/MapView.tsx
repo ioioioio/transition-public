@@ -15,7 +15,7 @@ const MapView = () => {
                 latitude: 40,
                 zoom: 3.5,
             }}
-            style={{ width: 600, height: 400 }}
+            style={{ width: '100%', height: '100%' }}
             mapStyle="https://demotiles.maplibre.org/style.json"
         />
     );
