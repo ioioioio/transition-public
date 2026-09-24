@@ -18,7 +18,7 @@ const MapView = () => {
                 zoom: mapInitialZoom,
             }}
             style={{ width: '100%', height: '100%' }}
-            mapStyle="https://demotiles.maplibre.org/style.json"
+            mapStyle="https://tiles.openfreemap.org/styles/dark"
         />
     );
 };
