@@ -5,6 +5,7 @@
     "backend"
   ],
   "scripts": {
+    "format": "npm run format --workspaces --if-present",
     "start": "npm start -w backend"
   }
 }

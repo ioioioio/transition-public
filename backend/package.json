@@ -1,9 +1,13 @@
 {
-  "name": "backend",
-  "version": "0.0.0",
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "start": "node src/index.js"
-  }
+    "name": "backend",
+    "version": "0.0.0",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "format": "npx prettier . -w",
+        "start": "node src/index.js"
+    },
+    "devDependencies": {
+        "prettier": "3.9.9"
+    }
 }
