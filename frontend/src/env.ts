@@ -1,0 +1,20 @@
+export const getEnv = (key: string, defaultValue?: string): string => {
+    const value = import.meta.env[key] ?? defaultValue;
+    if (value === undefined) {
+        throw new Error(`Missing environment variable: ${key}`);
+    }
+    return value;
+};
+
+const getNumberEnv = (key: string): number => {
+    const value = getEnv(key);
+    const number = Number(value);
+    if (!Number.isFinite(number)) {
+        throw new Error(`Invalid numeric environment variable: ${key}`);
+    }
+    return number;
+};
+
+export const mapInitialLongitude = getNumberEnv('VITE_MAP_INITIAL_LONGITUDE');
+export const mapInitialLatitude = getNumberEnv('VITE_MAP_INITIAL_LATITUDE');
+export const mapInitialZoom = getNumberEnv('VITE_MAP_INITIAL_ZOOM');
