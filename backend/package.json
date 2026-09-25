@@ -4,8 +4,8 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "build": "tsc",
-        "dev": "node --watch --env-file=../.env src/index.ts",
+        "build": "tsc && node build.ts",
+        "dev": "tsx watch --env-file=../.env src/index.ts",
         "lint": "eslint .",
         "format": "npx prettier . -w",
         "start": "node --env-file=../.env dist/index.js"
@@ -17,10 +17,12 @@
         "@tsconfig/strictest": "2.0.8",
         "@types/express": "^5.0.6",
         "@types/node": "26.6.2",
+        "esbuild": "^0.28.2",
         "eslint": "^10.11.0",
         "globals": "^17.12.0",
         "jiti": "^2.7.0",
         "prettier": "3.9.9",
+        "tsx": "^4.23.15",
         "typescript-eslint": "^8.70.1"
     },
     "dependencies": {

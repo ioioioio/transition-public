@@ -1,7 +1,7 @@
 import express from 'express';
 import { Transition as Tr } from 'common';
-import { getEnv } from './env.ts';
-import { getRoute, getTransitionToken } from './transition.ts';
+import { getEnv } from './env';
+import { getRoute, getTransitionToken } from './transition';
 
 const app = express();
 const port = getEnv('BACKEND_PORT');

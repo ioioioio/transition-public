@@ -1,10 +1,9 @@
 {
     "extends": ["@tsconfig/node24/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
     "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": "src",
-        "rewriteRelativeImportExtensions": true, // Needed to run backend and common uncompiled
-        "erasableSyntaxOnly": true // Needed to run backend uncompiled in dev
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "noEmit": true
     },
     "include": ["src"]
 }

@@ -1,5 +1,5 @@
 import type { Transition as Tr } from 'common';
-import { getEnv } from './env.ts';
+import { getEnv } from './env';
 
 const transitionEndpoint = getEnv('TRANSITION_ENDPOINT');
 const transitionUserName = getEnv('TRANSITION_USER_NAME');

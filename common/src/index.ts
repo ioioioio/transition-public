@@ -1,1 +1,1 @@
-export * as Transition from './transition/index.ts';
+export * as Transition from './transition';
