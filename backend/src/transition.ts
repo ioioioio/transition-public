@@ -1,4 +1,4 @@
-import type { TransitionRouteRequest } from 'common';
+import type { Transition as Tr } from 'common';
 import { getEnv } from './env.ts';
 
 const transitionEndpoint = getEnv('TRANSITION_ENDPOINT');
@@ -21,7 +21,7 @@ export const getTransitionToken = async () => {
     return token;
 };
 
-export const getRoute = async (token: string, request: TransitionRouteRequest) => {
+export const getRoute = async (token: string, request: Tr.RouteRequest) => {
     const response = await fetch(`${transitionEndpoint}/api/v1/route`, {
         method: 'POST',
         headers: {

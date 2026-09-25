@@ -1,5 +1,5 @@
 import express from 'express';
-import { TransitionRouteRequestSchema } from 'common';
+import { Transition as Tr } from 'common';
 import { getEnv } from './env.ts';
 import { getRoute, getTransitionToken } from './transition.ts';
 
@@ -15,7 +15,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.post('/api/route', async (req: express.Request<object, unknown, unknown>, res) => {
-    const request = TransitionRouteRequestSchema.safeParse(req.body);
+    const request = Tr.RouteRequestSchema.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({ error: request.error.issues });
         return;
