@@ -1,1 +1,1 @@
-export * from './route';
+export * as Schema from './generated/transitionAPI.zod';

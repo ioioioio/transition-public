@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "format": "npx prettier . -w",
+        "gen:transition-api": "npx orval",
         "lint": "eslint ."
     },
     "devDependencies": {
@@ -15,6 +16,7 @@
         "eslint": "^10.11.0",
         "globals": "^17.12.0",
         "jiti": "^2.7.0",
+        "orval": "^8.37.0",
         "prettier": "3.9.9",
         "typescript-eslint": "^8.70.1"
     },
@@ -25,7 +27,6 @@
         }
     },
     "dependencies": {
-        "zod": "4.6.5",
-        "zod-geojson": "1.7.1"
+        "zod": "4.6.5"
     }
 }

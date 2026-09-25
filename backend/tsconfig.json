@@ -3,7 +3,8 @@
     "compilerOptions": {
         "module": "preserve",
         "moduleResolution": "bundler",
-        "noEmit": true
+        "noEmit": true,
+        "exactOptionalPropertyTypes": false
     },
     "include": ["src"]
 }

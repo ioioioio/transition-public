@@ -15,7 +15,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.post('/api/route', async (req: express.Request<object, unknown, unknown>, res) => {
-    const request = Tr.RouteRequestSchema.safeParse(req.body);
+    const request = Tr.Schema.PostApiV1RouteBody.safeParse(req.body);
     if (!request.success) {
         res.status(400).json({ error: request.error.issues });
         return;

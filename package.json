@@ -10,6 +10,7 @@
     "build": "npm run build --workspaces --if-present",
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "format": "npm run format --workspaces --if-present",
+    "gen:transition-api": "npm run gen:transition-api --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "start": "npm start --workspaces --if-present"
   },

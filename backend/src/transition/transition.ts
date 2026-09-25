@@ -1,5 +1,5 @@
-import type { Transition as Tr } from 'common';
-import { getEnv } from './env';
+import { getEnv } from '../env';
+import { PostApiV1RouteBody } from './generated/model';
 
 const transitionEndpoint = getEnv('TRANSITION_ENDPOINT');
 const transitionUserName = getEnv('TRANSITION_USER_NAME');
@@ -21,7 +21,7 @@ export const getTransitionToken = async () => {
     return token;
 };
 
-export const getRoute = async (token: string, request: Tr.RouteRequest) => {
+export const getRoute = async (token: string, request: PostApiV1RouteBody) => {
     const response = await fetch(`${transitionEndpoint}/api/v1/route`, {
         method: 'POST',
         headers: {

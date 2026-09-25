@@ -1,7 +1,7 @@
 {
     "extends": "@tsconfig/strictest/tsconfig.json",
     "compilerOptions": {
-        "lib": ["es2023"],
+        "lib": ["es2023", "dom"],
         "module": "preserve",
         "moduleResolution": "bundler",
         "rootDir": "src",

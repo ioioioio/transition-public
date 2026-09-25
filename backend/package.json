@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc && node build.ts",
         "dev": "tsx watch --env-file=../.env src/index.ts",
+        "gen:transition-api": "npx orval",
         "lint": "eslint .",
         "format": "npx prettier . -w",
         "start": "node --env-file=../.env dist/index.js"
@@ -22,6 +23,7 @@
         "globals": "^17.12.0",
         "jiti": "^2.7.0",
         "prettier": "3.9.9",
+        "orval": "^8.37.0",
         "tsx": "^4.23.15",
         "typescript-eslint": "^8.70.1"
     },
