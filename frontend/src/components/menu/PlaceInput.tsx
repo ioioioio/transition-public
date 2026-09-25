@@ -1,5 +1,5 @@
 import { XIcon } from '@phosphor-icons/react';
-import { useRef, useState, type ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -8,14 +8,15 @@ type PlaceInputProps = {
     icon: ReactNode;
     placeholder: string;
     clearLabel: string;
+    value: string;
+    onClear: () => void;
 };
 
-const PlaceInput = ({ icon, placeholder, clearLabel }: PlaceInputProps) => {
-    const [value, setValue] = useState('');
+const PlaceInput = ({ icon, placeholder, clearLabel, value, onClear }: PlaceInputProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const clear = () => {
-        setValue('');
+        onClear();
         inputRef.current?.focus();
     };
 
@@ -25,7 +26,6 @@ const PlaceInput = ({ icon, placeholder, clearLabel }: PlaceInputProps) => {
             <Input
                 ref={inputRef}
                 value={value}
-                onChange={(event) => setValue(event.target.value)}
                 placeholder={placeholder}
                 className="h-10.5 rounded-md bg-card ps-9.5 pe-11 dark:bg-card"
             />
