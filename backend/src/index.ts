@@ -1,7 +1,8 @@
 import express from 'express';
 import { Transition as Tr } from 'common';
 import { getEnv } from './env';
-import { getRoute, getTransitionToken } from './transition';
+import { getTransitionToken } from './transition/token';
+import { postApiV1Route } from './transition/generated/transitionAPI';
 
 const app = express();
 const port = getEnv('BACKEND_PORT');
@@ -21,8 +22,10 @@ app.post('/api/route', async (req: express.Request<object, unknown, unknown>, re
         return;
     }
     try {
-        const route = await getRoute(transitionToken, request.data);
-        res.json(route);
+        const response = await postApiV1Route(request.data, undefined, {
+            headers: { Authorization: `Bearer ${transitionToken}` },
+        });
+        res.status(response.status).json(response.data);
     } catch (error) {
         res.status(502).json({
             error: error instanceof Error ? error.message : 'Unknown error',
