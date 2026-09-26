@@ -1,13 +1,11 @@
 import express from 'express';
 import { Transition as Tr } from 'common';
 import { getEnv } from './env';
-import { getTransitionToken } from './transition/token';
 import { postApiV1Route } from './transition/generated/transitionAPI';
+import { transitionToken } from './transition/token';
 
 const app = express();
 const port = getEnv('BACKEND_PORT');
-
-const transitionToken = await getTransitionToken();
 
 app.use(express.json());
 
