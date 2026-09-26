@@ -1,4 +1,4 @@
-import { getEnv } from '../env';
+import { getEnv } from '../utils/env';
 import { postToken } from './generated/transitionAPI';
 
 const getTransitionToken = async () => {
