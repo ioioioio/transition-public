@@ -7,6 +7,8 @@ import Color from 'colorjs.io';
  * @param variable - CSS variable holding the color, e.g. `'--primary'`.
  */
 export const getThemeColor = (variable: `--${string}`) => {
-    const value = getComputedStyle(document.documentElement).getPropertyValue(variable);
+    const value = getComputedStyle(document.documentElement).getPropertyValue(
+        variable,
+    );
     return new Color(value).to('srgb').toString({ format: 'rgba_number' });
 };

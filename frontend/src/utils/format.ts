@@ -9,6 +9,10 @@ export const formatDuration = (seconds: number, locale: string) => {
 
 /** Formats a distance in kilometers, like `4,7 km` in `fr-CA`. */
 export const formatDistance = (meters: number, locale: string) => {
-    const kilometers = new Intl.NumberFormat(locale, { style: 'unit', unit: 'kilometer', maximumFractionDigits: 1 });
+    const kilometers = new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit: 'kilometer',
+        maximumFractionDigits: 1,
+    });
     return kilometers.format(meters / 1000);
 };

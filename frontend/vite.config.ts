@@ -10,7 +10,11 @@ export default defineConfig(({ mode }) => {
     const { BACKEND_PORT } = loadEnv(mode, envDir, '');
 
     return {
-        plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
+        plugins: [
+            react(),
+            babel({ presets: [reactCompilerPreset()] }),
+            tailwindcss(),
+        ],
         envDir,
         server: {
             proxy: { '/api': `http://localhost:${BACKEND_PORT}` },

@@ -2,7 +2,12 @@ import type { Utils } from 'common';
 import { useRouteQuery } from '../../../api/route';
 import type { RouteMode } from '../types';
 import type { ReactNode } from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '../../../components/ui/accordion';
 import { formatDistance, formatDuration } from '../../../utils/format';
 import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 
@@ -14,7 +19,13 @@ type RouteResultItemProps = {
     distanceMeters: number;
 };
 
-const RouteResultItem = ({ value, icon, label, travelTimeSeconds, distanceMeters }: RouteResultItemProps) => {
+const RouteResultItem = ({
+    value,
+    icon,
+    label,
+    travelTimeSeconds,
+    distanceMeters,
+}: RouteResultItemProps) => {
     return (
         <AccordionItem
             value={value}
@@ -35,16 +46,24 @@ const RouteResultItem = ({ value, icon, label, travelTimeSeconds, distanceMeters
                 <div className="flex items-center gap-1.5 border-t border-border pt-2 text-xs">
                     <PathIcon className="text-muted-foreground" />
                     <span className="text-muted-foreground">Distance</span>
-                    <span className="font-medium tabular-nums">{formatDistance(distanceMeters, 'fr-CA')}</span>
+                    <span className="font-medium tabular-nums">
+                        {formatDistance(distanceMeters, 'fr-CA')}
+                    </span>
                 </div>
             </AccordionContent>
         </AccordionItem>
     );
 };
 
-type ModeRouteResultItemProps = Omit<RouteResultItemProps, 'value' | 'icon' | 'label'>;
+type ModeRouteResultItemProps = Omit<
+    RouteResultItemProps,
+    'value' | 'icon' | 'label'
+>;
 
-const DrivingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRouteResultItemProps) => {
+const DrivingRouteResultItem = ({
+    travelTimeSeconds,
+    distanceMeters,
+}: ModeRouteResultItemProps) => {
     return (
         <RouteResultItem
             value="driving"
@@ -56,7 +75,10 @@ const DrivingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRoute
     );
 };
 
-const WalkingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRouteResultItemProps) => {
+const WalkingRouteResultItem = ({
+    travelTimeSeconds,
+    distanceMeters,
+}: ModeRouteResultItemProps) => {
     return (
         <RouteResultItem
             value="walking"
@@ -75,7 +97,12 @@ type RouteResultsProps = {
     onSelect: (mode: RouteMode | null) => void;
 };
 
-const RouteResults = ({ origin, destination, selectedMode, onSelect }: RouteResultsProps) => {
+const RouteResults = ({
+    origin,
+    destination,
+    selectedMode,
+    onSelect,
+}: RouteResultsProps) => {
     const routeQuery = useRouteQuery(origin, destination);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
@@ -84,7 +111,9 @@ const RouteResults = ({ origin, destination, selectedMode, onSelect }: RouteResu
         <Accordion
             className="gap-2"
             value={selectedMode ? [selectedMode] : []}
-            onValueChange={(value: RouteMode[]) => onSelect(value.at(0) ?? null)}
+            onValueChange={(value: RouteMode[]) =>
+                onSelect(value.at(0) ?? null)
+            }
         >
             {drivingPath && (
                 <DrivingRouteResultItem

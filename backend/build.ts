@@ -8,5 +8,7 @@ await build({
     format: 'esm',
     target: 'node24',
     outfile: 'dist/index.js',
-    external: Object.keys(packageJson.dependencies).filter((name) => name !== 'common'),
+    external: Object.keys(packageJson.dependencies).filter(
+        (name) => name !== 'common',
+    ),
 });

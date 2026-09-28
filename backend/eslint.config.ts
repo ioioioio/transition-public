@@ -18,6 +18,18 @@ export default defineConfig([
         },
     },
     tseslint.configs.recommended,
-    { rules: { '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }] } },
-    { files: ['**/*.md'], plugins: { markdown }, language: 'markdown/commonmark', extends: ['markdown/recommended'] },
+    {
+        rules: {
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                { argsIgnorePattern: '^_' },
+            ],
+        },
+    },
+    {
+        files: ['**/*.md'],
+        plugins: { markdown },
+        language: 'markdown/commonmark',
+        extends: ['markdown/recommended'],
+    },
 ]);

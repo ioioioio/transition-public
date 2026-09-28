@@ -14,7 +14,12 @@ type TripComparisonFormProps = {
     onDestinationClear: () => void;
 };
 
-const TripComparisonForm = ({ origin, destination, onOriginClear, onDestinationClear }: TripComparisonFormProps) => {
+const TripComparisonForm = ({
+    origin,
+    destination,
+    onOriginClear,
+    onDestinationClear,
+}: TripComparisonFormProps) => {
     return (
         <div className="flex flex-col gap-1.5">
             <PlaceInput

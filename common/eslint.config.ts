@@ -11,7 +11,9 @@ export default defineConfig([
         extends: ['js/recommended'],
         languageOptions: {
             globals: { ...globals.browser, ...globals.node },
-            parserOptions: { tsconfigRootDir: new URL('.', import.meta.url).pathname },
+            parserOptions: {
+                tsconfigRootDir: new URL('.', import.meta.url).pathname,
+            },
         },
     },
     tseslint.configs.recommended,

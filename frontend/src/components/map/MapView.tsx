@@ -5,7 +5,11 @@ import { setWorkerUrl, type LngLat } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import type { ReactNode } from 'react';
 
-import { mapInitialLatitude, mapInitialLongitude, mapInitialZoom } from '../../config/env';
+import {
+    mapInitialLatitude,
+    mapInitialLongitude,
+    mapInitialZoom,
+} from '../../config/env';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);

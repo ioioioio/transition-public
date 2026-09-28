@@ -1,6 +1,9 @@
 import type { Utils } from 'common';
 import { useRouteQuery } from '../../../api/route';
-import { DrivingRouteLine, WalkingRouteLine } from '../../../components/map/RouteLine';
+import {
+    DrivingRouteLine,
+    WalkingRouteLine,
+} from '../../../components/map/RouteLine';
 import type { RouteMode } from '../types';
 
 type RouteLinesProps = {
@@ -16,8 +19,18 @@ const RouteLines = ({ origin, destination, selectedMode }: RouteLinesProps) => {
 
     return (
         <>
-            {drivingPath && <DrivingRouteLine geometry={drivingPath.geometry} selected={selectedMode === 'driving'} />}
-            {walkingPath && <WalkingRouteLine geometry={walkingPath.geometry} selected={selectedMode === 'walking'} />}
+            {drivingPath && (
+                <DrivingRouteLine
+                    geometry={drivingPath.geometry}
+                    selected={selectedMode === 'driving'}
+                />
+            )}
+            {walkingPath && (
+                <WalkingRouteLine
+                    geometry={walkingPath.geometry}
+                    selected={selectedMode === 'walking'}
+                />
+            )}
         </>
     );
 };

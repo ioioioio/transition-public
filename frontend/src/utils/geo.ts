@@ -1,4 +1,11 @@
-import { bearing, bezierSpline, destination, distance, lineString, midpoint } from '@turf/turf';
+import {
+    bearing,
+    bezierSpline,
+    destination,
+    distance,
+    lineString,
+    midpoint,
+} from '@turf/turf';
 import type { LineString, Position } from 'geojson';
 
 /**
@@ -10,8 +17,17 @@ import type { LineString, Position } from 'geojson';
  *   distance between `start` and `end` (e.g. `0.15`). A negative value bends it to the left.
  * @returns The arc.
  */
-export const createCurve = (start: Position, end: Position, bend: number): LineString => {
+export const createCurve = (
+    start: Position,
+    end: Position,
+    bend: number,
+): LineString => {
     const middle = midpoint(start, end);
-    const offset = destination(middle, distance(start, end) * bend, bearing(start, end) + 90);
-    return bezierSpline(lineString([start, offset.geometry.coordinates, end])).geometry;
+    const offset = destination(
+        middle,
+        distance(start, end) * bend,
+        bearing(start, end) + 90,
+    );
+    return bezierSpline(lineString([start, offset.geometry.coordinates, end]))
+        .geometry;
 };

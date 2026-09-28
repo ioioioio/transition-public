@@ -9,7 +9,8 @@ import useTripPlaces from '../hooks/useTripPlaces';
 import SidePanel from '../../../components/layouts/SidePanel';
 
 function TripComparison() {
-    const { origin, destination, setOrigin, setDestination, placeAt } = useTripPlaces();
+    const { origin, destination, setOrigin, setDestination, placeAt } =
+        useTripPlaces();
     const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
 
     return (
@@ -30,9 +31,25 @@ function TripComparison() {
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView onMapClick={placeAt}>
-                    <RouteLines origin={origin} destination={destination} selectedMode={selectedMode} />
-                    {origin && <PlaceMarker label="A" position={origin} onMove={setOrigin} />}
-                    {destination && <PlaceMarker label="B" position={destination} onMove={setDestination} />}
+                    <RouteLines
+                        origin={origin}
+                        destination={destination}
+                        selectedMode={selectedMode}
+                    />
+                    {origin && (
+                        <PlaceMarker
+                            label="A"
+                            position={origin}
+                            onMove={setOrigin}
+                        />
+                    )}
+                    {destination && (
+                        <PlaceMarker
+                            label="B"
+                            position={destination}
+                            onMove={setDestination}
+                        />
+                    )}
                 </MapView>
             </div>
         </div>

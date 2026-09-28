@@ -12,7 +12,13 @@ type PlaceInputProps = {
     onClear: () => void;
 };
 
-const PlaceInput = ({ icon, placeholder, clearLabel, value, onClear }: PlaceInputProps) => {
+const PlaceInput = ({
+    icon,
+    placeholder,
+    clearLabel,
+    value,
+    onClear,
+}: PlaceInputProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const clear = () => {
@@ -22,7 +28,9 @@ const PlaceInput = ({ icon, placeholder, clearLabel, value, onClear }: PlaceInpu
 
     return (
         <div className="relative">
-            <span className="pointer-events-none absolute inset-s-3.5 top-1/2 flex -translate-y-1/2">{icon}</span>
+            <span className="pointer-events-none absolute inset-s-3.5 top-1/2 flex -translate-y-1/2">
+                {icon}
+            </span>
             <Input
                 ref={inputRef}
                 value={value}
