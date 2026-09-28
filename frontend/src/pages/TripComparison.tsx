@@ -1,9 +1,10 @@
 import { useRouteQuery } from '../api/route';
 import MapView from '../components/map/MapView';
 import PlaceMarker from '../components/map/PlaceMarker';
-import Menu from '../components/menu/Menu';
+import PlacesForm from '../components/menu/PlacesForm';
 import useTripPlaces from '../hooks/useTripPlaces';
 import React from 'react';
+import SidePanel from '../components/layouts/SidePanel';
 
 function TripComparison() {
     const { origin, destination, setOrigin, setDestination, placeAt } = useTripPlaces();
@@ -11,21 +12,23 @@ function TripComparison() {
 
     React.useEffect(() => {
         if (routeQuery.isLoading) {
-            console.log("route loading")
+            console.log('route loading');
         }
         if (routeQuery.data) {
-            console.log("route data", routeQuery.data)
+            console.log('route data', routeQuery.data);
         }
-    }, [routeQuery])
+    }, [routeQuery]);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
-            <Menu
-                origin={origin}
-                destination={destination}
-                onOriginClear={() => setOrigin(null)}
-                onDestinationClear={() => setDestination(null)}
-            />
+            <SidePanel>
+                <PlacesForm
+                    origin={origin}
+                    destination={destination}
+                    onOriginClear={() => setOrigin(null)}
+                    onDestinationClear={() => setDestination(null)}
+                />
+            </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView onMapClick={placeAt}>
                     {origin && <PlaceMarker label="A" position={origin} onMove={setOrigin} />}
