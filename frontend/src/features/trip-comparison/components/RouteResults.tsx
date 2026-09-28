@@ -1,5 +1,6 @@
 import type { Utils } from 'common';
 import { useRouteQuery } from '../../../api/route';
+import type { RouteMode } from '../types';
 import type { ReactNode } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
 import { formatDistance, formatDuration } from '../../../utils/format';
@@ -70,15 +71,21 @@ const WalkingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRoute
 type RouteResultsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
+    selectedMode: RouteMode | null;
+    onSelect: (mode: RouteMode | null) => void;
 };
 
-const RouteResults = ({ origin, destination }: RouteResultsProps) => {
+const RouteResults = ({ origin, destination, selectedMode, onSelect }: RouteResultsProps) => {
     const routeQuery = useRouteQuery(origin, destination);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
 
     return (
-        <Accordion className="gap-2">
+        <Accordion
+            className="gap-2"
+            value={selectedMode ? [selectedMode] : []}
+            onValueChange={(value: RouteMode[]) => onSelect(value.at(0) ?? null)}
+        >
             {drivingPath && (
                 <DrivingRouteResultItem
                     travelTimeSeconds={drivingPath.travelTimeSeconds}
