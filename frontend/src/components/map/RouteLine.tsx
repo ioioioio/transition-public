@@ -12,7 +12,7 @@ export type RouteLineProps = {
     dashArray?: [number, number];
 };
 
-const RouteLine = ({ id, geometry, bend, dashArray }: RouteLineProps) => {
+export const RouteLine = ({ id, geometry, bend, dashArray }: RouteLineProps) => {
     const color = getThemeColor('--primary');
     const { coordinates } = geometry;
     const curve = createCurve(coordinates[0], coordinates[coordinates.length - 1], bend);
@@ -35,4 +35,12 @@ const RouteLine = ({ id, geometry, bend, dashArray }: RouteLineProps) => {
     );
 };
 
-export default RouteLine;
+type ModeRouteLineProps = Pick<RouteLineProps, 'geometry'>;
+
+export const DrivingRouteLine = ({ geometry }: ModeRouteLineProps) => {
+    return <RouteLine id="route-driving" geometry={geometry} bend={0.15} dashArray={[0.25, 2]} />;
+};
+
+export const WalkingRouteLine = ({ geometry }: ModeRouteLineProps) => {
+    return <RouteLine id="route-walking" geometry={geometry} bend={-0.1} dashArray={[1.5, 1.5]} />;
+};

@@ -1,7 +1,6 @@
 import type { Utils } from 'common';
 import { useRouteQuery } from '../../../api/route';
-import DrivingRouteLine from '../../../components/map/DrivingRouteLine';
-import WalkingRouteLine from '../../../components/map/WalkingRouteLine';
+import { DrivingRouteLine, WalkingRouteLine } from '../../../components/map/RouteLine';
 
 type RouteLinesProps = {
     origin: Utils.LngLat | null;
