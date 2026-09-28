@@ -1,20 +1,20 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
 import type { LngLat } from 'maplibre-gl';
 
-import PlaceInput from '../inputs/PlaceInput';
+import PlaceInput from '../../../components/inputs/PlaceInput';
 
 // Five decimals is about one meter of precision.
 const formatPosition = (position: LngLat | null) =>
     position ? `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}` : '';
 
-type PlacesFormProps = {
+type TripComparisonFormProps = {
     origin: LngLat | null;
     destination: LngLat | null;
     onOriginClear: () => void;
     onDestinationClear: () => void;
 };
 
-const PlacesForm = ({ origin, destination, onOriginClear, onDestinationClear }: PlacesFormProps) => {
+const TripComparisonForm = ({ origin, destination, onOriginClear, onDestinationClear }: TripComparisonFormProps) => {
     return (
         <div className="flex flex-col gap-1.5">
             <PlaceInput
@@ -35,4 +35,4 @@ const PlacesForm = ({ origin, destination, onOriginClear, onDestinationClear }: 
     );
 };
 
-export default PlacesForm;
+export default TripComparisonForm;

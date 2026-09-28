@@ -1,4 +1,4 @@
-import TripComparison from './pages/TripComparison';
+import TripComparison from './features/trip-comparison/components/TripComparison';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();

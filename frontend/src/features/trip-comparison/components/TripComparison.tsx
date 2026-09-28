@@ -1,10 +1,10 @@
-import { useRouteQuery } from '../../../api/route';
 import MapView from '../../../components/map/MapView';
 import PlaceMarker from '../../../components/map/PlaceMarker';
 import TripComparisonForm from './TripComparisonForm';
 import useTripPlaces from '../hooks/useTripPlaces';
 import React from 'react';
 import SidePanel from '../../../components/layouts/SidePanel';
+import { useRouteQuery } from '../../../api/route';
 
 function TripComparison() {
     const { origin, destination, setOrigin, setDestination, placeAt } = useTripPlaces();
