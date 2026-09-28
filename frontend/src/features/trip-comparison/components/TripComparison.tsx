@@ -1,5 +1,7 @@
 import DrivingRouteCard from './DrivingRouteCard';
+import WalkingRouteCard from './WalkingRouteCard';
 import DrivingRouteLine from '../../../components/map/DrivingRouteLine';
+import WalkingRouteLine from '../../../components/map/WalkingRouteLine';
 import MapView from '../../../components/map/MapView';
 import PlaceMarker from '../../../components/map/PlaceMarker';
 import TripComparisonForm from './TripComparisonForm';
@@ -12,6 +14,7 @@ function TripComparison() {
     const { origin, destination, setOrigin, setDestination, placeAt } = useTripPlaces();
     const routeQuery = useRouteQuery(origin, destination);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
+    const walkingPath = routeQuery.data?.result.walking?.paths[0];
 
     React.useEffect(() => {
         if (routeQuery.isLoading) {
@@ -31,16 +34,25 @@ function TripComparison() {
                     onOriginClear={() => setOrigin(null)}
                     onDestinationClear={() => setDestination(null)}
                 />
-                {drivingPath && (
-                    <DrivingRouteCard
-                        travelTimeSeconds={drivingPath.travelTimeSeconds}
-                        distanceMeters={drivingPath.distanceMeters}
-                    />
-                )}
+                <div className="flex flex-col gap-2">
+                    {drivingPath && (
+                        <DrivingRouteCard
+                            travelTimeSeconds={drivingPath.travelTimeSeconds}
+                            distanceMeters={drivingPath.distanceMeters}
+                        />
+                    )}
+                    {walkingPath && (
+                        <WalkingRouteCard
+                            travelTimeSeconds={walkingPath.travelTimeSeconds}
+                            distanceMeters={walkingPath.distanceMeters}
+                        />
+                    )}
+                </div>
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView onMapClick={placeAt}>
                     {drivingPath && <DrivingRouteLine geometry={drivingPath.geometry} />}
+                    {walkingPath && <WalkingRouteLine geometry={walkingPath.geometry} />}
                     {origin && <PlaceMarker label="A" position={origin} onMove={setOrigin} />}
                     {destination && <PlaceMarker label="B" position={destination} onMove={setDestination} />}
                 </MapView>
