@@ -1,3 +1,4 @@
+import DrivingRouteCard from './DrivingRouteCard';
 import DrivingRouteLine from '../../../components/map/DrivingRouteLine';
 import MapView from '../../../components/map/MapView';
 import PlaceMarker from '../../../components/map/PlaceMarker';
@@ -30,6 +31,12 @@ function TripComparison() {
                     onOriginClear={() => setOrigin(null)}
                     onDestinationClear={() => setDestination(null)}
                 />
+                {drivingPath && (
+                    <DrivingRouteCard
+                        travelTimeSeconds={drivingPath.travelTimeSeconds}
+                        distanceMeters={drivingPath.distanceMeters}
+                    />
+                )}
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView onMapClick={placeAt}>
