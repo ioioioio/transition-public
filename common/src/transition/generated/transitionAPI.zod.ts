@@ -310,6 +310,36 @@ export const postApiV1RouteResponseResultTransitPathsGeoJsonItemFeaturesItemGeom
 
 export const postApiV1RouteResponseResultTransitPathsGeoJsonItemFeaturesItemPropertiesStepSequenceMin = 0;
 
+export const postApiV1RouteResponseResultWalkingPathsItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultWalkingPathsItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultWalkingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultWalkingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultCyclingPathsItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultCyclingPathsItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultCyclingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultCyclingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultDrivingPathsItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultDrivingPathsItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultDrivingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultDrivingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultBusSuburbPathsItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultBusSuburbPathsItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultBusSuburbPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultBusSuburbPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultBusUrbanPathsItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultBusUrbanPathsItemGeometryCoordinatesItemMax = 2;
+
+export const postApiV1RouteResponseResultBusUrbanPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin = 2;
+export const postApiV1RouteResponseResultBusUrbanPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax = 2;
+
 
 
 export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
@@ -463,7 +493,152 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
   "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
-})).check(/*#__PURE__*/ zod.describe('Result of the calculation for the "transit" mode, if it was provided in the routingModes query parameter'))
+})).check(/*#__PURE__*/ zod.describe('Result of the calculation for the "transit" mode, if it was provided in the routingModes query parameter')),
+  "walking": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "paths": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultWalkingPathsItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultWalkingPathsItemGeometryCoordinatesItemMax)))
+}).check(/*#__PURE__*/ zod.describe('A GeoJSON LineString object representing this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})).check(/*#__PURE__*/ zod.describe('A list of all calculated routes')),
+  "pathsGeoJson": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['FeatureCollection']),
+  "features": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['Feature']),
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultWalkingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultWalkingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax)))
+}),
+  "properties": /*#__PURE__*/ zod.object({
+  "mode": /*#__PURE__*/ zod.string().check(/*#__PURE__*/ zod.describe('The mode of transportation used for this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})
+}))
+}))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
+  "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "message": /*#__PURE__*/ zod.string(),
+  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+})).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
+})).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
+  "cycling": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "paths": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultCyclingPathsItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultCyclingPathsItemGeometryCoordinatesItemMax)))
+}).check(/*#__PURE__*/ zod.describe('A GeoJSON LineString object representing this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})).check(/*#__PURE__*/ zod.describe('A list of all calculated routes')),
+  "pathsGeoJson": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['FeatureCollection']),
+  "features": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['Feature']),
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultCyclingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultCyclingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax)))
+}),
+  "properties": /*#__PURE__*/ zod.object({
+  "mode": /*#__PURE__*/ zod.string().check(/*#__PURE__*/ zod.describe('The mode of transportation used for this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})
+}))
+}))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
+  "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "message": /*#__PURE__*/ zod.string(),
+  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+})).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
+})).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
+  "driving": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "paths": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultDrivingPathsItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultDrivingPathsItemGeometryCoordinatesItemMax)))
+}).check(/*#__PURE__*/ zod.describe('A GeoJSON LineString object representing this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})).check(/*#__PURE__*/ zod.describe('A list of all calculated routes')),
+  "pathsGeoJson": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['FeatureCollection']),
+  "features": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['Feature']),
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultDrivingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultDrivingPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax)))
+}),
+  "properties": /*#__PURE__*/ zod.object({
+  "mode": /*#__PURE__*/ zod.string().check(/*#__PURE__*/ zod.describe('The mode of transportation used for this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})
+}))
+}))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
+  "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "message": /*#__PURE__*/ zod.string(),
+  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+})).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
+})).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
+  "bus_suburb": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "paths": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultBusSuburbPathsItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultBusSuburbPathsItemGeometryCoordinatesItemMax)))
+}).check(/*#__PURE__*/ zod.describe('A GeoJSON LineString object representing this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})).check(/*#__PURE__*/ zod.describe('A list of all calculated routes')),
+  "pathsGeoJson": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['FeatureCollection']),
+  "features": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['Feature']),
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultBusSuburbPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultBusSuburbPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax)))
+}),
+  "properties": /*#__PURE__*/ zod.object({
+  "mode": /*#__PURE__*/ zod.string().check(/*#__PURE__*/ zod.describe('The mode of transportation used for this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})
+}))
+}))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
+  "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "message": /*#__PURE__*/ zod.string(),
+  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+})).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
+})).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
+  "bus_urban": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "paths": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultBusUrbanPathsItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultBusUrbanPathsItemGeometryCoordinatesItemMax)))
+}).check(/*#__PURE__*/ zod.describe('A GeoJSON LineString object representing this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})).check(/*#__PURE__*/ zod.describe('A list of all calculated routes')),
+  "pathsGeoJson": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['FeatureCollection']),
+  "features": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['Feature']),
+  "geometry": /*#__PURE__*/ zod.object({
+  "type": /*#__PURE__*/ zod.enum(['LineString']),
+  "coordinates": /*#__PURE__*/ zod.array(/*#__PURE__*/ zod.array(/*#__PURE__*/ zod.number()).check(/*#__PURE__*/ zod.minLength(postApiV1RouteResponseResultBusUrbanPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMin)).check(/*#__PURE__*/ zod.maxLength(postApiV1RouteResponseResultBusUrbanPathsGeoJsonItemFeaturesItemGeometryCoordinatesItemMax)))
+}),
+  "properties": /*#__PURE__*/ zod.object({
+  "mode": /*#__PURE__*/ zod.string().check(/*#__PURE__*/ zod.describe('The mode of transportation used for this route')),
+  "distanceMeters": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The distance travalled along this route, in meters')),
+  "travelTimeSeconds": /*#__PURE__*/ zod.number().check(/*#__PURE__*/ zod.describe('The estimated duration of the trip along this route, in seconds'))
+})
+}))
+}))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
+  "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
+  "message": /*#__PURE__*/ zod.string(),
+  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+})).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
+})).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided'))
 }).check(/*#__PURE__*/ zod.describe('Result of the routing calculation'))
 })
 
