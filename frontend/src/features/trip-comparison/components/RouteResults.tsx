@@ -1,39 +1,52 @@
 import type { Utils } from 'common';
 import { useRouteQuery } from '../../../api/route';
 import type { ReactNode } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../../../components/ui/accordion';
 import { formatDistance, formatDuration } from '../../../utils/format';
-import { CarIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
+import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 
 type RouteResultItemProps = {
+    value: string;
     icon: ReactNode;
     label: string;
     travelTimeSeconds: number;
     distanceMeters: number;
 };
 
-const RouteResultItem = ({ icon, label, travelTimeSeconds, distanceMeters }: RouteResultItemProps) => {
+const RouteResultItem = ({ value, icon, label, travelTimeSeconds, distanceMeters }: RouteResultItemProps) => {
     return (
-        <Card className="gap-2 rounded-lg py-3 ring-primary/50 ring-inset">
-            <CardHeader className="flex items-center gap-3">
-                <span className="text-lg text-primary">{icon}</span>
-                <CardTitle className="text-sm">{label}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-baseline gap-2">
-                <span className="text-[17px] font-medium tracking-tight tabular-nums">
-                    {formatDuration(travelTimeSeconds, 'fr-CA')}
+        <AccordionItem
+            value={value}
+            className="rounded-lg ring-1 ring-foreground/10 ring-inset not-last:border-b-0 hover:bg-card data-open:bg-card data-open:ring-primary/50"
+        >
+            <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
+                <span className="text-lg text-muted-foreground group-aria-expanded/accordion-trigger:text-primary">
+                    {icon}
                 </span>
-                <span className="text-xs text-muted-foreground">{formatDistance(distanceMeters, 'fr-CA')}</span>
-            </CardContent>
-        </Card>
+                <span className="flex flex-col gap-1">
+                    <span>{label}</span>
+                    <span className="text-[17px] tracking-tight tabular-nums">
+                        {formatDuration(travelTimeSeconds, 'fr-CA')}
+                    </span>
+                </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-3">
+                <div className="flex items-center gap-1.5 border-t border-border pt-2 text-xs">
+                    <PathIcon className="text-muted-foreground" />
+                    <span className="text-muted-foreground">Distance</span>
+                    <span className="font-medium tabular-nums">{formatDistance(distanceMeters, 'fr-CA')}</span>
+                </div>
+            </AccordionContent>
+        </AccordionItem>
     );
 };
 
-type ModeRouteResultItemProps = Omit<RouteResultItemProps, 'icon' | 'label'>;
+type ModeRouteResultItemProps = Omit<RouteResultItemProps, 'value' | 'icon' | 'label'>;
 
 const DrivingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRouteResultItemProps) => {
     return (
         <RouteResultItem
+            value="driving"
             icon={<CarIcon />}
             label="Auto"
             travelTimeSeconds={travelTimeSeconds}
@@ -45,6 +58,7 @@ const DrivingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRoute
 const WalkingRouteResultItem = ({ travelTimeSeconds, distanceMeters }: ModeRouteResultItemProps) => {
     return (
         <RouteResultItem
+            value="walking"
             icon={<PersonSimpleWalkIcon />}
             label="Marche"
             travelTimeSeconds={travelTimeSeconds}
@@ -64,7 +78,7 @@ const RouteResults = ({ origin, destination }: RouteResultsProps) => {
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
 
     return (
-        <div className="flex flex-col gap-2">
+        <Accordion className="gap-2">
             {drivingPath && (
                 <DrivingRouteResultItem
                     travelTimeSeconds={drivingPath.travelTimeSeconds}
@@ -77,7 +91,7 @@ const RouteResults = ({ origin, destination }: RouteResultsProps) => {
                     distanceMeters={walkingPath.distanceMeters}
                 />
             )}
-        </div>
+        </Accordion>
     );
 };
 
