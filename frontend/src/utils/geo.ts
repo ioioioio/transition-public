@@ -1,8 +1,11 @@
 import {
+    along,
     bearing,
     bezierSpline,
     destination,
     distance,
+    feature,
+    length,
     lineString,
     midpoint,
 } from '@turf/turf';
@@ -30,4 +33,17 @@ export const createCurve = (
     );
     return bezierSpline(lineString([start, offset.geometry.coordinates, end]))
         .geometry;
+};
+
+/**
+ * Gets the point at a fraction of a line's length.
+ *
+ * @param line - The line to walk along.
+ * @param fraction - Where to stop, from `0` (its first point) to `1` (its last point). Clamped to that range.
+ * @returns The point, as `[longitude, latitude]`.
+ */
+export const getPointAlong = (line: LineString, fraction: number): Position => {
+    // turf.along clamps to 1 and throws on negative numbers
+    const clamped = Math.min(Math.max(fraction, 0), 1);
+    return along(line, length(feature(line)) * clamped).geometry.coordinates;
 };

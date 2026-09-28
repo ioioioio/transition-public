@@ -23,12 +23,14 @@ const RouteLines = ({ origin, destination, selectedMode }: RouteLinesProps) => {
                 <DrivingRouteLine
                     geometry={drivingPath.geometry}
                     selected={selectedMode === 'driving'}
+                    travelTimeSeconds={drivingPath.travelTimeSeconds}
                 />
             )}
             {walkingPath && (
                 <WalkingRouteLine
                     geometry={walkingPath.geometry}
                     selected={selectedMode === 'walking'}
+                    travelTimeSeconds={walkingPath.travelTimeSeconds}
                 />
             )}
         </>
