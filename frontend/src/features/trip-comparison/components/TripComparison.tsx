@@ -1,5 +1,4 @@
-import DrivingRouteCard from './DrivingRouteCard';
-import WalkingRouteCard from './WalkingRouteCard';
+import RouteResults from './RouteResults';
 import DrivingRouteLine from '../../../components/map/DrivingRouteLine';
 import WalkingRouteLine from '../../../components/map/WalkingRouteLine';
 import MapView from '../../../components/map/MapView';
@@ -34,20 +33,7 @@ function TripComparison() {
                     onOriginClear={() => setOrigin(null)}
                     onDestinationClear={() => setDestination(null)}
                 />
-                <div className="flex flex-col gap-2">
-                    {drivingPath && (
-                        <DrivingRouteCard
-                            travelTimeSeconds={drivingPath.travelTimeSeconds}
-                            distanceMeters={drivingPath.distanceMeters}
-                        />
-                    )}
-                    {walkingPath && (
-                        <WalkingRouteCard
-                            travelTimeSeconds={walkingPath.travelTimeSeconds}
-                            distanceMeters={walkingPath.distanceMeters}
-                        />
-                    )}
-                </div>
+                <RouteResults origin={origin} destination={destination} />
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView onMapClick={placeAt}>
