@@ -1,5 +1,6 @@
 import { useRouteQuery } from '../api/route';
 import MapView from '../components/map/MapView';
+import PlaceMarker from '../components/map/PlaceMarker';
 import Menu from '../components/menu/Menu';
 import useTripPlaces from '../hooks/useTripPlaces';
 import React from 'react';
@@ -26,13 +27,10 @@ function TripComparison() {
                 onDestinationClear={() => setDestination(null)}
             />
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
-                <MapView
-                    origin={origin}
-                    destination={destination}
-                    onMapClick={placeAt}
-                    onOriginMove={setOrigin}
-                    onDestinationMove={setDestination}
-                />
+                <MapView onMapClick={placeAt}>
+                    {origin && <PlaceMarker label="A" position={origin} onMove={setOrigin} />}
+                    {destination && <PlaceMarker label="B" position={destination} onMove={setDestination} />}
+                </MapView>
             </div>
         </div>
     );
