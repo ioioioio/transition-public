@@ -2,6 +2,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import babel from '@rolldown/plugin-babel';
 import { defineConfig, loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 const envDir = '..';
 
@@ -11,6 +12,15 @@ export default defineConfig(({ mode }) => {
 
     return {
         plugins: [
+            // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
+            tanstackRouter({
+                target: 'react',
+                // from doc: https://tanstack.com/router/latest/docs/api/file-based-routing#autocodesplitting
+                // 'The next major release of TanStack Router (i.e. v2), will have this value defaulted to true.'
+                autoCodeSplitting: true,
+                routesDirectory: './src/app/routes',
+                generatedRouteTree: './src/app/routeTree.gen.ts',
+            }),
             react(),
             babel({ presets: [reactCompilerPreset()] }),
             tailwindcss(),
