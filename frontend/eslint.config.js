@@ -30,5 +30,11 @@ export default defineConfig([
             'react-refresh/only-export-components': 'off',
         },
     },
+    {
+        files: ['src/app/routes/**/*.tsx'],
+        rules: {
+            'react-refresh/only-export-components': 'off',
+        },
+    },
     ...pluginRouter.configs['flat/recommended'],
 ]);

@@ -1,16 +1,35 @@
 import { useState } from 'react';
+import type { Utils } from 'common';
 import RouteLines from './RouteLines';
-import type { RouteMode } from '../types';
+import type { RouteMode, TripPlaces } from '../types';
 import RouteResults from './RouteResults';
 import MapView from '../../../components/map/MapView';
 import PlaceMarker from '../../../components/map/PlaceMarker';
 import TripComparisonForm from './TripComparisonForm';
-import useTripPlaces from '../hooks/useTripPlaces';
 import SidePanel from '../../../components/layouts/SidePanel';
 
-function TripComparison() {
-    const { origin, destination, setOrigin, setDestination, placeAt } =
-        useTripPlaces();
+type TripComparisonProps = TripPlaces & {
+    onPlacesChange: (places: TripPlaces) => void;
+};
+
+function TripComparison({
+    origin,
+    destination,
+    onPlacesChange,
+}: TripComparisonProps) {
+    const setOrigin = (position: Utils.LngLat | null) =>
+        onPlacesChange({ origin: position, destination });
+    const setDestination = (position: Utils.LngLat | null) =>
+        onPlacesChange({ origin, destination: position });
+
+    const setOriginOrDestination = (position: Utils.LngLat) => {
+        if (origin === null) {
+            setOrigin(position);
+        } else {
+            setDestination(position);
+        }
+    };
+
     const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
 
     return (
@@ -30,7 +49,7 @@ function TripComparison() {
                 />
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
-                <MapView onMapClick={placeAt}>
+                <MapView onMapClick={setOriginOrDestination}>
                     <RouteLines
                         origin={origin}
                         destination={destination}
