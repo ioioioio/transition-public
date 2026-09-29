@@ -35,6 +35,7 @@ function TripComparison() {
                         origin={origin}
                         destination={destination}
                         selectedMode={selectedMode}
+                        onSelect={setSelectedMode}
                     />
                     {origin && (
                         <PlaceMarker
