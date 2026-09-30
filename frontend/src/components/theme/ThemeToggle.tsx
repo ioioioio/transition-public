@@ -1,24 +1,18 @@
 import { MoonIcon, SunIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { useTheme } from '@/hooks/useTheme';
 
 const ThemeToggle = () => {
-    const [isDark, setIsDark] = useState(() =>
-        document.documentElement.classList.contains('dark'),
-    );
-
-    const toggle = () => {
-        document.documentElement.classList.toggle('dark', !isDark);
-        setIsDark(!isDark);
-    };
+    const { theme, setTheme } = useTheme();
+    const isDark = theme === 'dark';
 
     return (
         <Button
             variant="ghost"
             size="icon-lg"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            onClick={toggle}
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
             className="text-muted-foreground"
         >
             {isDark ? <SunIcon /> : <MoonIcon />}

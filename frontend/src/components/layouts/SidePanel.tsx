@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import ThemeToggle from '@/components/inputs/ThemeToggle';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 
 type SidePanelProps = {
     children?: ReactNode;
