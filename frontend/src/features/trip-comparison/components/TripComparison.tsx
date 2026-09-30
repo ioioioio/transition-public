@@ -3,19 +3,23 @@ import type { Utils } from 'common';
 import RouteLines from './RouteLines';
 import type { RouteMode, TripPlaces } from '../types';
 import RouteResults from './RouteResults';
-import MapView from '../../../components/map/MapView';
+import MapView, { type MapViewState } from '../../../components/map/MapView';
 import PlaceMarker from '../../../components/map/PlaceMarker';
 import TripComparisonForm from './TripComparisonForm';
 import SidePanel from '../../../components/layouts/SidePanel';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
+    initialMapView?: MapViewState;
+    onMapViewChange?: (view: MapViewState) => void;
 };
 
 function TripComparison({
     origin,
     destination,
     onPlacesChange,
+    initialMapView,
+    onMapViewChange,
 }: TripComparisonProps) {
     const setOrigin = (position: Utils.LngLat | null) =>
         onPlacesChange({ origin: position, destination });
@@ -49,7 +53,11 @@ function TripComparison({
                 />
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
-                <MapView onMapClick={setOriginOrDestination}>
+                <MapView
+                    initialView={initialMapView}
+                    onViewChange={onMapViewChange}
+                    onMapClick={setOriginOrDestination}
+                >
                     <RouteLines
                         origin={origin}
                         destination={destination}
