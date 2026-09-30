@@ -9,7 +9,10 @@ import {
     mapInitialLatitude,
     mapInitialLongitude,
     mapInitialZoom,
+    mapStyleDark,
+    mapStyleLight,
 } from '@/config/env';
+import { useTheme } from '@/hooks/useTheme';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);
@@ -29,6 +32,8 @@ const MapView = ({
     onMapClick,
     children,
 }: MapViewProps) => {
+    const { theme } = useTheme();
+
     return (
         <Map
             initialViewState={{
@@ -37,7 +42,7 @@ const MapView = ({
                 zoom: initialView?.zoom ?? mapInitialZoom,
             }}
             style={{ width: '100%', height: '100%' }}
-            mapStyle="https://tiles.openfreemap.org/styles/dark"
+            mapStyle={theme === 'light' ? mapStyleLight : mapStyleDark}
             onClick={(event) => onMapClick(event.lngLat)}
             onMoveEnd={({ viewState }) =>
                 onViewChange?.({

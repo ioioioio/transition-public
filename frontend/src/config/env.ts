@@ -18,3 +18,5 @@ const getNumberEnv = (key: string): number => {
 export const mapInitialLongitude = getNumberEnv('VITE_MAP_INITIAL_LONGITUDE');
 export const mapInitialLatitude = getNumberEnv('VITE_MAP_INITIAL_LATITUDE');
 export const mapInitialZoom = getNumberEnv('VITE_MAP_INITIAL_ZOOM');
+export const mapStyleLight = getEnv('VITE_MAP_STYLE_LIGHT');
+export const mapStyleDark = getEnv('VITE_MAP_STYLE_DARK');
