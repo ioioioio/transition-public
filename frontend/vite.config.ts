@@ -3,6 +3,7 @@ import babel from '@rolldown/plugin-babel';
 import { defineConfig, loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { fileURLToPath } from 'node:url';
 
 const envDir = '..';
 
@@ -25,6 +26,9 @@ export default defineConfig(({ mode }) => {
             babel({ presets: [reactCompilerPreset()] }),
             tailwindcss(),
         ],
+        resolve: {
+            alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+        },
         envDir,
         server: {
             proxy: { '/api': `http://localhost:${BACKEND_PORT}` },

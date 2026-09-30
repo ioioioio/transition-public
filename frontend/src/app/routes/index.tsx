@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Utils } from 'common';
 import { z } from 'zod';
-import type { MapViewState } from '../../components/map/MapView';
-import TripComparison from '../../features/trip-comparison/components/TripComparison';
-import type { TripPlaces } from '../../features/trip-comparison/types';
+import type { MapViewState } from '@/components/map/MapView';
+import TripComparison from '@/features/trip-comparison/components/TripComparison';
+import type { TripPlaces } from '@/features/trip-comparison/types';
 
 const PlaceSearchSchema = Utils.LngLatSchema.optional()
     // Drop an invalid place rather than failing the page.

@@ -10,7 +10,7 @@ import {
     mapInitialLatitude,
     mapInitialLongitude,
     mapInitialZoom,
-} from '../../config/env';
+} from '@/config/env';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);

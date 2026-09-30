@@ -1,14 +1,14 @@
 import type { Utils } from 'common';
-import { useRouteQuery } from '../../../api/route';
-import type { RouteMode } from '../types';
+import { useRouteQuery } from '@/api/route';
+import type { RouteMode } from '@/features/trip-comparison/types';
 import type { ReactNode } from 'react';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '../../../components/ui/accordion';
-import { formatDistance, formatDuration } from '../../../utils/format';
+} from '@/components/ui/accordion';
+import { formatDistance, formatDuration } from '@/utils/format';
 import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 
 type RouteResultItemProps = {

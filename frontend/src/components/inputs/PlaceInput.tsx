@@ -1,8 +1,8 @@
 import { XIcon } from '@phosphor-icons/react';
 import { useRef, type ReactNode } from 'react';
 
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 type PlaceInputProps = {
     icon: ReactNode;

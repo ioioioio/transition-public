@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import type { Utils } from 'common';
-import RouteLines from './RouteLines';
-import type { RouteMode, TripPlaces } from '../types';
-import RouteResults from './RouteResults';
-import MapView, { type MapViewState } from '../../../components/map/MapView';
-import PlaceMarker from '../../../components/map/PlaceMarker';
-import TripComparisonForm from './TripComparisonForm';
-import SidePanel from '../../../components/layouts/SidePanel';
+import RouteLines from '@/features/trip-comparison/components/RouteLines';
+import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
+import RouteResults from '@/features/trip-comparison/components/RouteResults';
+import MapView, { type MapViewState } from '@/components/map/MapView';
+import PlaceMarker from '@/components/map/PlaceMarker';
+import TripComparisonForm from '@/features/trip-comparison/components/TripComparisonForm';
+import SidePanel from '@/components/layouts/SidePanel';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
