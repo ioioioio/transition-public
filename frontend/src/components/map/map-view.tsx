@@ -12,7 +12,7 @@ import {
     mapStyleDark,
     mapStyleLight,
 } from '@/config/env';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/hooks/use-theme';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);

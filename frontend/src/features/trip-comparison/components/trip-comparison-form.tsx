@@ -1,7 +1,7 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
 import type { Utils } from 'common';
 
-import PlaceInput from '@/components/inputs/PlaceInput';
+import PlaceInput from '@/components/inputs/place-input';
 
 // Five decimals is about one meter of precision.
 const formatPosition = (position: Utils.LngLat | null) =>

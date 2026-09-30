@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import pluginRouter from '@tanstack/eslint-plugin-router';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import checkFile from 'eslint-plugin-check-file';
 import { importX } from 'eslint-plugin-import-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
@@ -76,6 +77,23 @@ export default defineConfig([
         files: ['src/app/routes/**/*.tsx'],
         rules: {
             'react-refresh/only-export-components': 'off',
+        },
+    },
+    {
+        files: ['src/**/*.{ts,tsx}'],
+        // TanStack Router picks these names (e.g. __root.tsx, routeTree.gen.ts).
+        ignores: ['src/app/routes/**', 'src/app/routeTree.gen.ts'],
+        plugins: { 'check-file': checkFile },
+        rules: {
+            'check-file/filename-naming-convention': [
+                'error',
+                { '**/*.{ts,tsx}': 'KEBAB_CASE' },
+                { ignoreMiddleExtensions: true },
+            ],
+            'check-file/folder-naming-convention': [
+                'error',
+                { 'src/**/': 'KEBAB_CASE' },
+            ],
         },
     },
     ...pluginRouter.configs['flat/recommended'],

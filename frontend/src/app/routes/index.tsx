@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Utils } from 'common';
 import { z } from 'zod';
 
-import type { MapViewState } from '@/components/map/MapView';
-import TripComparison from '@/features/trip-comparison/components/TripComparison';
+import type { MapViewState } from '@/components/map/map-view';
+import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types';
 
 const PlaceSearchSchema = Utils.LngLatSchema.optional()
