@@ -1,15 +1,16 @@
+import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 import type { Utils } from 'common';
-import { useRouteQuery } from '@/api/route';
-import type { RouteMode } from '@/features/trip-comparison/types';
 import type { ReactNode } from 'react';
+
+import { useRouteQuery } from '@/api/route';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
+import type { RouteMode } from '@/features/trip-comparison/types';
 import { formatDistance, formatDuration } from '@/utils/format';
-import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 
 type RouteResultItemProps = {
     value: string;

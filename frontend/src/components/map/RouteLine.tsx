@@ -2,6 +2,7 @@ import { CarIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
+
 import { cn } from '@/lib/utils';
 import { getThemeColor } from '@/utils/color';
 import { formatDuration } from '@/utils/format';

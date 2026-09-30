@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Utils } from 'common';
 import { z } from 'zod';
+
 import type { MapViewState } from '@/components/map/MapView';
 import TripComparison from '@/features/trip-comparison/components/TripComparison';
 import type { TripPlaces } from '@/features/trip-comparison/types';

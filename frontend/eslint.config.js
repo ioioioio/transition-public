@@ -1,15 +1,17 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import pluginRouter from '@tanstack/eslint-plugin-router';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import { importX } from 'eslint-plugin-import-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import pluginRouter from '@tanstack/eslint-plugin-router';
 
 export default defineConfig([
     globalIgnores(['dist']),
     {
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.{js,ts,tsx}'],
         extends: [
             js.configs.recommended,
             tseslint.configs.recommended,
@@ -22,7 +24,33 @@ export default defineConfig([
                 tsconfigRootDir: new URL('.', import.meta.url).pathname,
             },
         },
+        plugins: { 'import-x': importX },
+        settings: {
+            // Reads tsconfig paths so @/ imports count as internal.
+            'import-x/resolver-next': [
+                createTypeScriptImportResolver({
+                    project: new URL('tsconfig.app.json', import.meta.url)
+                        .pathname,
+                }),
+            ],
+        },
         rules: {
+            'import-x/order': [
+                'error',
+                {
+                    groups: [
+                        'builtin',
+                        'external',
+                        'internal',
+                        'parent',
+                        'sibling',
+                        'index',
+                        'object',
+                    ],
+                    'newlines-between': 'always',
+                    alphabetize: { order: 'asc', caseInsensitive: true },
+                },
+            ],
             'no-restricted-imports': [
                 'error',
                 {

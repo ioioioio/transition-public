@@ -1,6 +1,5 @@
 import { Map } from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-
 import type { Utils } from 'common';
 import { setWorkerUrl, type LngLat } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
