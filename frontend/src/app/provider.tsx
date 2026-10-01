@@ -11,7 +11,7 @@ type AppProviderProps = {
 
 export const AppProvider = ({ children }: AppProviderProps) => {
     return (
-        <ThemeProvider defaultTheme="dark">
+        <ThemeProvider>
             <QueryClientProvider client={queryClient}>
                 {children}
             </QueryClientProvider>
