@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import '@/lib/i18n'; // Sets up i18next
 
 const queryClient = new QueryClient();
 
