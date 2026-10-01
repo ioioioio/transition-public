@@ -3,8 +3,8 @@ import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
 
+import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
-import { getThemeColor } from '@/utils/color';
 import { formatDuration } from '@/utils/format';
 import { createCurve, getPointAlong } from '@/utils/geo';
 
@@ -33,7 +33,7 @@ export const RouteLine = ({
     labelPosition = 0.5,
     onLabelClick,
 }: RouteLineProps) => {
-    const color = getThemeColor(selected ? '--primary' : '--foreground');
+    const color = useThemeColor(selected ? '--primary' : '--foreground');
     const { coordinates } = geometry;
     const curve = createCurve(
         coordinates[0],
