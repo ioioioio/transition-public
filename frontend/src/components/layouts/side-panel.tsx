@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import LanguageToggle from '@/components/language/language-toggle';
 import ThemeToggle from '@/components/theme/theme-toggle';
 
 type SidePanelProps = {
@@ -12,8 +13,9 @@ const SidePanel = ({ children }: SidePanelProps) => {
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
                 {children}
             </div>
-            <div className="p-2">
+            <div className="flex p-2">
                 <ThemeToggle />
+                <LanguageToggle />
             </div>
         </aside>
     );
