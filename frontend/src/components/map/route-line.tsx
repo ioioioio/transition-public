@@ -2,6 +2,7 @@ import { CarIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
@@ -137,6 +138,8 @@ export const DrivingRouteLine = ({
     onLabelClick,
     travelTimeSeconds,
 }: ModeRouteLineProps) => {
+    const { i18n } = useTranslation();
+
     return (
         <RouteLine
             id="route-driving"
@@ -148,7 +151,7 @@ export const DrivingRouteLine = ({
             label={
                 <>
                     <CarIcon />
-                    {formatDuration(travelTimeSeconds, 'fr-CA')}
+                    {formatDuration(travelTimeSeconds, i18n.language)}
                 </>
             }
             labelPosition={0.36}
@@ -162,6 +165,8 @@ export const WalkingRouteLine = ({
     onLabelClick,
     travelTimeSeconds,
 }: ModeRouteLineProps) => {
+    const { i18n } = useTranslation();
+
     return (
         <RouteLine
             id="route-walking"
@@ -173,7 +178,7 @@ export const WalkingRouteLine = ({
             label={
                 <>
                     <PersonSimpleWalkIcon />
-                    {formatDuration(travelTimeSeconds, 'fr-CA')}
+                    {formatDuration(travelTimeSeconds, i18n.language)}
                 </>
             }
             labelPosition={0.64}

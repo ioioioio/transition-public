@@ -1,1 +1,17 @@
-{}
+{
+    "theme": {
+        "switchToLight": "Switch to light mode",
+        "switchToDark": "Switch to dark mode"
+    },
+    "tripComparison": {
+        "origin": "Origin",
+        "destination": "Destination",
+        "clearOrigin": "Clear origin",
+        "clearDestination": "Clear destination",
+        "distance": "Distance"
+    },
+    "routeMode": {
+        "driving": "Driving",
+        "walking": "Walking"
+    }
+}

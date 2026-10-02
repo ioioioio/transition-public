@@ -1,6 +1,7 @@
 import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 import type { Utils } from 'common';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useRouteQuery } from '@/api/route';
 import {
@@ -27,6 +28,8 @@ const RouteResultItem = ({
     travelTimeSeconds,
     distanceMeters,
 }: RouteResultItemProps) => {
+    const { t, i18n } = useTranslation();
+
     return (
         <AccordionItem
             value={value}
@@ -39,16 +42,18 @@ const RouteResultItem = ({
                 <span className="flex flex-col gap-1">
                     <span>{label}</span>
                     <span className="text-[17px] tracking-tight tabular-nums">
-                        {formatDuration(travelTimeSeconds, 'fr-CA')}
+                        {formatDuration(travelTimeSeconds, i18n.language)}
                     </span>
                 </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-3">
                 <div className="flex items-center gap-1.5 border-t border-border pt-2 text-xs">
                     <PathIcon className="text-muted-foreground" />
-                    <span className="text-muted-foreground">Distance</span>
+                    <span className="text-muted-foreground">
+                        {t('tripComparison.distance')}
+                    </span>
                     <span className="font-medium tabular-nums">
-                        {formatDistance(distanceMeters, 'fr-CA')}
+                        {formatDistance(distanceMeters, i18n.language)}
                     </span>
                 </div>
             </AccordionContent>
@@ -65,11 +70,13 @@ const DrivingRouteResultItem = ({
     travelTimeSeconds,
     distanceMeters,
 }: ModeRouteResultItemProps) => {
+    const { t } = useTranslation();
+
     return (
         <RouteResultItem
             value="driving"
             icon={<CarIcon />}
-            label="Auto"
+            label={t('routeMode.driving')}
             travelTimeSeconds={travelTimeSeconds}
             distanceMeters={distanceMeters}
         />
@@ -80,11 +87,13 @@ const WalkingRouteResultItem = ({
     travelTimeSeconds,
     distanceMeters,
 }: ModeRouteResultItemProps) => {
+    const { t } = useTranslation();
+
     return (
         <RouteResultItem
             value="walking"
             icon={<PersonSimpleWalkIcon />}
-            label="Marche"
+            label={t('routeMode.walking')}
             travelTimeSeconds={travelTimeSeconds}
             distanceMeters={distanceMeters}
         />
