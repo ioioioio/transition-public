@@ -1,5 +1,5 @@
 import { MapPinIcon, XIcon } from '@phosphor-icons/react';
-import type { Api } from 'common';
+import type { Api, Utils } from 'common';
 import { useRef, useState, type ReactNode } from 'react';
 
 import { usePlaceSearchQuery } from '@/api/place';
@@ -12,13 +12,37 @@ import {
     useComboboxAnchor,
 } from '@/components/ui/combobox';
 import { InputGroupAddon, InputGroupButton } from '@/components/ui/input-group';
+import type { PlaceRef } from '@/types/place';
+
+const formatPosition = (position: Utils.LngLat) =>
+    `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
+
+// Only the place chosen here has a known name, so any other place, like one
+// from a shared URL, shows its coordinates until places can be fetched by id
+const createPlaceLabel = (
+    value: PlaceRef | null,
+    chosenPlace: Api.Place | null,
+) => {
+    if (!value) {
+        return '';
+    }
+    if (
+        chosenPlace &&
+        value.id === chosenPlace.id &&
+        value.position.lng === chosenPlace.position.lng &&
+        value.position.lat === chosenPlace.position.lat
+    ) {
+        return chosenPlace.label;
+    }
+    return formatPosition(value.position);
+};
 
 type PlaceInputProps = {
     icon: ReactNode;
     placeholder: string;
     clearLabel: string;
-    value: string;
-    onClear: () => void;
+    value: PlaceRef | null;
+    onValueChange: (value: PlaceRef | null) => void;
 };
 
 const PlaceInput = ({
@@ -26,29 +50,35 @@ const PlaceInput = ({
     placeholder,
     clearLabel,
     value,
-    onClear,
+    onValueChange,
 }: PlaceInputProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const anchorRef = useComboboxAnchor();
     const [open, setOpen] = useState(false);
+    const [chosenPlace, setChosenPlace] = useState<Api.Place | null>(null);
 
-    // `value` is the label of the place currently set: its name when chosen
-    // from the search, or its coordinates when picked on the map.
-    // `text` is what the field shows: the same as `value`, except while the
-    // user is typing a new search
-    const [text, setText] = useState(value);
-    const [previousValue, setPreviousValue] = useState(value);
-    if (value !== previousValue) {
-        setPreviousValue(value);
-        setText(value);
+    // `label` is the text of the place currently set, which can also change
+    // from outside, like a map click. `text` is what the field shows: the
+    // same as `label`, except while the user is typing a new search
+    const label = createPlaceLabel(value, chosenPlace);
+    const [text, setText] = useState(label);
+    const [previousLabel, setPreviousLabel] = useState(label);
+    if (label !== previousLabel) {
+        setPreviousLabel(label);
+        setText(label);
     }
 
-    const isTyping = text !== value;
+    const isTyping = text !== label;
     const { data: places = [] } = usePlaceSearchQuery(isTyping ? text : '');
+
+    const select = (place: Api.Place | null) => {
+        setChosenPlace(place);
+        onValueChange(place);
+    };
 
     const clear = () => {
         setText('');
-        onClear();
+        onValueChange(null);
         inputRef.current?.focus();
     };
 
@@ -58,6 +88,8 @@ const PlaceInput = ({
             // The place search already filters the results
             filter={null}
             itemToStringLabel={(place: Api.Place) => place.label}
+            value={null}
+            onValueChange={select}
             inputValue={text}
             onInputValueChange={(nextText, { reason }) => {
                 // Keep the typed text when closing without a selection

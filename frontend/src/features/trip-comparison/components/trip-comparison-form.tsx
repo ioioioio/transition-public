@@ -1,26 +1,21 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
-import type { Utils } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
 import type { PlaceRef } from '@/types/place';
 
-// Five decimals is about one meter of precision.
-const formatPosition = (position: Utils.LngLat | undefined) =>
-    position ? `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}` : '';
-
 type TripComparisonFormProps = {
     origin: PlaceRef | null;
     destination: PlaceRef | null;
-    onOriginClear: () => void;
-    onDestinationClear: () => void;
+    onOriginChange: (origin: PlaceRef | null) => void;
+    onDestinationChange: (destination: PlaceRef | null) => void;
 };
 
 const TripComparisonForm = ({
     origin,
     destination,
-    onOriginClear,
-    onDestinationClear,
+    onOriginChange,
+    onDestinationChange,
 }: TripComparisonFormProps) => {
     const { t } = useTranslation();
 
@@ -30,15 +25,15 @@ const TripComparisonForm = ({
                 icon={<CircleIcon className="size-3.5 text-muted-foreground" />}
                 placeholder={t('tripComparison.origin')}
                 clearLabel={t('tripComparison.clearOrigin')}
-                value={formatPosition(origin?.position)}
-                onClear={onOriginClear}
+                value={origin}
+                onValueChange={onOriginChange}
             />
             <PlaceInput
                 icon={<MapPinIcon className="size-4 text-primary" />}
                 placeholder={t('tripComparison.destination')}
                 clearLabel={t('tripComparison.clearDestination')}
-                value={formatPosition(destination?.position)}
-                onClear={onDestinationClear}
+                value={destination}
+                onValueChange={onDestinationChange}
             />
         </div>
     );

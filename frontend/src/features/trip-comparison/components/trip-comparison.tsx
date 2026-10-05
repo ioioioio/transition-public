@@ -47,8 +47,8 @@ function TripComparison({
                 <TripComparisonForm
                     origin={origin}
                     destination={destination}
-                    onOriginClear={() => setOrigin(null)}
-                    onDestinationClear={() => setDestination(null)}
+                    onOriginChange={setOrigin}
+                    onDestinationChange={setDestination}
                 />
                 <RouteResults
                     origin={originPosition}
