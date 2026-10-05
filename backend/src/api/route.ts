@@ -3,15 +3,15 @@ import { Api } from 'common';
 import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
-import { toPointFeature } from '../utils/geo';
+import { createPointFeature } from '../utils/geo';
 
-const toTransitionRouteBody = ({
+const createTransitionRouteBody = ({
     origin,
     destination,
 }: Api.RouteBody): PostApiV1RouteBody => ({
     routingModes: ['driving', 'walking'], // temporary hardcoded modes
-    originGeojson: toPointFeature(origin),
-    destinationGeojson: toPointFeature(destination),
+    originGeojson: createPointFeature(origin),
+    destinationGeojson: createPointFeature(destination),
 });
 
 const handleRoute = async (
@@ -24,7 +24,7 @@ const handleRoute = async (
         return;
     }
     const response = await postApiV1Route(
-        toTransitionRouteBody(request.data),
+        createTransitionRouteBody(request.data),
         undefined,
         {
             headers: { Authorization: `Bearer ${transitionToken}` },
