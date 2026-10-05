@@ -1,5 +1,6 @@
 import express from 'express';
 import { getEnv } from './utils/env';
+import { placeRouter } from './api/place';
 import { routeRouter } from './api/route';
 
 const app = express();
@@ -11,6 +12,7 @@ app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
 });
 
+app.use(placeRouter);
 app.use(routeRouter);
 
 app.use(((error, _req, res, _next) => {
