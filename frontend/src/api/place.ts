@@ -32,8 +32,9 @@ export const createPlaceSearchQueryOptions = (text: string) => {
         queryFn: trimmedText
             ? ({ signal }) => fetchPlaceSearch({ text: trimmedText }, signal)
             : skipToken,
-        // Keep the previous suggestions while typing, instead of flickering
-        placeholderData: keepPreviousData,
+        // Keep the previous suggestions while typing, instead of flickering,
+        // but not once the text is erased
+        placeholderData: trimmedText ? keepPreviousData : undefined,
     });
 };
 
