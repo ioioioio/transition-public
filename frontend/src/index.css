@@ -33,6 +33,7 @@
     --color-secondary: var(--secondary);
     --color-primary-foreground: var(--primary-foreground);
     --color-primary: var(--primary);
+    --color-popover-border: var(--popover-border);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
     --color-card-foreground: var(--card-foreground);
@@ -55,6 +56,7 @@
     --card-foreground: oklch(0.141 0.005 285.823);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.141 0.005 285.823);
+    --popover-border: color-mix(in oklab, var(--foreground) 10%, transparent);
     --primary: oklch(0.491 0.27 292.581);
     --primary-foreground: oklch(0.969 0.016 293.756);
     --secondary: oklch(0.967 0.001 286.375);
@@ -90,6 +92,7 @@
     --card-foreground: #e9e9ed;
     --popover: #232532;
     --popover-foreground: #e9e9ed;
+    --popover-border: #595d6c;
     --primary: #9184d9;
     --primary-foreground: #161826;
     --secondary: #292b31;
