@@ -6,7 +6,12 @@ import type { MapViewState } from '@/components/map/map-view';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types';
 
-const PlaceSearchSchema = Utils.LngLatSchema.optional()
+const PlaceSearchSchema = z
+    .object({
+        id: z.string().optional(),
+        position: Utils.LngLatSchema,
+    })
+    .optional()
     // Drop an invalid place rather than failing the page.
     .catch(undefined);
 

@@ -3,14 +3,15 @@ import type { Utils } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
+import type { PlaceRef } from '@/types/place';
 
 // Five decimals is about one meter of precision.
-const formatPosition = (position: Utils.LngLat | null) =>
+const formatPosition = (position: Utils.LngLat | undefined) =>
     position ? `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}` : '';
 
 type TripComparisonFormProps = {
-    origin: Utils.LngLat | null;
-    destination: Utils.LngLat | null;
+    origin: PlaceRef | null;
+    destination: PlaceRef | null;
     onOriginClear: () => void;
     onDestinationClear: () => void;
 };
@@ -29,14 +30,14 @@ const TripComparisonForm = ({
                 icon={<CircleIcon className="size-3.5 text-muted-foreground" />}
                 placeholder={t('tripComparison.origin')}
                 clearLabel={t('tripComparison.clearOrigin')}
-                value={formatPosition(origin)}
+                value={formatPosition(origin?.position)}
                 onClear={onOriginClear}
             />
             <PlaceInput
                 icon={<MapPinIcon className="size-4 text-primary" />}
                 placeholder={t('tripComparison.destination')}
                 clearLabel={t('tripComparison.clearDestination')}
-                value={formatPosition(destination)}
+                value={formatPosition(destination?.position)}
                 onClear={onDestinationClear}
             />
         </div>

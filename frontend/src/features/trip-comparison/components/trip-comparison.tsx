@@ -8,6 +8,7 @@ import RouteLines from '@/features/trip-comparison/components/route-lines';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
+import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
@@ -22,18 +23,21 @@ function TripComparison({
     initialMapView,
     onMapViewChange,
 }: TripComparisonProps) {
-    const setOrigin = (position: Utils.LngLat | null) =>
-        onPlacesChange({ origin: position, destination });
-    const setDestination = (position: Utils.LngLat | null) =>
-        onPlacesChange({ origin, destination: position });
+    const setOrigin = (place: PlaceRef | null) =>
+        onPlacesChange({ origin: place, destination });
+    const setDestination = (place: PlaceRef | null) =>
+        onPlacesChange({ origin, destination: place });
 
     const setOriginOrDestination = (position: Utils.LngLat) => {
         if (origin === null) {
-            setOrigin(position);
+            setOrigin({ position });
         } else {
-            setDestination(position);
+            setDestination({ position });
         }
     };
+
+    const originPosition = origin?.position ?? null;
+    const destinationPosition = destination?.position ?? null;
 
     const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
 
@@ -47,8 +51,8 @@ function TripComparison({
                     onDestinationClear={() => setDestination(null)}
                 />
                 <RouteResults
-                    origin={origin}
-                    destination={destination}
+                    origin={originPosition}
+                    destination={destinationPosition}
                     selectedMode={selectedMode}
                     onSelect={setSelectedMode}
                 />
@@ -60,23 +64,23 @@ function TripComparison({
                     onMapClick={setOriginOrDestination}
                 >
                     <RouteLines
-                        origin={origin}
-                        destination={destination}
+                        origin={originPosition}
+                        destination={destinationPosition}
                         selectedMode={selectedMode}
                         onSelect={setSelectedMode}
                     />
-                    {origin && (
+                    {originPosition && (
                         <PlaceMarker
                             label="A"
-                            position={origin}
-                            onMove={setOrigin}
+                            position={originPosition}
+                            onMove={(position) => setOrigin({ position })}
                         />
                     )}
-                    {destination && (
+                    {destinationPosition && (
                         <PlaceMarker
                             label="B"
-                            position={destination}
-                            onMove={setDestination}
+                            position={destinationPosition}
+                            onMove={(position) => setDestination({ position })}
                         />
                     )}
                 </MapView>
