@@ -2,17 +2,23 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
-import en from '@/locales/en.json';
-import fr from '@/locales/fr.json';
+import enCA from '@/locales/en-CA.json';
+import frCA from '@/locales/fr-CA.json';
 
 const resources = {
     'en-CA': {
-        translation: en,
+        translation: enCA,
     },
     'fr-CA': {
-        translation: fr,
+        translation: frCA,
     },
 };
+
+declare module 'i18next' {
+    interface CustomTypeOptions {
+        resources: (typeof resources)['en-CA'];
+    }
+}
 
 i18n.on('languageChanged', (lng) => {
     document.documentElement.lang = lng;
