@@ -42,6 +42,8 @@ const MapView = ({
                 zoom: initialView?.zoom ?? mapInitialZoom,
             }}
             style={{ width: '100%', height: '100%' }}
+            // Attribution should always be visible so people don't forget to turn it on for screenshots
+            attributionControl={{ compact: false }}
             mapStyle={theme === 'light' ? mapStyleLight : mapStyleDark}
             onClick={(event) => onMapClick(event.lngLat)}
             onMoveEnd={({ viewState }) =>
