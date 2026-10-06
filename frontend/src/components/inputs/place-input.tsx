@@ -1,6 +1,7 @@
 import { MapPinIcon, XIcon } from '@phosphor-icons/react';
 import type { Api, Utils } from 'common';
 import { useRef, useState, type ReactNode } from 'react';
+import { useDebounce } from 'use-debounce';
 
 import { usePlaceSearchQuery } from '@/api/place';
 import {
@@ -69,7 +70,13 @@ const PlaceInput = ({
     }
 
     const isTyping = text !== label;
-    const { data: places = [] } = usePlaceSearchQuery(isTyping ? text : '');
+    const [throttledText] = useDebounce(text, 300, {
+        leading: true,
+        maxWait: 300,
+    });
+    const { data: places = [] } = usePlaceSearchQuery(
+        isTyping && text.trim() ? throttledText : '',
+    );
 
     const select = (place: Api.Place | null) => {
         setChosenPlace(place);
