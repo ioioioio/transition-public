@@ -3,7 +3,7 @@ import { Utils } from 'common';
 import { z } from 'zod';
 
 import type { MapViewState } from '@/components/map/map-view';
-import { mapInitialView } from '@/config/env';
+import { mapDefaultView } from '@/config/env';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types';
 
@@ -60,7 +60,7 @@ function TripPage() {
             origin={search.origin ?? null}
             destination={search.destination ?? null}
             onPlacesChange={setPlaces}
-            mapView={search.map ?? mapInitialView}
+            mapView={search.map ?? mapDefaultView}
             onMapViewChange={setMapView}
         />
     );
