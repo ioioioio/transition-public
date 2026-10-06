@@ -36,6 +36,7 @@ export const createRouteQueryOptions = (
             origin && destination
                 ? ({ signal }) => fetchRoute({ origin, destination }, signal)
                 : skipToken,
+        staleTime: Infinity, // Routes are never updated on the backend
     });
 };
 

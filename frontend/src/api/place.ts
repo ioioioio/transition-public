@@ -40,6 +40,7 @@ export const createPlaceSearchQueryOptions = (
         // Keep the previous suggestions while typing, instead of flickering,
         // but not once the text is erased
         placeholderData: trimmedText ? keepPreviousData : undefined,
+        staleTime: Infinity, // Search results are never updated on the backend
     });
 };
 
