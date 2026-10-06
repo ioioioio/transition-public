@@ -12,7 +12,7 @@ import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
-    initialMapView?: MapViewState;
+    mapView: MapViewState;
     onMapViewChange?: (view: MapViewState) => void;
 };
 
@@ -20,7 +20,7 @@ function TripComparison({
     origin,
     destination,
     onPlacesChange,
-    initialMapView,
+    mapView,
     onMapViewChange,
 }: TripComparisonProps) {
     const setOrigin = (place: PlaceRef | null) =>
@@ -59,7 +59,7 @@ function TripComparison({
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
                 <MapView
-                    initialView={initialMapView}
+                    mapView={mapView}
                     onViewChange={onMapViewChange}
                     onMapClick={setOriginOrDestination}
                 >

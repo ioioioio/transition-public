@@ -15,8 +15,10 @@ const getNumberEnv = (key: string): number => {
     return number;
 };
 
-export const mapInitialLongitude = getNumberEnv('VITE_MAP_INITIAL_LONGITUDE');
-export const mapInitialLatitude = getNumberEnv('VITE_MAP_INITIAL_LATITUDE');
-export const mapInitialZoom = getNumberEnv('VITE_MAP_INITIAL_ZOOM');
+export const mapInitialView = {
+    lng: getNumberEnv('VITE_MAP_INITIAL_LONGITUDE'),
+    lat: getNumberEnv('VITE_MAP_INITIAL_LATITUDE'),
+    zoom: getNumberEnv('VITE_MAP_INITIAL_ZOOM'),
+};
 export const mapStyleLight = getEnv('VITE_MAP_STYLE_LIGHT');
 export const mapStyleDark = getEnv('VITE_MAP_STYLE_DARK');
