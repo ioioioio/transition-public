@@ -3,14 +3,17 @@ import { Api } from 'common';
 import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
+import { getListEnv } from '../utils/env';
 import { createPointFeature } from '../utils/geo';
 import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
+
+const routingModes = getListEnv('TRANSITION_SCENARIO_1_MODES');
 
 const createTransitionRouteBody = ({
     origin,
     destination,
 }: Api.RouteBody): PostApiV1RouteBody => ({
-    routingModes: ['driving', 'walking'], // temporary hardcoded modes
+    routingModes,
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
 });
