@@ -3,6 +3,7 @@ import {
     queryOptions,
     skipToken,
     useQuery,
+    useQueryClient,
 } from '@tanstack/react-query';
 import { Api, type Utils } from 'common';
 
@@ -44,4 +45,44 @@ export const createPlaceSearchQueryOptions = (
 
 export const usePlaceSearchQuery = (text: string, focus?: Utils.LngLat) => {
     return useQuery(createPlaceSearchQueryOptions(text, focus));
+};
+
+const fetchPlaceLookup = async (
+    id: string,
+    signal: AbortSignal,
+): Promise<Api.Place> => {
+    const { method, path, response } = Api.placeLookupEndpoint;
+    const res = await fetch(path.replace(':id', encodeURIComponent(id)), {
+        method,
+        signal,
+    });
+    if (!res.ok) {
+        throw new Error(
+            `Place lookup request failed: ${res.status} ${await res.text()}`,
+        );
+    }
+    return response.parse(await res.json());
+};
+
+export const createPlaceLookupQueryOptions = (id: string | undefined) => {
+    return queryOptions({
+        queryKey: ['placeLookup', id],
+        queryFn: id ? ({ signal }) => fetchPlaceLookup(id, signal) : skipToken,
+        staleTime: Infinity, // Places are never updated on the backend
+    });
+};
+
+export const usePlaceLookupQuery = (id: string | undefined) => {
+    return useQuery(createPlaceLookupQueryOptions(id));
+};
+
+// Saves a place already known, e.g. from the search, so it needs no lookup
+export const useSetPlaceLookupQueryData = () => {
+    const queryClient = useQueryClient();
+    return (place: Api.Place) => {
+        queryClient.setQueryData(
+            createPlaceLookupQueryOptions(place.id).queryKey,
+            place,
+        );
+    };
 };

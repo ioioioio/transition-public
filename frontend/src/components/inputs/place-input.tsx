@@ -3,7 +3,11 @@ import type { Api, Utils } from 'common';
 import { useRef, useState, type ReactNode } from 'react';
 import { useDebounce } from 'use-debounce';
 
-import { usePlaceSearchQuery } from '@/api/place';
+import {
+    useSetPlaceLookupQueryData,
+    usePlaceLookupQuery,
+    usePlaceSearchQuery,
+} from '@/api/place';
 import {
     Combobox,
     ComboboxContent,
@@ -18,22 +22,21 @@ import type { PlaceRef } from '@/types/place';
 const formatPosition = (position: Utils.LngLat) =>
     `${position.lat.toFixed(5)}, ${position.lng.toFixed(5)}`;
 
-// Only the place chosen here has a known name, so any other place, like one
-// from a shared URL, shows its coordinates until places can be fetched by id
+// A place with an id shows its name once looked up, and its coordinates
+// meanwhile, or when it has no id, like after a map click
 const createPlaceLabel = (
     value: PlaceRef | null,
-    chosenPlace: Api.Place | null,
+    lookedUpPlace: Api.Place | undefined,
 ) => {
     if (!value) {
         return '';
     }
     if (
-        chosenPlace &&
-        value.id === chosenPlace.id &&
-        value.position.lng === chosenPlace.position.lng &&
-        value.position.lat === chosenPlace.position.lat
+        lookedUpPlace &&
+        value.position.lng === lookedUpPlace.position.lng &&
+        value.position.lat === lookedUpPlace.position.lat
     ) {
-        return chosenPlace.label;
+        return lookedUpPlace.label;
     }
     return formatPosition(value.position);
 };
@@ -59,12 +62,13 @@ const PlaceInput = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const anchorRef = useComboboxAnchor();
     const [open, setOpen] = useState(false);
-    const [chosenPlace, setChosenPlace] = useState<Api.Place | null>(null);
+    const setPlaceLookupQueryData = useSetPlaceLookupQueryData();
+    const { data: lookedUpPlace } = usePlaceLookupQuery(value?.id);
 
     // `label` is the text of the place currently set, which can also change
     // from outside, like a map click. `text` is what the field shows: the
     // same as `label`, except while the user is typing a new search
-    const label = createPlaceLabel(value, chosenPlace);
+    const label = createPlaceLabel(value, lookedUpPlace);
     const [text, setText] = useState(label);
     const [previousLabel, setPreviousLabel] = useState(label);
     if (label !== previousLabel) {
@@ -83,7 +87,9 @@ const PlaceInput = ({
     );
 
     const select = (place: Api.Place | null) => {
-        setChosenPlace(place);
+        if (place) {
+            setPlaceLookupQueryData(place);
+        }
         onValueChange(place);
     };
 
