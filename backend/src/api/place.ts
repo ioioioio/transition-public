@@ -1,7 +1,8 @@
 import express from 'express';
 import { Api } from 'common';
 import { getAutocomplete, getPlace } from '../pelias/client';
-import * as Pelias from '../pelias/schema';
+import type * as Pelias from '../pelias/schema';
+import { ApiError, parseRequest } from '../utils/http';
 
 const createPlace = ({ geometry, properties }: Pelias.Feature): Api.Place => ({
     id: properties.gid,
@@ -10,54 +11,22 @@ const createPlace = ({ geometry, properties }: Pelias.Feature): Api.Place => ({
 });
 
 const handlePlaceSearch = async (
-    req: express.Request<object, unknown, unknown>,
+    req: express.Request,
     res: express.Response,
 ) => {
-    const request = Api.placeSearchEndpoint.body.safeParse(req.body);
-    if (!request.success) {
-        res.status(400).json({ error: request.error.issues });
-        return;
-    }
-    const response = await getAutocomplete(request.data);
-    if (!response.ok) {
-        res.status(response.status).json(await response.json());
-        return;
-    }
-    const places = Pelias.FeatureCollectionSchema.safeParse(
-        await response.json(),
-    );
-    if (!places.success) {
-        res.status(502).json({ error: places.error.issues });
-        return;
-    }
-    res.json(places.data.features.map(createPlace));
+    const body = parseRequest(Api.placeSearchEndpoint.body, req.body);
+    const features = await getAutocomplete(body);
+    res.json(features.map(createPlace));
 };
 
 const handlePlaceLookup = async (
     req: express.Request,
     res: express.Response,
 ) => {
-    const request = Api.placeLookupEndpoint.params.safeParse(req.params);
-    if (!request.success) {
-        res.status(400).json({ error: request.error.issues });
-        return;
-    }
-    const response = await getPlace(request.data.id);
-    if (!response.ok) {
-        res.status(response.status).json(await response.json());
-        return;
-    }
-    const places = Pelias.FeatureCollectionSchema.safeParse(
-        await response.json(),
-    );
-    if (!places.success) {
-        res.status(502).json({ error: places.error.issues });
-        return;
-    }
-    const [feature] = places.data.features;
+    const { id } = parseRequest(Api.placeLookupEndpoint.params, req.params);
+    const [feature] = await getPlace(id);
     if (!feature) {
-        res.status(404).json({ error: `Place not found: ${request.data.id}` });
-        return;
+        throw new ApiError(404, { error: `Place not found: ${id}` });
     }
     res.json(createPlace(feature));
 };

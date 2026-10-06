@@ -4,6 +4,7 @@ import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
 import { createPointFeature } from '../utils/geo';
+import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
 
 const createTransitionRouteBody = ({
     origin,
@@ -14,32 +15,19 @@ const createTransitionRouteBody = ({
     destinationGeojson: createPointFeature(destination),
 });
 
-const handleRoute = async (
-    req: express.Request<object, unknown, unknown>,
-    res: express.Response,
-) => {
-    const request = Api.routeEndpoint.body.safeParse(req.body);
-    if (!request.success) {
-        res.status(400).json({ error: request.error.issues });
-        return;
-    }
+const handleRoute = async (req: express.Request, res: express.Response) => {
+    const body = parseRequest(Api.routeEndpoint.body, req.body);
     const response = await postApiV1Route(
-        createTransitionRouteBody(request.data),
+        createTransitionRouteBody(body),
         undefined,
         {
             headers: { Authorization: `Bearer ${transitionToken}` },
         },
     );
     if (response.status !== 200) {
-        res.status(response.status).json(response.data);
-        return;
+        throw new ApiError(response.status, response.data);
     }
-    const route = Api.routeEndpoint.response.safeParse(response.data);
-    if (!route.success) {
-        res.status(502).json({ error: route.error.issues });
-        return;
-    }
-    res.json(route.data);
+    res.json(parseUpstreamResponse(Api.routeEndpoint.response, response.data));
 };
 
 export const routeRouter = express.Router();
