@@ -11,3 +11,6 @@ export const getAutocomplete = ({ text, focus }: Api.PlaceSearchBody) => {
     }
     return fetch(`${geocoderEndpoint}/autocomplete?${params}`);
 };
+
+export const getPlace = (id: string) =>
+    fetch(`${geocoderEndpoint}/place?${new URLSearchParams({ ids: id })}`);

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 // Only the fields we use are declared.
 // https://github.com/pelias/documentation/blob/master/autocomplete.md
+// https://github.com/pelias/documentation/blob/master/place.md
 
 export const FeatureSchema = z.object({
     geometry: z.object({
@@ -15,6 +16,6 @@ export const FeatureSchema = z.object({
 
 export type Feature = z.infer<typeof FeatureSchema>;
 
-export const AutocompleteResponseSchema = z.object({
+export const FeatureCollectionSchema = z.object({
     features: z.array(FeatureSchema),
 });

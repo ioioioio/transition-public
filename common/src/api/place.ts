@@ -26,3 +26,17 @@ export const placeSearchEndpoint = {
     body: PlaceSearchBodySchema,
     response: PlaceSearchResponseSchema,
 } as const;
+
+export const PlaceLookupParamsSchema = z.object({
+    id: z.string().min(1),
+});
+
+export type PlaceLookupParams = z.infer<typeof PlaceLookupParamsSchema>;
+
+export const placeLookupEndpoint = {
+    method: 'get',
+    // The id must be URL-encoded, as it contains slashes
+    path: '/api/places/:id',
+    params: PlaceLookupParamsSchema,
+    response: PlaceSchema,
+} as const;
