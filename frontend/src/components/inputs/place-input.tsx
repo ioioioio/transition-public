@@ -44,6 +44,8 @@ type PlaceInputProps = {
     clearLabel: string;
     value: PlaceRef | null;
     onValueChange: (value: PlaceRef | null) => void;
+    // Results near it are ranked first
+    focus: Utils.LngLat;
 };
 
 const PlaceInput = ({
@@ -52,6 +54,7 @@ const PlaceInput = ({
     clearLabel,
     value,
     onValueChange,
+    focus,
 }: PlaceInputProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const anchorRef = useComboboxAnchor();
@@ -76,6 +79,7 @@ const PlaceInput = ({
     });
     const { data: places = [] } = usePlaceSearchQuery(
         isTyping && text.trim() ? throttledText : '',
+        focus,
     );
 
     const select = (place: Api.Place | null) => {

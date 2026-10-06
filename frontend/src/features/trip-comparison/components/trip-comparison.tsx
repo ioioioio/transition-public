@@ -49,6 +49,7 @@ function TripComparison({
                     destination={destination}
                     onOriginChange={setOrigin}
                     onDestinationChange={setDestination}
+                    searchFocus={mapView}
                 />
                 <RouteResults
                     origin={originPosition}

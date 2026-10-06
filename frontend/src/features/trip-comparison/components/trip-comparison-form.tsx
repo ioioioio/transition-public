@@ -1,4 +1,5 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
+import type { Utils } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
@@ -9,6 +10,7 @@ type TripComparisonFormProps = {
     destination: PlaceRef | null;
     onOriginChange: (origin: PlaceRef | null) => void;
     onDestinationChange: (destination: PlaceRef | null) => void;
+    searchFocus: Utils.LngLat;
 };
 
 const TripComparisonForm = ({
@@ -16,6 +18,7 @@ const TripComparisonForm = ({
     destination,
     onOriginChange,
     onDestinationChange,
+    searchFocus,
 }: TripComparisonFormProps) => {
     const { t } = useTranslation();
 
@@ -27,6 +30,7 @@ const TripComparisonForm = ({
                 clearLabel={t('tripComparison.clearOrigin')}
                 value={origin}
                 onValueChange={onOriginChange}
+                focus={searchFocus}
             />
             <PlaceInput
                 icon={<MapPinIcon className="size-4 text-primary" />}
@@ -34,6 +38,7 @@ const TripComparisonForm = ({
                 clearLabel={t('tripComparison.clearDestination')}
                 value={destination}
                 onValueChange={onDestinationChange}
+                focus={searchFocus}
             />
         </div>
     );

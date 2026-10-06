@@ -4,7 +4,7 @@ import {
     skipToken,
     useQuery,
 } from '@tanstack/react-query';
-import { Api } from 'common';
+import { Api, type Utils } from 'common';
 
 const fetchPlaceSearch = async (
     body: Api.PlaceSearchBody,
@@ -25,12 +25,16 @@ const fetchPlaceSearch = async (
     return response.parse(await res.json());
 };
 
-export const createPlaceSearchQueryOptions = (text: string) => {
+export const createPlaceSearchQueryOptions = (
+    text: string,
+    focus?: Utils.LngLat,
+) => {
     const trimmedText = text.trim();
     return queryOptions({
-        queryKey: ['placeSearch', trimmedText],
+        queryKey: ['placeSearch', trimmedText, focus?.lng, focus?.lat],
         queryFn: trimmedText
-            ? ({ signal }) => fetchPlaceSearch({ text: trimmedText }, signal)
+            ? ({ signal }) =>
+                  fetchPlaceSearch({ text: trimmedText, focus }, signal)
             : skipToken,
         // Keep the previous suggestions while typing, instead of flickering,
         // but not once the text is erased
@@ -38,6 +42,6 @@ export const createPlaceSearchQueryOptions = (text: string) => {
     });
 };
 
-export const usePlaceSearchQuery = (text: string) => {
-    return useQuery(createPlaceSearchQueryOptions(text));
+export const usePlaceSearchQuery = (text: string, focus?: Utils.LngLat) => {
+    return useQuery(createPlaceSearchQueryOptions(text, focus));
 };
