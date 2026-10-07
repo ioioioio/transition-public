@@ -26,14 +26,7 @@ export const createRouteQueryOptions = (
     time: Api.TripTime,
 ) => {
     return queryOptions({
-        queryKey: [
-            'route',
-            origin?.lng,
-            origin?.lat,
-            destination?.lng,
-            destination?.lat,
-            time
-        ],
+        queryKey: ['route', origin, destination, time],
         queryFn:
             origin && destination
                 ? ({ signal }) =>

@@ -32,7 +32,7 @@ export const createPlaceSearchQueryOptions = (
 ) => {
     const trimmedText = text.trim();
     return queryOptions({
-        queryKey: ['placeSearch', trimmedText, focus?.lng, focus?.lat],
+        queryKey: ['placeSearch', trimmedText, focus],
         queryFn: trimmedText
             ? ({ signal }) =>
                   fetchPlaceSearch({ text: trimmedText, focus }, signal)
