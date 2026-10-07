@@ -10,15 +10,24 @@ import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
 const scenarioId = getEnv('TRANSITION_SCENARIO_1_ID');
 const routingModes = getListEnv('TRANSITION_SCENARIO_1_MODES');
 
-// Temporary fixed times, until the frontend sends them.
-const departureTimeSecondsSinceMidnight = 8 * 60 * 60;
+// Temporary default, until the frontend sends a time
+const defaultTime: Api.TripTime = {
+    type: 'departure',
+    secondsSinceMidnight: 8 * 60 * 60,
+};
+
+const createTransitionTime = ({ type, secondsSinceMidnight }: Api.TripTime) =>
+    type === 'departure'
+        ? { departureTimeSecondsSinceMidnight: secondsSinceMidnight }
+        : { arrivalTimeSecondsSinceMidnight: secondsSinceMidnight };
 
 const createTransitionRouteBody = ({
     origin,
     destination,
+    time = defaultTime,
 }: Api.RouteBody): PostApiV1RouteBody => ({
     scenarioId,
-    departureTimeSecondsSinceMidnight,
+    ...createTransitionTime(time),
     routingModes,
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
