@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { tripHours } from '@/config/env';
 import {
     calculateHours,
     calculateSecondsSinceMidnight,
-    tripHours,
 } from '@/features/trip-comparison/trip-time';
 import type { PlaceRef } from '@/types/place';
 

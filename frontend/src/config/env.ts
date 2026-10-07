@@ -15,6 +15,21 @@ const getNumberEnv = (key: string): number => {
     return number;
 };
 
+// A comma-separated list of hours of the day, e.g. "8,12,16"
+const getHourListEnv = (key: string): number[] => {
+    const hours = getEnv(key)
+        .split(',')
+        .map((value) => (value.trim() === '' ? NaN : Number(value)));
+    if (
+        !hours.every(
+            (hour) => Number.isInteger(hour) && hour >= 0 && hour <= 23,
+        )
+    ) {
+        throw new Error(`Invalid hour list environment variable: ${key}`);
+    }
+    return hours;
+};
+
 export const mapDefaultView = {
     lng: getNumberEnv('VITE_MAP_DEFAULT_LONGITUDE'),
     lat: getNumberEnv('VITE_MAP_DEFAULT_LATITUDE'),
@@ -22,3 +37,4 @@ export const mapDefaultView = {
 };
 export const mapStyleLight = getEnv('VITE_MAP_STYLE_LIGHT');
 export const mapStyleDark = getEnv('VITE_MAP_STYLE_DARK');
+export const tripHours = getHourListEnv('VITE_TRIP_HOURS');
