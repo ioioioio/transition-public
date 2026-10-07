@@ -1,5 +1,5 @@
 import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
-import type { Utils } from 'common';
+import type { Api, Utils } from 'common';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -103,6 +103,7 @@ const WalkingRouteResultItem = ({
 type RouteResultsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
+    time: Api.TripTime;
     selectedMode: RouteMode | null;
     onSelect: (mode: RouteMode | null) => void;
 };
@@ -110,10 +111,11 @@ type RouteResultsProps = {
 const RouteResults = ({
     origin,
     destination,
+    time,
     selectedMode,
     onSelect,
 }: RouteResultsProps) => {
-    const routeQuery = useRouteQuery(origin, destination);
+    const routeQuery = useRouteQuery(origin, destination, time);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
 

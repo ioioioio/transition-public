@@ -1,13 +1,15 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
 import { Api, type Utils } from 'common';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+    calculateHours,
+    calculateSecondsSinceMidnight,
+    tripHours,
+} from '@/features/trip-comparison/trip-time';
 import type { PlaceRef } from '@/types/place';
-
-const tripHours = [8, 12, 16];
 
 /**
  * Formats an hour of the day the way the given language writes it
@@ -26,6 +28,8 @@ type TripComparisonFormProps = {
     destination: PlaceRef | null;
     onOriginChange: (origin: PlaceRef | null) => void;
     onDestinationChange: (destination: PlaceRef | null) => void;
+    time: Api.TripTime;
+    onTimeChange: (time: Api.TripTime) => void;
     searchFocus: Utils.LngLat;
 };
 
@@ -34,11 +38,12 @@ const TripComparisonForm = ({
     destination,
     onOriginChange,
     onDestinationChange,
+    time,
+    onTimeChange,
     searchFocus,
 }: TripComparisonFormProps) => {
     const { t, i18n } = useTranslation();
-    const [timeType, setTimeType] = useState<Api.TripTimeType>('departure');
-    const [hour, setHour] = useState(tripHours[0]);
+    const hour = calculateHours(time.secondsSinceMidnight);
 
     const timeTypeLabels: Record<Api.TripTimeType, string> = {
         departure: t('tripComparison.departAt'),
@@ -72,12 +77,12 @@ const TripComparisonForm = ({
                     aria-label={t('tripComparison.timeType')}
                     variant="outline"
                     spacing={0}
-                    value={[timeType]}
+                    value={[time.type]}
                     onValueChange={([value]) => {
                         // Keep a type selected when its button is pressed again
                         const type = Api.TripTimeTypeSchema.safeParse(value);
                         if (type.success) {
-                            setTimeType(type.data);
+                            onTimeChange({ ...time, type: type.data });
                         }
                     }}
                 >
@@ -101,7 +106,13 @@ const TripComparisonForm = ({
                     onValueChange={([value]) => {
                         // Keep an hour selected when its button is pressed again
                         if (value) {
-                            setHour(Number(value));
+                            onTimeChange({
+                                ...time,
+                                secondsSinceMidnight:
+                                    calculateSecondsSinceMidnight(
+                                        Number(value),
+                                    ),
+                            });
                         }
                     }}
                 >

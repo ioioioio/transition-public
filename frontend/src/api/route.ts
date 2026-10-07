@@ -23,6 +23,7 @@ const fetchRoute = async (
 export const createRouteQueryOptions = (
     origin: Utils.LngLat | null,
     destination: Utils.LngLat | null,
+    time: Api.TripTime,
 ) => {
     return queryOptions({
         queryKey: [
@@ -31,10 +32,12 @@ export const createRouteQueryOptions = (
             origin?.lat,
             destination?.lng,
             destination?.lat,
+            time
         ],
         queryFn:
             origin && destination
-                ? ({ signal }) => fetchRoute({ origin, destination }, signal)
+                ? ({ signal }) =>
+                      fetchRoute({ origin, destination, time }, signal)
                 : skipToken,
         staleTime: Infinity, // Routes are never updated on the backend
     });
@@ -43,6 +46,7 @@ export const createRouteQueryOptions = (
 export const useRouteQuery = (
     origin: Utils.LngLat | null,
     destination: Utils.LngLat | null,
+    time: Api.TripTime,
 ) => {
-    return useQuery(createRouteQueryOptions(origin, destination));
+    return useQuery(createRouteQueryOptions(origin, destination, time));
 };

@@ -1,4 +1,4 @@
-import type { Utils } from 'common';
+import type { Api, Utils } from 'common';
 
 import { useRouteQuery } from '@/api/route';
 import {
@@ -10,6 +10,7 @@ import type { RouteMode } from '@/features/trip-comparison/types';
 type RouteLinesProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
+    time: Api.TripTime;
     selectedMode: RouteMode | null;
     onSelect: (mode: RouteMode | null) => void;
 };
@@ -17,10 +18,11 @@ type RouteLinesProps = {
 const RouteLines = ({
     origin,
     destination,
+    time,
     selectedMode,
     onSelect,
 }: RouteLinesProps) => {
-    const routeQuery = useRouteQuery(origin, destination);
+    const routeQuery = useRouteQuery(origin, destination, time);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
     const toggle = (mode: RouteMode) =>

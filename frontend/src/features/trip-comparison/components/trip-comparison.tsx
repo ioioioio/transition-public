@@ -1,4 +1,4 @@
-import type { Utils } from 'common';
+import type { Api, Utils } from 'common';
 import { useState } from 'react';
 
 import SidePanel from '@/components/layouts/side-panel';
@@ -7,6 +7,7 @@ import PlaceMarker from '@/components/map/place-marker';
 import RouteLines from '@/features/trip-comparison/components/route-lines';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
+import { defaultTripTime } from '@/features/trip-comparison/trip-time';
 import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
 import type { PlaceRef } from '@/types/place';
 
@@ -40,6 +41,7 @@ function TripComparison({
     const destinationPosition = destination?.position ?? null;
 
     const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
+    const [time, setTime] = useState<Api.TripTime>(defaultTripTime);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
@@ -49,11 +51,14 @@ function TripComparison({
                     destination={destination}
                     onOriginChange={setOrigin}
                     onDestinationChange={setDestination}
+                    time={time}
+                    onTimeChange={setTime}
                     searchFocus={mapView}
                 />
                 <RouteResults
                     origin={originPosition}
                     destination={destinationPosition}
+                    time={time}
                     selectedMode={selectedMode}
                     onSelect={setSelectedMode}
                 />
@@ -67,6 +72,7 @@ function TripComparison({
                     <RouteLines
                         origin={originPosition}
                         destination={destinationPosition}
+                        time={time}
                         selectedMode={selectedMode}
                         onSelect={setSelectedMode}
                     />

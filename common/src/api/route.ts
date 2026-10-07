@@ -16,7 +16,7 @@ export type TripTime = z.infer<typeof TripTimeSchema>;
 export const RouteBodySchema = z.object({
     origin: Utils.LngLatSchema,
     destination: Utils.LngLatSchema,
-    time: TripTimeSchema.optional(),
+    time: TripTimeSchema,
 });
 
 export type RouteBody = z.infer<typeof RouteBodySchema>;
