@@ -4,7 +4,7 @@ import { useState } from 'react';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView, { type MapViewState } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
-import RouteLines from '@/features/trip-comparison/components/route-lines';
+import RoutePaths from '@/features/trip-comparison/components/route-paths';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
@@ -71,7 +71,7 @@ function TripComparison({
                     onViewChange={onMapViewChange}
                     onMapClick={setOriginOrDestination}
                 >
-                    <RouteLines
+                    <RoutePaths
                         origin={originPosition}
                         destination={destinationPosition}
                         time={time}

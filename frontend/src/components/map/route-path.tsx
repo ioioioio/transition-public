@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { formatDuration } from '@/utils/format';
 import { createCurve, getPointAlong } from '@/utils/geo';
 
-export type RouteLineProps = {
+export type RoutePathProps = {
     id: string;
     geometry: LineString;
     /** How far the arc bends from the straight line, as a fraction of its length (see `createCurve`). */
@@ -24,7 +24,7 @@ export type RouteLineProps = {
     onLabelClick?: () => void;
 };
 
-export const RouteLine = ({
+export const RoutePath = ({
     id,
     geometry,
     bend,
@@ -33,7 +33,7 @@ export const RouteLine = ({
     label,
     labelPosition = 0.5,
     onLabelClick,
-}: RouteLineProps) => {
+}: RoutePathProps) => {
     const color = useThemeColor(selected ? '--primary' : '--foreground');
     const { coordinates } = geometry;
     const curve = createCurve(
@@ -125,23 +125,23 @@ const RouteLabel = ({
     );
 };
 
-type ModeRouteLineProps = Pick<
-    RouteLineProps,
+type ModeRoutePathProps = Pick<
+    RoutePathProps,
     'geometry' | 'selected' | 'onLabelClick'
 > & {
     travelTimeSeconds: number;
 };
 
-export const DrivingRouteLine = ({
+export const DrivingRoutePath = ({
     geometry,
     selected,
     onLabelClick,
     travelTimeSeconds,
-}: ModeRouteLineProps) => {
+}: ModeRoutePathProps) => {
     const { i18n } = useTranslation();
 
     return (
-        <RouteLine
+        <RoutePath
             id="route-driving"
             geometry={geometry}
             bend={0.15}
@@ -159,16 +159,16 @@ export const DrivingRouteLine = ({
     );
 };
 
-export const WalkingRouteLine = ({
+export const WalkingRoutePath = ({
     geometry,
     selected,
     onLabelClick,
     travelTimeSeconds,
-}: ModeRouteLineProps) => {
+}: ModeRoutePathProps) => {
     const { i18n } = useTranslation();
 
     return (
-        <RouteLine
+        <RoutePath
             id="route-walking"
             geometry={geometry}
             bend={-0.1}

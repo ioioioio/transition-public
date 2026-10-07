@@ -2,12 +2,12 @@ import type { Api, Utils } from 'common';
 
 import { useRouteQuery } from '@/api/route';
 import {
-    DrivingRouteLine,
-    WalkingRouteLine,
-} from '@/components/map/route-line';
+    DrivingRoutePath,
+    WalkingRoutePath,
+} from '@/components/map/route-path';
 import type { RouteMode } from '@/features/trip-comparison/types';
 
-type RouteLinesProps = {
+type RoutePathsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
     time: Api.TripTime;
@@ -15,13 +15,13 @@ type RouteLinesProps = {
     onSelect: (mode: RouteMode | null) => void;
 };
 
-const RouteLines = ({
+const RoutePaths = ({
     origin,
     destination,
     time,
     selectedMode,
     onSelect,
-}: RouteLinesProps) => {
+}: RoutePathsProps) => {
     const routeQuery = useRouteQuery(origin, destination, time);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
@@ -31,7 +31,7 @@ const RouteLines = ({
     return (
         <>
             {drivingPath && (
-                <DrivingRouteLine
+                <DrivingRoutePath
                     geometry={drivingPath.geometry}
                     selected={selectedMode === 'driving'}
                     onLabelClick={() => toggle('driving')}
@@ -39,7 +39,7 @@ const RouteLines = ({
                 />
             )}
             {walkingPath && (
-                <WalkingRouteLine
+                <WalkingRoutePath
                     geometry={walkingPath.geometry}
                     selected={selectedMode === 'walking'}
                     onLabelClick={() => toggle('walking')}
@@ -50,4 +50,4 @@ const RouteLines = ({
     );
 };
 
-export default RouteLines;
+export default RoutePaths;
