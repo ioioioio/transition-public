@@ -7,7 +7,8 @@ import PlaceMarker from '@/components/map/place-marker';
 import RoutePaths from '@/features/trip-comparison/components/route-paths';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
-import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
+import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
+import type { RouteMode } from '@/features/trip-comparison/utils/route-result';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {

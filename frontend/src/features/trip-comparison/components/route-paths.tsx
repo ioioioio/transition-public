@@ -5,7 +5,7 @@ import {
     DrivingRoutePath,
     WalkingRoutePath,
 } from '@/components/map/route-path';
-import type { RouteMode } from '@/features/trip-comparison/types';
+import type { RouteMode } from '@/features/trip-comparison/utils/route-result';
 
 type RoutePathsProps = {
     origin: Utils.LngLat | null;

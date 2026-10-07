@@ -9,12 +9,12 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import { routeModeIcons } from '@/features/trip-comparison/route-mode-icons';
-import { isUnimodalRouteResultEntry } from '@/features/trip-comparison/route-result';
-import type {
-    RouteMode,
-    UnimodalRouteResult,
-} from '@/features/trip-comparison/types';
+import { routeModeIcons } from '@/features/trip-comparison/utils/route-mode-icons';
+import {
+    isUnimodalRouteResultEntry,
+    type RouteMode,
+    type UnimodalRouteResult,
+} from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
 
 type RouteResultItemProps = {

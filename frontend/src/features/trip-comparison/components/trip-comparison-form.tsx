@@ -8,7 +8,7 @@ import { tripHours } from '@/config/env';
 import {
     calculateHours,
     calculateSecondsSinceMidnight,
-} from '@/features/trip-comparison/trip-time';
+} from '@/features/trip-comparison/utils/trip-time';
 import type { PlaceRef } from '@/types/place';
 
 /**

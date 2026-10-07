@@ -1,7 +1,5 @@
 import type { Api } from 'common';
 
-import type { PlaceRef } from '@/types/place';
-
 export const routeModes = ['driving', 'walking'] as const;
 
 export type RouteMode = (typeof routeModes)[number];
@@ -12,7 +10,10 @@ export type UnimodalRouteResult = NonNullable<
     Api.RouteResponse['result']['walking']
 >;
 
-export type TripPlaces = {
-    origin: PlaceRef | null;
-    destination: PlaceRef | null;
-};
+const isRouteMode = (mode: string): mode is RouteMode =>
+    (routeModes as readonly string[]).includes(mode);
+
+export const isUnimodalRouteResultEntry = (
+    entry: [string, unknown],
+): entry is [RouteMode, UnimodalRouteResult] =>
+    isRouteMode(entry[0]) && entry[1] !== undefined;

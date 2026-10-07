@@ -5,8 +5,8 @@ import { z } from 'zod';
 import type { MapViewState } from '@/components/map/map-view';
 import { mapDefaultView } from '@/config/env';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
-import { defaultTripTime } from '@/features/trip-comparison/trip-time';
-import type { TripPlaces } from '@/features/trip-comparison/types';
+import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
+import { defaultTripTime } from '@/features/trip-comparison/utils/trip-time';
 
 const PlaceSearchSchema = z
     .object({
