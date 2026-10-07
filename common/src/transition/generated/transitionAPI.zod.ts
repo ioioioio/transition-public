@@ -491,7 +491,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated transit routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Result of the calculation for the "transit" mode, if it was provided in the routingModes query parameter')),
   "walking": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
@@ -520,7 +520,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
   "cycling": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
@@ -549,7 +549,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
   "driving": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
@@ -578,7 +578,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
   "bus_suburb": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
@@ -607,7 +607,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided')),
   "bus_urban": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
@@ -636,7 +636,7 @@ export const PostApiV1RouteResponse = /*#__PURE__*/ zod.object({
 }))).check(/*#__PURE__*/ zod.describe('A list of all calculated routes as GeoJSON LineString FeatureCollection objects. Each FeatureCollection object represents one path. This object is only provided if the withGeojson query parameter is set to true')),
   "noRoutingReason": /*#__PURE__*/ zod.optional(/*#__PURE__*/ zod.object({
   "message": /*#__PURE__*/ zod.string(),
-  "code": /*#__PURE__*/ zod.enum(['ErrorCodes'])
+  "code": /*#__PURE__*/ zod.enum(['TRROUTING_NO_ROUTING_FOUND', 'TRROUTING_NO_ROUTING_NO_ACCESS_AT_ORIGIN', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_DESTINATION', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_ORIGIN_AND_DESTINATION', 'TRROUTING_NO_ROUTING_NO_SERVICE_FROM_ORIGIN', 'TRROUTING_NO_ROUTING_NO_SERVICE_TO_DESTINATION', 'TRROUTING_SERVER_NOT_RUNNING', 'TRROUTING_NOT_ROUTING_NO_ACCESS_AT_PLACE', 'TRROUTING_NO_ROUTING_NO_SERVICE_AT_PLACE', 'TRROUTING_ERROR_UNKNOWN', 'TRROUTING_MISSING_DATA', 'TRROUTING_INVALID_DATA', 'TRROUTING_QUERY_ERROR']).check(/*#__PURE__*/ zod.describe('Code of the routing error.'))
 })).check(/*#__PURE__*/ zod.describe('An overview of the server side error in case of failure while executing the route request. If there is no error, this will not be included in the response.'))
 })).check(/*#__PURE__*/ zod.describe('Each mode of transportation in routingModes will have their own result in this format, except for "transit". The property names correspond directly to the names of the modes of transportation provided'))
 }).check(/*#__PURE__*/ zod.describe('Result of the routing calculation'))

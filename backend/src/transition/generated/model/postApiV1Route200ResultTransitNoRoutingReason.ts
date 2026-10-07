@@ -11,5 +11,6 @@ import type { PostApiV1Route200ResultTransitNoRoutingReasonCode } from './postAp
  */
 export type PostApiV1Route200ResultTransitNoRoutingReason = {
   message: string;
+  /** Code of the routing error. */
   code: PostApiV1Route200ResultTransitNoRoutingReasonCode;
 };
