@@ -1,6 +1,5 @@
-import { CarIcon, PathIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
+import { PathIcon } from '@phosphor-icons/react';
 import type { Api, Utils } from 'common';
-import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useRouteQuery } from '@/api/route';
@@ -10,25 +9,31 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import type { RouteMode } from '@/features/trip-comparison/types';
+import { routeModeIcons } from '@/features/trip-comparison/route-mode-icons';
+import { isUnimodalRouteResultEntry } from '@/features/trip-comparison/route-result';
+import type {
+    RouteMode,
+    UnimodalRouteResult,
+} from '@/features/trip-comparison/types';
 import { formatDistance, formatDuration } from '@/utils/format';
 
 type RouteResultItemProps = {
-    value: string;
-    icon: ReactNode;
-    label: string;
-    travelTimeSeconds: number;
-    distanceMeters: number;
+    value: RouteMode;
+    result: UnimodalRouteResult;
 };
 
-const RouteResultItem = ({
-    value,
-    icon,
-    label,
-    travelTimeSeconds,
-    distanceMeters,
-}: RouteResultItemProps) => {
+const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
     const { t, i18n } = useTranslation();
+    const modeLabels: Record<RouteMode, string> = {
+        driving: t('routeMode.driving'),
+        walking: t('routeMode.walking'),
+    };
+    const path = result.paths[0];
+    if (!path) {
+        return null;
+    }
+    const { travelTimeSeconds, distanceMeters } = path;
+    const ModeIcon = routeModeIcons[value];
 
     return (
         <AccordionItem
@@ -37,10 +42,10 @@ const RouteResultItem = ({
         >
             <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
                 <span className="text-lg text-muted-foreground group-aria-expanded/accordion-trigger:text-primary">
-                    {icon}
+                    <ModeIcon />
                 </span>
                 <span className="flex flex-col gap-1">
-                    <span>{label}</span>
+                    <span>{modeLabels[value]}</span>
                     <span className="text-[17px] tracking-tight tabular-nums">
                         {formatDuration(travelTimeSeconds, i18n.language)}
                     </span>
@@ -61,45 +66,6 @@ const RouteResultItem = ({
     );
 };
 
-type ModeRouteResultItemProps = Omit<
-    RouteResultItemProps,
-    'value' | 'icon' | 'label'
->;
-
-const DrivingRouteResultItem = ({
-    travelTimeSeconds,
-    distanceMeters,
-}: ModeRouteResultItemProps) => {
-    const { t } = useTranslation();
-
-    return (
-        <RouteResultItem
-            value="driving"
-            icon={<CarIcon />}
-            label={t('routeMode.driving')}
-            travelTimeSeconds={travelTimeSeconds}
-            distanceMeters={distanceMeters}
-        />
-    );
-};
-
-const WalkingRouteResultItem = ({
-    travelTimeSeconds,
-    distanceMeters,
-}: ModeRouteResultItemProps) => {
-    const { t } = useTranslation();
-
-    return (
-        <RouteResultItem
-            value="walking"
-            icon={<PersonSimpleWalkIcon />}
-            label={t('routeMode.walking')}
-            travelTimeSeconds={travelTimeSeconds}
-            distanceMeters={distanceMeters}
-        />
-    );
-};
-
 type RouteResultsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
@@ -116,8 +82,6 @@ const RouteResults = ({
     onSelect,
 }: RouteResultsProps) => {
     const routeQuery = useRouteQuery(origin, destination, time);
-    const drivingPath = routeQuery.data?.result.driving?.paths[0];
-    const walkingPath = routeQuery.data?.result.walking?.paths[0];
 
     return (
         <Accordion
@@ -127,18 +91,11 @@ const RouteResults = ({
                 onSelect(value.at(0) ?? null)
             }
         >
-            {drivingPath && (
-                <DrivingRouteResultItem
-                    travelTimeSeconds={drivingPath.travelTimeSeconds}
-                    distanceMeters={drivingPath.distanceMeters}
-                />
-            )}
-            {walkingPath && (
-                <WalkingRouteResultItem
-                    travelTimeSeconds={walkingPath.travelTimeSeconds}
-                    distanceMeters={walkingPath.distanceMeters}
-                />
-            )}
+            {Object.entries(routeQuery.data?.result ?? {})
+                .filter(isUnimodalRouteResultEntry)
+                .map(([mode, result]) => (
+                    <RouteResultItem key={mode} value={mode} result={result} />
+                ))}
         </Accordion>
     );
 };
