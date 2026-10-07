@@ -7,12 +7,13 @@ import PlaceMarker from '@/components/map/place-marker';
 import RouteLines from '@/features/trip-comparison/components/route-lines';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
-import { defaultTripTime } from '@/features/trip-comparison/trip-time';
 import type { RouteMode, TripPlaces } from '@/features/trip-comparison/types';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
+    time: Api.TripTime;
+    onTimeChange: (time: Api.TripTime) => void;
     mapView: MapViewState;
     onMapViewChange?: (view: MapViewState) => void;
 };
@@ -21,6 +22,8 @@ function TripComparison({
     origin,
     destination,
     onPlacesChange,
+    time,
+    onTimeChange,
     mapView,
     onMapViewChange,
 }: TripComparisonProps) {
@@ -41,7 +44,6 @@ function TripComparison({
     const destinationPosition = destination?.position ?? null;
 
     const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
-    const [time, setTime] = useState<Api.TripTime>(defaultTripTime);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
@@ -52,7 +54,7 @@ function TripComparison({
                     onOriginChange={setOrigin}
                     onDestinationChange={setDestination}
                     time={time}
-                    onTimeChange={setTime}
+                    onTimeChange={onTimeChange}
                     searchFocus={mapView}
                 />
                 <RouteResults

@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Utils } from 'common';
+import { Api, Utils } from 'common';
 import { z } from 'zod';
 
 import type { MapViewState } from '@/components/map/map-view';
 import { mapDefaultView } from '@/config/env';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
+import { defaultTripTime } from '@/features/trip-comparison/trip-time';
 import type { TripPlaces } from '@/features/trip-comparison/types';
 
 const PlaceSearchSchema = z
@@ -22,9 +23,12 @@ const MapSearchSchema = Utils.LngLatSchema.extend({
     .optional()
     .catch(undefined);
 
+const TimeSearchSchema = Api.TripTimeSchema.optional().catch(undefined);
+
 const TripSearchSchema = z.object({
     origin: PlaceSearchSchema,
     destination: PlaceSearchSchema,
+    time: TimeSearchSchema,
     map: MapSearchSchema,
 });
 
@@ -47,6 +51,12 @@ function TripPage() {
         });
     };
 
+    const setTime = (time: Api.TripTime) => {
+        void navigate({
+            search: (previous) => ({ ...previous, time }),
+        });
+    };
+
     const setMapView = (map: MapViewState) => {
         void navigate({
             search: (previous) => ({ ...previous, map }),
@@ -60,6 +70,8 @@ function TripPage() {
             origin={search.origin ?? null}
             destination={search.destination ?? null}
             onPlacesChange={setPlaces}
+            time={search.time ?? defaultTripTime}
+            onTimeChange={setTime}
             mapView={search.map ?? mapDefaultView}
             onMapViewChange={setMapView}
         />
