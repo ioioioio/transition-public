@@ -8,7 +8,8 @@
         "destination": "Destination",
         "clearOrigin": "Effacer l’origine",
         "clearDestination": "Effacer la destination",
-        "distance": "Distance"
+        "distance": "Distance",
+        "time": "Heure"
     },
     "routeMode": {
         "driving": "Auto",
