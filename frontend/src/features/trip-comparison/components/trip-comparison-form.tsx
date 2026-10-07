@@ -1,5 +1,5 @@
 import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
-import type { Utils } from 'common';
+import { Api, type Utils } from 'common';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +37,13 @@ const TripComparisonForm = ({
     searchFocus,
 }: TripComparisonFormProps) => {
     const { t, i18n } = useTranslation();
+    const [timeType, setTimeType] = useState<Api.TripTimeType>('departure');
     const [hour, setHour] = useState(tripHours[0]);
+
+    const timeTypeLabels: Record<Api.TripTimeType, string> = {
+        departure: t('tripComparison.departAt'),
+        arrival: t('tripComparison.arriveAt'),
+    };
 
     return (
         <div className="flex flex-col gap-3">
@@ -61,7 +67,32 @@ const TripComparisonForm = ({
                     focus={searchFocus}
                 />
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-wrap gap-3">
+                <ToggleGroup
+                    aria-label={t('tripComparison.timeType')}
+                    variant="outline"
+                    spacing={0}
+                    value={[timeType]}
+                    onValueChange={([value]) => {
+                        // Keep a type selected when its button is pressed again
+                        const type = Api.TripTimeTypeSchema.safeParse(value);
+                        if (type.success) {
+                            setTimeType(type.data);
+                        }
+                    }}
+                >
+                    {Api.TripTimeTypeSchema.options.map((type) => (
+                        <ToggleGroupItem
+                            key={type}
+                            value={type}
+                            // Buttons overlap by their border, so their shared edge is
+                            // drawn by the focused one, then by the selected one
+                            className="bg-card not-first:-ms-px not-first:border-s! focus-visible:z-20 aria-pressed:z-10 aria-pressed:border-primary aria-pressed:bg-card aria-pressed:text-primary aria-pressed:hover:text-primary"
+                        >
+                            {timeTypeLabels[type]}
+                        </ToggleGroupItem>
+                    ))}
+                </ToggleGroup>
                 <ToggleGroup
                     aria-label={t('tripComparison.time')}
                     variant="outline"

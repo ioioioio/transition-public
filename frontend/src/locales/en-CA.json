@@ -9,7 +9,10 @@
         "clearOrigin": "Clear origin",
         "clearDestination": "Clear destination",
         "distance": "Distance",
-        "time": "Time"
+        "time": "Time",
+        "timeType": "Leave or arrive",
+        "departAt": "Leave at",
+        "arriveAt": "Arrive by"
     },
     "routeMode": {
         "driving": "Driving",

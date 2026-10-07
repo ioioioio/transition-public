@@ -9,7 +9,10 @@
         "clearOrigin": "Effacer l’origine",
         "clearDestination": "Effacer la destination",
         "distance": "Distance",
-        "time": "Heure"
+        "time": "Heure",
+        "timeType": "Départ ou arrivée",
+        "departAt": "Partir à",
+        "arriveAt": "Arriver à"
     },
     "routeMode": {
         "driving": "Auto",
