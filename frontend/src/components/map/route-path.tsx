@@ -1,55 +1,47 @@
-import { CarIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
 import type { LineString } from 'geojson';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LabeledCurve } from '@/components/map/labeled-curve';
+import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
+import { RouteStep, type RouteStepData } from '@/components/map/route-step';
 import { formatDuration } from '@/utils/format';
 
 export type RoutePathProps = {
     id: string;
-    geometry: LineString;
-    /** How far the arc bends from the straight line, as a fraction of its length (see `createCurve`). */
-    bend: number;
-    /** Dash and gap lengths, in line widths. Solid when omitted. */
-    dashArray?: [number, number];
-    selected?: boolean;
-    /** Shown in a pill on the arc. */
+    // Drawn in order, e.g. a single one for a path with one mode
+    steps: RouteStepData[];
+    // The same for all the steps of the path
+    styles: LabeledCurveStyles;
     label?: ReactNode;
-    /** Where the label sits along the arc, from `0` (start) to `1` (end). */
-    labelPosition?: number;
+    selected?: boolean;
     onLabelClick?: () => void;
 };
 
 export const RoutePath = ({
     id,
-    geometry,
-    bend,
-    dashArray,
-    selected,
+    steps,
+    styles,
     label,
-    labelPosition,
+    selected,
     onLabelClick,
 }: RoutePathProps) => {
-    const { coordinates } = geometry;
-
-    return (
-        <LabeledCurve
-            id={id}
-            from={coordinates[0]!}
-            to={coordinates[coordinates.length - 1]!}
-            styles={{ bend, dashArray, labelPosition }}
-            selected={selected}
+    return steps.map((step, index) => (
+        <RouteStep
+            key={index}
+            id={`${id}-${index}`}
+            step={step}
+            styles={styles}
             label={label}
+            selected={selected}
             onLabelClick={onLabelClick}
         />
-    );
+    ));
 };
 
-type ModeRoutePathProps = Pick<
-    RoutePathProps,
-    'geometry' | 'selected' | 'onLabelClick'
-> & {
+type ModeRoutePathProps = {
+    geometry: LineString;
+    selected?: boolean;
+    onLabelClick?: () => void;
     travelTimeSeconds: number;
 };
 
@@ -64,18 +56,11 @@ export const DrivingRoutePath = ({
     return (
         <RoutePath
             id="route-driving"
-            geometry={geometry}
-            bend={0.15}
-            dashArray={[0.25, 2]}
             selected={selected}
             onLabelClick={onLabelClick}
-            label={
-                <>
-                    <CarIcon />
-                    {formatDuration(travelTimeSeconds, i18n.language)}
-                </>
-            }
-            labelPosition={0.36}
+            steps={[{ geometry, mode: 'driving' }]}
+            styles={{ bend: 0.15, dashArray: [0.25, 2], labelPosition: 0.36 }}
+            label={formatDuration(travelTimeSeconds, i18n.language)}
         />
     );
 };
@@ -91,18 +76,11 @@ export const WalkingRoutePath = ({
     return (
         <RoutePath
             id="route-walking"
-            geometry={geometry}
-            bend={-0.1}
-            dashArray={[1.5, 1.5]}
             selected={selected}
             onLabelClick={onLabelClick}
-            label={
-                <>
-                    <PersonSimpleWalkIcon />
-                    {formatDuration(travelTimeSeconds, i18n.language)}
-                </>
-            }
-            labelPosition={0.64}
+            steps={[{ geometry, mode: 'walking' }]}
+            styles={{ bend: -0.1, dashArray: [1.5, 1.5], labelPosition: 0.64 }}
+            label={formatDuration(travelTimeSeconds, i18n.language)}
         />
     );
 };
