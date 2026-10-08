@@ -1,4 +1,4 @@
-import { PathIcon } from '@phosphor-icons/react';
+import { RulerIcon } from '@phosphor-icons/react';
 import type { Api, Utils } from 'common';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +26,8 @@ const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
     const modeLabels: Record<Mode, string> = {
         driving: t('routeMode.driving'),
         walking: t('routeMode.walking'),
+        bus: t('routeMode.bus'),
+        other: t('routeMode.other'),
     };
     const path = result.paths[0];
     if (!path) {
@@ -52,7 +54,7 @@ const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-3">
                 <div className="flex items-center gap-1.5 border-t border-border pt-2 text-xs">
-                    <PathIcon className="text-muted-foreground" />
+                    <RulerIcon className="text-muted-foreground" />
                     <span className="text-muted-foreground">
                         {t('tripComparison.distance')}
                     </span>

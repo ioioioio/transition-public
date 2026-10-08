@@ -16,6 +16,8 @@
     },
     "routeMode": {
         "driving": "Driving",
-        "walking": "Walking"
+        "walking": "Walking",
+        "bus": "Bus",
+        "other": "Other"
     }
 }
