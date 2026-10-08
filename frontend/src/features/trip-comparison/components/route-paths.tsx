@@ -8,9 +8,21 @@ import { isUnimodalRouteResultEntry } from '@/features/trip-comparison/utils/rou
 import { formatDuration } from '@/utils/format';
 import type { Mode } from '@/utils/mode';
 
-const routePathStyles: Record<Mode, LabeledCurveStyles> = {
-    driving: { bend: 0.15, dashArray: [0.25, 2], labelPosition: 0.36 },
-    walking: { bend: -0.1, dashArray: [1.5, 1.5], labelPosition: 0.64 },
+/**
+ * Styles a path by its rank, from the fastest (`0`) to the slowest
+ */
+const createRoutePathStyles = (
+    rank: number,
+    count: number,
+): LabeledCurveStyles => {
+    // From 0 for the fastest to 1 for the slowest
+    const slowness = count > 1 ? rank / (count - 1) : 0;
+    const side = rank % 2 === 0 ? 1 : -1;
+    return {
+        // More curved when faster, so the fastest is the longest and stands out
+        bend: side * (0.2 - 0.12 * slowness),
+        dashArray: [3 - 2.75 * slowness, 1 + slowness],
+    };
 };
 
 type RoutePathsProps = {
@@ -33,28 +45,25 @@ const RoutePaths = ({
     const toggle = (mode: Mode) =>
         onSelect(selectedMode === mode ? null : mode);
 
-    return Object.entries(routeQuery.data?.result ?? {})
+    const paths = Object.entries(routeQuery.data?.result ?? {})
         .filter(isUnimodalRouteResultEntry)
-        .map(([mode, result]) => {
+        .flatMap(([mode, result]) => {
             const path = result.paths[0];
-            if (!path) {
-                return null;
-            }
-            return (
-                <RoutePath
-                    key={mode}
-                    id={`route-${mode}`}
-                    steps={[{ geometry: path.geometry, mode }]}
-                    styles={routePathStyles[mode]}
-                    label={formatDuration(
-                        path.travelTimeSeconds,
-                        i18n.language,
-                    )}
-                    selected={selectedMode === mode}
-                    onLabelClick={() => toggle(mode)}
-                />
-            );
-        });
+            return path ? [{ mode, path }] : [];
+        })
+        .sort((a, b) => a.path.travelTimeSeconds - b.path.travelTimeSeconds);
+
+    return paths.map(({ mode, path }, rank) => (
+        <RoutePath
+            key={mode}
+            id={`route-${mode}`}
+            steps={[{ geometry: path.geometry, mode }]}
+            styles={createRoutePathStyles(rank, paths.length)}
+            label={formatDuration(path.travelTimeSeconds, i18n.language)}
+            selected={selectedMode === mode}
+            onLabelClick={() => toggle(mode)}
+        />
+    ));
 };
 
 export default RoutePaths;
