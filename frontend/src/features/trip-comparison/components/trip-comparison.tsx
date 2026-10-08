@@ -8,8 +8,8 @@ import RoutePaths from '@/features/trip-comparison/components/route-paths';
 import RouteResults from '@/features/trip-comparison/components/route-results';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
-import type { RouteMode } from '@/features/trip-comparison/utils/route-result';
 import type { PlaceRef } from '@/types/place';
+import type { Mode } from '@/utils/mode';
 
 type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
@@ -44,7 +44,7 @@ function TripComparison({
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
 
-    const [selectedMode, setSelectedMode] = useState<RouteMode | null>(null);
+    const [selectedMode, setSelectedMode] = useState<Mode | null>(null);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">

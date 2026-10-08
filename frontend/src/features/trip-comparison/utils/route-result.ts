@@ -1,8 +1,6 @@
 import type { Api } from 'common';
 
-export const routeModes = ['driving', 'walking'] as const;
-
-export type RouteMode = (typeof routeModes)[number];
+import { isMode, type Mode } from '@/utils/mode';
 
 // The result of a mode other than transit
 export type UnimodalRouteResult = NonNullable<
@@ -10,10 +8,7 @@ export type UnimodalRouteResult = NonNullable<
     Api.RouteResponse['result']['walking']
 >;
 
-const isRouteMode = (mode: string): mode is RouteMode =>
-    (routeModes as readonly string[]).includes(mode);
-
 export const isUnimodalRouteResultEntry = (
     entry: [string, unknown],
-): entry is [RouteMode, UnimodalRouteResult] =>
-    isRouteMode(entry[0]) && entry[1] !== undefined;
+): entry is [Mode, UnimodalRouteResult] =>
+    isMode(entry[0]) && entry[1] !== undefined;

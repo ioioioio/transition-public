@@ -5,14 +5,14 @@ import {
     DrivingRoutePath,
     WalkingRoutePath,
 } from '@/components/map/route-path';
-import type { RouteMode } from '@/features/trip-comparison/utils/route-result';
+import type { Mode } from '@/utils/mode';
 
 type RoutePathsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
     time: Api.TripTime;
-    selectedMode: RouteMode | null;
-    onSelect: (mode: RouteMode | null) => void;
+    selectedMode: Mode | null;
+    onSelect: (mode: Mode | null) => void;
 };
 
 const RoutePaths = ({
@@ -25,7 +25,7 @@ const RoutePaths = ({
     const routeQuery = useRouteQuery(origin, destination, time);
     const drivingPath = routeQuery.data?.result.driving?.paths[0];
     const walkingPath = routeQuery.data?.result.walking?.paths[0];
-    const toggle = (mode: RouteMode) =>
+    const toggle = (mode: Mode) =>
         onSelect(selectedMode === mode ? null : mode);
 
     return (

@@ -9,22 +9,21 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import { routeModeIcons } from '@/features/trip-comparison/utils/route-mode-icons';
 import {
     isUnimodalRouteResultEntry,
-    type RouteMode,
     type UnimodalRouteResult,
 } from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
+import { modeIcons, type Mode } from '@/utils/mode';
 
 type RouteResultItemProps = {
-    value: RouteMode;
+    value: Mode;
     result: UnimodalRouteResult;
 };
 
 const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
     const { t, i18n } = useTranslation();
-    const modeLabels: Record<RouteMode, string> = {
+    const modeLabels: Record<Mode, string> = {
         driving: t('routeMode.driving'),
         walking: t('routeMode.walking'),
     };
@@ -33,7 +32,7 @@ const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
         return null;
     }
     const { travelTimeSeconds, distanceMeters } = path;
-    const ModeIcon = routeModeIcons[value];
+    const ModeIcon = modeIcons[value];
 
     return (
         <AccordionItem
@@ -70,8 +69,8 @@ type RouteResultsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
     time: Api.TripTime;
-    selectedMode: RouteMode | null;
-    onSelect: (mode: RouteMode | null) => void;
+    selectedMode: Mode | null;
+    onSelect: (mode: Mode | null) => void;
 };
 
 const RouteResults = ({
@@ -87,9 +86,7 @@ const RouteResults = ({
         <Accordion
             className="gap-2"
             value={selectedMode ? [selectedMode] : []}
-            onValueChange={(value: RouteMode[]) =>
-                onSelect(value.at(0) ?? null)
-            }
+            onValueChange={(value: Mode[]) => onSelect(value.at(0) ?? null)}
         >
             {Object.entries(routeQuery.data?.result ?? {})
                 .filter(isUnimodalRouteResultEntry)
