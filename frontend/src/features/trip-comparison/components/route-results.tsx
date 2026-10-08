@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/accordion';
 import {
     isUnimodalRouteResultEntry,
+    type RoutingMode,
     type UnimodalRouteResult,
 } from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
@@ -71,8 +72,8 @@ type RouteResultsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
     time: Api.TripTime;
-    selectedMode: Mode | null;
-    onSelect: (mode: Mode | null) => void;
+    selectedMode: RoutingMode | null;
+    onSelect: (mode: RoutingMode | null) => void;
 };
 
 const RouteResults = ({
@@ -88,7 +89,9 @@ const RouteResults = ({
         <Accordion
             className="gap-2"
             value={selectedMode ? [selectedMode] : []}
-            onValueChange={(value: Mode[]) => onSelect(value.at(0) ?? null)}
+            onValueChange={(value: RoutingMode[]) =>
+                onSelect(value.at(0) ?? null)
+            }
         >
             {Object.entries(routeQuery.data?.result ?? {})
                 .filter(isUnimodalRouteResultEntry)

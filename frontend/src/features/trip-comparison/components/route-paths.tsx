@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useRouteQuery } from '@/api/route';
 import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RoutePath } from '@/components/map/route-path';
-import { isUnimodalRouteResultEntry } from '@/features/trip-comparison/utils/route-result';
+import {
+    isUnimodalRouteResultEntry,
+    type RoutingMode,
+} from '@/features/trip-comparison/utils/route-result';
 import { formatDuration } from '@/utils/format';
-import type { Mode } from '@/utils/mode';
 
 /**
  * Styles a path by its rank, from the fastest (`0`) to the slowest
@@ -29,8 +31,8 @@ type RoutePathsProps = {
     origin: Utils.LngLat | null;
     destination: Utils.LngLat | null;
     time: Api.TripTime;
-    selectedMode: Mode | null;
-    onSelect: (mode: Mode | null) => void;
+    selectedMode: RoutingMode | null;
+    onSelect: (mode: RoutingMode | null) => void;
 };
 
 const RoutePaths = ({
@@ -42,7 +44,7 @@ const RoutePaths = ({
 }: RoutePathsProps) => {
     const { i18n } = useTranslation();
     const routeQuery = useRouteQuery(origin, destination, time);
-    const toggle = (mode: Mode) =>
+    const toggle = (mode: RoutingMode) =>
         onSelect(selectedMode === mode ? null : mode);
 
     const paths = Object.entries(routeQuery.data?.result ?? {})
