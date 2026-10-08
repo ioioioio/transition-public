@@ -1,13 +1,10 @@
 import { CarIcon, PersonSimpleWalkIcon } from '@phosphor-icons/react';
-import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
-import type { LineString, Position } from 'geojson';
+import type { LineString } from 'geojson';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { cn } from '@/lib/utils';
+import { LabeledCurve } from '@/components/map/labeled-curve';
 import { formatDuration } from '@/utils/format';
-import { createCurve, getPointAlong } from '@/utils/geo';
 
 export type RoutePathProps = {
     id: string;
@@ -29,99 +26,23 @@ export const RoutePath = ({
     geometry,
     bend,
     dashArray,
-    selected = false,
+    selected,
     label,
-    labelPosition = 0.5,
+    labelPosition,
     onLabelClick,
 }: RoutePathProps) => {
-    const color = useThemeColor(selected ? '--primary' : '--foreground');
     const { coordinates } = geometry;
-    const curve = createCurve(
-        coordinates[0],
-        coordinates[coordinates.length - 1],
-        bend,
-    );
 
     return (
-        <>
-            <Source id={id} type="geojson" data={curve}>
-                {selected && (
-                    <Layer
-                        id={`${id}-glow`}
-                        type="line"
-                        layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-                        paint={{
-                            'line-color': color,
-                            'line-width': 12,
-                            'line-opacity': 0.22,
-                        }}
-                    />
-                )}
-                <Layer
-                    id={`${id}-line`}
-                    type="line"
-                    layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-                    paint={{
-                        'line-color': color,
-                        'line-width': selected ? 4 : 2.5,
-                        'line-opacity': selected ? 1 : 0.5,
-                        ...(dashArray && { 'line-dasharray': dashArray }),
-                    }}
-                />
-            </Source>
-            {label && (
-                <RouteLabel
-                    position={getPointAlong(curve, labelPosition)}
-                    selected={selected}
-                    onClick={onLabelClick}
-                >
-                    {label}
-                </RouteLabel>
-            )}
-        </>
-    );
-};
-
-type RouteLabelProps = {
-    /** As `[longitude, latitude]`. */
-    position: Position;
-    selected: boolean;
-    onClick?: () => void;
-    children: ReactNode;
-};
-
-const RouteLabel = ({
-    position,
-    selected,
-    onClick,
-    children,
-}: RouteLabelProps) => {
-    const [longitude, latitude] = position;
-
-    return (
-        <Marker
-            longitude={longitude}
-            latitude={latitude}
-            onClick={(event) => {
-                // Keeps the click off the map, but also from reaching the
-                // button's `onClick`, so it's handled here instead.
-                event.originalEvent.stopPropagation();
-                onClick?.();
-            }}
-        >
-            <button
-                type="button"
-                aria-pressed={selected}
-                className={cn(
-                    'flex cursor-pointer items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-3.5',
-                    selected
-                        ? 'border-primary text-primary'
-                        : 'border-foreground/20 text-foreground/80',
-                )}
-            >
-                {children}
-            </button>
-        </Marker>
+        <LabeledCurve
+            id={id}
+            from={coordinates[0]!}
+            to={coordinates[coordinates.length - 1]!}
+            styles={{ bend, dashArray, labelPosition }}
+            selected={selected}
+            label={label}
+            onLabelClick={onLabelClick}
+        />
     );
 };
 
