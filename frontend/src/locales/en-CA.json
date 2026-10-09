@@ -23,5 +23,10 @@
     },
     "bestRoute": {
         "travelTime": "Fastest"
+    },
+    "transitStep": {
+        "walkingToStop": "To the stop",
+        "waitingAtStop": "Waiting at the stop",
+        "walkingToDestination": "To your destination"
     }
 }

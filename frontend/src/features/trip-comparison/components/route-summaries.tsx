@@ -1,4 +1,4 @@
-import { RulerIcon } from '@phosphor-icons/react';
+import { ClockIcon, RulerIcon, type Icon } from '@phosphor-icons/react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import type {
     RouteAlternative,
     RouteAlternativeOrder,
+    RouteAlternativeStep,
     RouteSummary,
 } from '@/features/trip-comparison/types/route-alternative';
 import { useModeLabels } from '@/hooks/use-mode-labels';
@@ -34,16 +35,78 @@ const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
     );
 };
 
+type TimeRowProps = {
+    icon: Icon;
+    // Only when the icon tells more than the label, e.g. walking to a stop
+    iconLabel?: string;
+    label: string;
+    seconds: number;
+};
+
+const TimeRow = ({ icon: Icon, iconLabel, label, seconds }: TimeRowProps) => {
+    const { i18n } = useTranslation();
+    return (
+        <li className="flex items-center gap-2">
+            <Icon
+                className="size-3.5 text-muted-foreground"
+                {...(iconLabel
+                    ? { role: 'img', 'aria-label': iconLabel }
+                    : { 'aria-hidden': true })}
+            />
+            <span>{label}</span>
+            <span className="ms-auto text-muted-foreground tabular-nums">
+                {formatDuration(seconds, i18n.language)}
+            </span>
+        </li>
+    );
+};
+
 type RouteSummaryItemProps = {
     id: string;
     summary: RouteSummary;
+    steps: RouteAlternativeStep[];
     badge?: ReactNode;
 };
 
-const RouteSummaryItem = ({ id, summary, badge }: RouteSummaryItemProps) => {
+const RouteSummaryItem = ({
+    id,
+    summary,
+    steps,
+    badge,
+}: RouteSummaryItemProps) => {
     const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
+    const describeStep = (
+        step: RouteAlternativeStep,
+    ): { icon: Icon; iconLabel?: string; label: string } => {
+        switch (step.activity) {
+            case 'walkingToStop':
+                return {
+                    icon: modeIcons.walking,
+                    iconLabel: modeLabels.walking,
+                    label: t('transitStep.walkingToStop'),
+                };
+            case 'walkingToDestination':
+                return {
+                    icon: modeIcons.walking,
+                    iconLabel: modeLabels.walking,
+                    label: t('transitStep.walkingToDestination'),
+                };
+            case 'waitingAtStop':
+                return {
+                    icon: ClockIcon,
+                    label: t('transitStep.waitingAtStop'),
+                };
+            case 'inVehicle':
+                return {
+                    icon: modeIcons[step.mode],
+                    label: modeLabels[step.mode],
+                };
+            default:
+                return step satisfies never;
+        }
+    };
     // Shown by its main mode
     const mode = rankedModes.at(0) ?? 'other';
     const ModeIcon = modeIcons[mode];
@@ -68,14 +131,28 @@ const RouteSummaryItem = ({ id, summary, badge }: RouteSummaryItemProps) => {
                 </span>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-3">
-                <div className="flex items-center gap-1.5 border-t border-border pt-2 text-xs">
-                    <RulerIcon className="text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                        {t('tripComparison.distance')}
-                    </span>
-                    <span className="font-medium tabular-nums">
-                        {formatDistance(distanceMeters, i18n.language)}
-                    </span>
+                <div className="flex flex-col gap-2 border-t border-border pt-2 text-xs">
+                    {/* A single step would only repeat the travel time */}
+                    {steps.length > 1 && (
+                        <ul className="flex flex-col gap-0.75">
+                            {steps.map((step, index) => (
+                                <TimeRow
+                                    key={index}
+                                    {...describeStep(step)}
+                                    seconds={step.durationSeconds}
+                                />
+                            ))}
+                        </ul>
+                    )}
+                    <div className="flex items-center gap-1.5">
+                        <RulerIcon className="text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                            {t('tripComparison.distance')}
+                        </span>
+                        <span className="font-medium tabular-nums">
+                            {formatDistance(distanceMeters, i18n.language)}
+                        </span>
+                    </div>
                 </div>
             </AccordionContent>
         </AccordionItem>
@@ -101,11 +178,12 @@ const RouteSummaries = ({
             value={selectedId ? [selectedId] : []}
             onValueChange={(value: string[]) => onSelect(value.at(0) ?? null)}
         >
-            {routes.map(({ id, summary }, index) => (
+            {routes.map(({ id, summary, steps }, index) => (
                 <RouteSummaryItem
                     key={id}
                     id={id}
                     summary={summary}
+                    steps={steps}
                     badge={
                         index === 0 &&
                         routes.length > 1 && <BestRouteBadge order={order} />
