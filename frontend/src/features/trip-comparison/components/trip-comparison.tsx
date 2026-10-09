@@ -67,6 +67,7 @@ function TripComparison({
                 />
                 <RouteSummaries
                     routes={routes}
+                    order={order}
                     selectedId={selectedId}
                     onSelect={setSelectedId}
                 />

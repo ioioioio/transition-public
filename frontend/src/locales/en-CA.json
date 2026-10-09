@@ -20,5 +20,8 @@
         "bus": "Bus",
         "other": "Other",
         "transit": "Transit"
+    },
+    "bestRoute": {
+        "travelTime": "Fastest"
     }
 }
