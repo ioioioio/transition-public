@@ -10,7 +10,6 @@ import RouteSummaries from '@/features/trip-comparison/components/route-summarie
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { createRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
-import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
@@ -46,9 +45,11 @@ function TripComparison({
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
     const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
-    const routes = createRouteAlternatives(routeQuery.data?.result ?? {});
+    const routes = routeQuery.data
+        ? createRouteAlternatives(routeQuery.data)
+        : [];
 
-    const [selectedMode, setSelectedMode] = useState<RoutingMode | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
@@ -64,8 +65,8 @@ function TripComparison({
                 />
                 <RouteSummaries
                     routes={routes}
-                    selectedMode={selectedMode}
-                    onSelect={setSelectedMode}
+                    selectedId={selectedId}
+                    onSelect={setSelectedId}
                 />
             </SidePanel>
             <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
@@ -76,8 +77,8 @@ function TripComparison({
                 >
                     <RoutePaths
                         routes={routes}
-                        selectedMode={selectedMode}
-                        onSelect={setSelectedMode}
+                        selectedId={selectedId}
+                        onSelect={setSelectedId}
                     />
                     {originPosition && (
                         <PlaceMarker

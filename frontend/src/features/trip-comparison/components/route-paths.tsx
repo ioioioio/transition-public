@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RoutePath } from '@/components/map/route-path';
 import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
-import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import { formatDuration } from '@/utils/format';
 
 /**
@@ -25,14 +24,13 @@ const createRoutePathStyles = (
 
 type RoutePathsProps = {
     routes: RouteAlternative[];
-    selectedMode: RoutingMode | null;
-    onSelect: (mode: RoutingMode | null) => void;
+    selectedId: string | null;
+    onSelect: (id: string | null) => void;
 };
 
-const RoutePaths = ({ routes, selectedMode, onSelect }: RoutePathsProps) => {
+const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
     const { i18n } = useTranslation();
-    const toggle = (mode: RoutingMode) =>
-        onSelect(selectedMode === mode ? null : mode);
+    const toggle = (id: string) => onSelect(selectedId === id ? null : id);
 
     const drawnRoutes = routes
         .filter(({ steps }) => steps.length > 0)
@@ -47,7 +45,7 @@ const RoutePaths = ({ routes, selectedMode, onSelect }: RoutePathsProps) => {
             steps={steps}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             label={formatDuration(summary.travelTimeSeconds, i18n.language)}
-            selected={selectedMode === id}
+            selected={selectedId === id}
             onLabelClick={() => toggle(id)}
         />
     ));

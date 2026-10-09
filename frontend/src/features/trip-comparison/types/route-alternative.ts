@@ -1,5 +1,4 @@
 import type { RouteStepData } from '@/components/map/route-step';
-import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import type { Mode } from '@/utils/mode';
 
 export type RouteSummary = {
@@ -11,7 +10,7 @@ export type RouteSummary = {
 
 // A way to make the trip
 export type RouteAlternative = {
-    id: RoutingMode;
+    id: string;
     summary: RouteSummary;
     steps: RouteStepData[];
 };

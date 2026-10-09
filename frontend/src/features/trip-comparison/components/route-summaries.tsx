@@ -11,12 +11,11 @@ import type {
     RouteAlternative,
     RouteSummary,
 } from '@/features/trip-comparison/types/route-alternative';
-import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons, type Mode } from '@/utils/mode';
 
 type RouteSummaryItemProps = {
-    id: RoutingMode;
+    id: string;
     summary: RouteSummary;
 };
 
@@ -66,22 +65,20 @@ const RouteSummaryItem = ({ id, summary }: RouteSummaryItemProps) => {
 
 type RouteSummariesProps = {
     routes: RouteAlternative[];
-    selectedMode: RoutingMode | null;
-    onSelect: (mode: RoutingMode | null) => void;
+    selectedId: string | null;
+    onSelect: (id: string | null) => void;
 };
 
 const RouteSummaries = ({
     routes,
-    selectedMode,
+    selectedId,
     onSelect,
 }: RouteSummariesProps) => {
     return (
         <Accordion
             className="gap-2"
-            value={selectedMode ? [selectedMode] : []}
-            onValueChange={(value: RoutingMode[]) =>
-                onSelect(value.at(0) ?? null)
-            }
+            value={selectedId ? [selectedId] : []}
+            onValueChange={(value: string[]) => onSelect(value.at(0) ?? null)}
         >
             {routes.map(({ id, summary }) => (
                 <RouteSummaryItem key={id} id={id} summary={summary} />
