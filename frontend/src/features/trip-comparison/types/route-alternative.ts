@@ -21,3 +21,5 @@ export type RouteAlternative = {
     summary: RouteSummary;
     steps: RouteAlternativeStep[];
 };
+
+export type RouteAlternativeOrder = 'travelTime';

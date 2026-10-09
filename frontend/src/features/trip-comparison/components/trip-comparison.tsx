@@ -8,8 +8,9 @@ import PlaceMarker from '@/components/map/place-marker';
 import RoutePaths from '@/features/trip-comparison/components/route-paths';
 import RouteSummaries from '@/features/trip-comparison/components/route-summaries';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
+import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
-import { createRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
+import { createSortedRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
@@ -45,8 +46,9 @@ function TripComparison({
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
     const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
+    const order: RouteAlternativeOrder = 'travelTime'; // Not configurable yet
     const routes = routeQuery.data
-        ? createRouteAlternatives(routeQuery.data)
+        ? createSortedRouteAlternatives(routeQuery.data, order)
         : [];
 
     const [selectedId, setSelectedId] = useState<string | null>(null);

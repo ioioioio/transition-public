@@ -3,6 +3,7 @@ import type { Position } from 'geojson';
 
 import type {
     RouteAlternative,
+    RouteAlternativeOrder,
     RouteAlternativeStep,
 } from '@/features/trip-comparison/types/route-alternative';
 import { isMode, type Mode } from '@/utils/mode';
@@ -157,3 +158,17 @@ export const createRouteAlternatives = ({
             [],
     );
 };
+
+const compareRouteAlternatives: Record<
+    RouteAlternativeOrder,
+    (a: RouteAlternative, b: RouteAlternative) => number
+> = {
+    travelTime: (a, b) =>
+        a.summary.travelTimeSeconds - b.summary.travelTimeSeconds,
+};
+
+export const createSortedRouteAlternatives = (
+    response: Api.RouteResponse,
+    order: RouteAlternativeOrder,
+): RouteAlternative[] =>
+    createRouteAlternatives(response).toSorted(compareRouteAlternatives[order]);
