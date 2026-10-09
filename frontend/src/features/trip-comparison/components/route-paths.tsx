@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RoutePath } from '@/components/map/route-path';
 import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
+import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
 
 /**
@@ -30,6 +31,7 @@ type RoutePathsProps = {
 
 const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
     const { i18n } = useTranslation();
+    const modeLabels = useModeLabels();
     const toggle = (id: string) => onSelect(selectedId === id ? null : id);
 
     const drawnRoutes = routes
@@ -45,6 +47,7 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
             steps={steps.map(({ geometry, mode, travelTimeSeconds }) => ({
                 geometry,
                 mode,
+                iconLabel: modeLabels[mode],
                 label: formatDuration(travelTimeSeconds, i18n.language),
             }))}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}

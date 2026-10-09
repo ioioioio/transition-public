@@ -11,6 +11,7 @@ import { modeIcons, type Mode } from '@/utils/mode';
 export type RouteStepData = {
     geometry: LineString;
     mode: Mode;
+    iconLabel: string;
     label?: ReactNode;
 };
 
@@ -29,7 +30,7 @@ export const RouteStep = ({
     selected,
     onLabelClick,
 }: RouteStepProps) => {
-    const { geometry, mode, label } = step;
+    const { geometry, mode, iconLabel, label } = step;
     const { coordinates } = geometry;
     const ModeIcon = modeIcons[mode];
 
@@ -42,7 +43,7 @@ export const RouteStep = ({
             selected={selected}
             label={
                 <>
-                    <ModeIcon />
+                    <ModeIcon role="img" aria-label={iconLabel} />
                     {label}
                 </>
             }
