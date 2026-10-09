@@ -9,6 +9,7 @@ import RoutePaths from '@/features/trip-comparison/components/route-paths';
 import RouteSummaries from '@/features/trip-comparison/components/route-summaries';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
+import { createRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
 import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import type { PlaceRef } from '@/types/place';
 
@@ -45,6 +46,7 @@ function TripComparison({
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
     const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
+    const routes = createRouteAlternatives(routeQuery.data?.result ?? {});
 
     const [selectedMode, setSelectedMode] = useState<RoutingMode | null>(null);
 
@@ -61,7 +63,7 @@ function TripComparison({
                     searchFocus={mapView}
                 />
                 <RouteSummaries
-                    result={routeQuery.data?.result}
+                    routes={routes}
                     selectedMode={selectedMode}
                     onSelect={setSelectedMode}
                 />
@@ -73,7 +75,7 @@ function TripComparison({
                     onMapClick={setOriginOrDestination}
                 >
                     <RoutePaths
-                        result={routeQuery.data?.result}
+                        routes={routes}
                         selectedMode={selectedMode}
                         onSelect={setSelectedMode}
                     />

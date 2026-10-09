@@ -1,5 +1,4 @@
 import { RulerIcon } from '@phosphor-icons/react';
-import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -8,59 +7,21 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from '@/components/ui/accordion';
-import {
-    isTransitRouteResultEntry,
-    isUnimodalRouteResultEntry,
-    type RoutingMode,
-    sortTransitModesByDistance,
-} from '@/features/trip-comparison/utils/route-result';
+import type {
+    RouteAlternative,
+    RouteSummary,
+} from '@/features/trip-comparison/types/route-alternative';
+import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons, type Mode } from '@/utils/mode';
 
-type RouteSummary = {
-    id: RoutingMode;
-    // Main one first, by a chosen criterion
-    rankedModes: Mode[];
-    travelTimeSeconds: number;
-    distanceMeters: number;
-};
-
-const createRouteSummary = (entry: [string, unknown]): RouteSummary | null => {
-    if (isUnimodalRouteResultEntry(entry)) {
-        const [routingMode, result] = entry;
-        const path = result.paths.at(0);
-        if (!path) {
-            return null;
-        }
-        return {
-            id: routingMode,
-            rankedModes: [routingMode],
-            travelTimeSeconds: path.travelTimeSeconds,
-            distanceMeters: path.distanceMeters,
-        };
-    }
-    if (isTransitRouteResultEntry(entry)) {
-        const [routingMode, result] = entry;
-        const path = result.paths.at(0);
-        if (!path) {
-            return null;
-        }
-        return {
-            id: routingMode,
-            rankedModes: sortTransitModesByDistance(path),
-            travelTimeSeconds: path.totalTravelTime,
-            distanceMeters: path.totalDistance,
-        };
-    }
-    return null;
-};
-
 type RouteSummaryItemProps = {
+    id: RoutingMode;
     summary: RouteSummary;
 };
 
-const RouteSummaryItem = ({ summary }: RouteSummaryItemProps) => {
-    const { id, rankedModes, travelTimeSeconds, distanceMeters } = summary;
+const RouteSummaryItem = ({ id, summary }: RouteSummaryItemProps) => {
+    const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels: Record<Mode, string> = {
         driving: t('routeMode.driving'),
@@ -104,20 +65,16 @@ const RouteSummaryItem = ({ summary }: RouteSummaryItemProps) => {
 };
 
 type RouteSummariesProps = {
-    result: Api.RouteResponse['result'] | undefined;
+    routes: RouteAlternative[];
     selectedMode: RoutingMode | null;
     onSelect: (mode: RoutingMode | null) => void;
 };
 
 const RouteSummaries = ({
-    result,
+    routes,
     selectedMode,
     onSelect,
 }: RouteSummariesProps) => {
-    const summaries = Object.entries(result ?? {}).flatMap(
-        (entry) => createRouteSummary(entry) ?? [],
-    );
-
     return (
         <Accordion
             className="gap-2"
@@ -126,8 +83,8 @@ const RouteSummaries = ({
                 onSelect(value.at(0) ?? null)
             }
         >
-            {summaries.map((summary) => (
-                <RouteSummaryItem key={summary.id} summary={summary} />
+            {routes.map(({ id, summary }) => (
+                <RouteSummaryItem key={id} id={id} summary={summary} />
             ))}
         </Accordion>
     );
