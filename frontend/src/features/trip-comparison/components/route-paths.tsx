@@ -44,12 +44,20 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
         <RoutePath
             key={id}
             id={`route-${id}`}
-            steps={steps.map(({ geometry, mode, travelTimeSeconds }) => ({
-                geometry,
-                mode,
-                iconLabel: modeLabels[mode],
-                label: formatDuration(travelTimeSeconds, i18n.language),
-            }))}
+            steps={steps.flatMap((step) => {
+                // Stops aren't drawn
+                if (step.activity === 'waitingAtStop') {
+                    return [];
+                }
+                const mode =
+                    step.activity === 'inVehicle' ? step.mode : 'walking';
+                return {
+                    geometry: step.geometry,
+                    mode,
+                    iconLabel: modeLabels[mode],
+                    label: formatDuration(step.durationSeconds, i18n.language),
+                };
+            })}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             selected={selectedId === id}
             onLabelClick={() => toggle(id)}

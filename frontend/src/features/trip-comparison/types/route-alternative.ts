@@ -1,4 +1,4 @@
-import type { LineString } from 'geojson';
+import type { LineString, Point } from 'geojson';
 
 import type { Mode } from '@/utils/mode';
 
@@ -9,11 +9,26 @@ export type RouteSummary = {
     distanceMeters: number;
 };
 
-export type RouteAlternativeStep = {
+type WalkingStep = {
+    activity: 'walkingToStop' | 'walkingToDestination';
     geometry: LineString;
-    mode: Mode;
-    travelTimeSeconds: number;
+    durationSeconds: number;
 };
+
+type WaitingStep = {
+    activity: 'waitingAtStop';
+    geometry: Point;
+    durationSeconds: number;
+};
+
+type VehicleStep = {
+    activity: 'inVehicle';
+    mode: Mode;
+    geometry: LineString;
+    durationSeconds: number;
+};
+
+export type RouteAlternativeStep = WalkingStep | WaitingStep | VehicleStep;
 
 // A way to make the trip
 export type RouteAlternative = {

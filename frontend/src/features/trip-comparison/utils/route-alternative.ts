@@ -53,6 +53,29 @@ const sortTransitModesByDistance = (
     return [...distances].sort(([, a], [, b]) => b - a).map(([mode]) => mode);
 };
 
+const createUnimodalStep = (
+    routingMode: UnimodalRoutingMode,
+    path: UnimodalRouteResult['paths'][number],
+): RouteAlternativeStep => {
+    switch (routingMode) {
+        case 'walking':
+            return {
+                activity: 'walkingToDestination',
+                geometry: path.geometry,
+                durationSeconds: path.travelTimeSeconds,
+            };
+        case 'driving':
+            return {
+                activity: 'inVehicle',
+                mode: routingMode,
+                geometry: path.geometry,
+                durationSeconds: path.travelTimeSeconds,
+            };
+        default:
+            return routingMode satisfies never;
+    }
+};
+
 const createTransitSteps = (
     path: TransitRouteResult['paths'][number],
     origin: Position,
@@ -64,27 +87,34 @@ const createTransitSteps = (
         switch (step.action) {
             case 'walking': {
                 const next = path.steps.at(index + 1);
-                const to =
-                    next?.action === 'boarding'
-                        ? next.nodeCoordinates
-                        : destination;
+                const toStop = next?.action === 'boarding';
+                const to = toStop ? next.nodeCoordinates : destination;
                 steps.push({
+                    activity: toStop ? 'walkingToStop' : 'walkingToDestination',
                     geometry: { type: 'LineString', coordinates: [from, to] },
-                    mode: 'walking',
-                    travelTimeSeconds: step.travelTime,
+                    durationSeconds: step.travelTime,
                 });
                 from = to;
                 break;
             }
             case 'boarding':
+                steps.push({
+                    activity: 'waitingAtStop',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: step.nodeCoordinates,
+                    },
+                    durationSeconds: step.waitingTime,
+                });
                 from = step.nodeCoordinates;
                 break;
             case 'unboarding': {
                 const to = step.nodeCoordinates;
                 steps.push({
-                    geometry: { type: 'LineString', coordinates: [from, to] },
+                    activity: 'inVehicle',
                     mode: isMode(step.mode) ? step.mode : 'other',
-                    travelTimeSeconds: step.inVehicleTime,
+                    geometry: { type: 'LineString', coordinates: [from, to] },
+                    durationSeconds: step.inVehicleTime,
                 });
                 from = to;
                 break;
@@ -116,13 +146,7 @@ const createRouteAlternative = (
                 travelTimeSeconds: path.travelTimeSeconds,
                 distanceMeters: path.distanceMeters,
             },
-            steps: [
-                {
-                    geometry: path.geometry,
-                    mode: routingMode,
-                    travelTimeSeconds: path.travelTimeSeconds,
-                },
-            ],
+            steps: [createUnimodalStep(routingMode, path)],
         };
     }
     if (isTransitRouteResultEntry(entry)) {
