@@ -1,6 +1,10 @@
 import type { Api } from 'common';
+import type { Position } from 'geojson';
 
-import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
+import type {
+    RouteAlternative,
+    RouteAlternativeStep,
+} from '@/features/trip-comparison/types/route-alternative';
 import { isMode, type Mode } from '@/utils/mode';
 
 const unimodalRoutingModes = [
@@ -48,9 +52,54 @@ const sortTransitModesByDistance = (
     return [...distances].sort(([, a], [, b]) => b - a).map(([mode]) => mode);
 };
 
+const createTransitSteps = (
+    path: TransitRouteResult['paths'][number],
+    origin: Position,
+    destination: Position,
+): RouteAlternativeStep[] => {
+    const steps: RouteAlternativeStep[] = [];
+    let from = origin;
+    path.steps.forEach((step, index) => {
+        switch (step.action) {
+            case 'walking': {
+                const next = path.steps.at(index + 1);
+                const to =
+                    next?.action === 'boarding'
+                        ? next.nodeCoordinates
+                        : destination;
+                steps.push({
+                    geometry: { type: 'LineString', coordinates: [from, to] },
+                    mode: 'walking',
+                    travelTimeSeconds: step.travelTime,
+                });
+                from = to;
+                break;
+            }
+            case 'boarding':
+                from = step.nodeCoordinates;
+                break;
+            case 'unboarding': {
+                const to = step.nodeCoordinates;
+                steps.push({
+                    geometry: { type: 'LineString', coordinates: [from, to] },
+                    mode: isMode(step.mode) ? step.mode : 'other',
+                    travelTimeSeconds: step.inVehicleTime,
+                });
+                from = to;
+                break;
+            }
+            default:
+                step satisfies never;
+        }
+    });
+    return steps;
+};
+
 // Null when the routing mode isn't supported, or no path was found
 const createRouteAlternative = (
     entry: [string, unknown],
+    origin: Position,
+    destination: Position,
     scenarioId: string | null,
 ): RouteAlternative | null => {
     if (isUnimodalRouteResultEntry(entry)) {
@@ -88,8 +137,7 @@ const createRouteAlternative = (
                 travelTimeSeconds: path.totalTravelTime,
                 distanceMeters: path.totalDistance,
             },
-            // Not drawn yet
-            steps: [],
+            steps: createTransitSteps(path, origin, destination),
         };
     }
     return null;
@@ -99,9 +147,13 @@ export const createRouteAlternatives = ({
     query,
     result,
 }: Api.RouteResponse): RouteAlternative[] => {
+    const origin = query.originGeojson.geometry.coordinates;
+    const destination = query.destinationGeojson.geometry.coordinates;
     const scenarioId =
         typeof query.scenarioId === 'string' ? query.scenarioId : null;
     return Object.entries(result).flatMap(
-        (entry) => createRouteAlternative(entry, scenarioId) ?? [],
+        (entry) =>
+            createRouteAlternative(entry, origin, destination, scenarioId) ??
+            [],
     );
 };
