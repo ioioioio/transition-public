@@ -38,13 +38,16 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
             (a, b) => a.summary.travelTimeSeconds - b.summary.travelTimeSeconds,
         );
 
-    return drawnRoutes.map(({ id, summary, steps }, rank) => (
+    return drawnRoutes.map(({ id, steps }, rank) => (
         <RoutePath
             key={id}
             id={`route-${id}`}
-            steps={steps}
+            steps={steps.map(({ geometry, mode, travelTimeSeconds }) => ({
+                geometry,
+                mode,
+                label: formatDuration(travelTimeSeconds, i18n.language),
+            }))}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
-            label={formatDuration(summary.travelTimeSeconds, i18n.language)}
             selected={selectedId === id}
             onLabelClick={() => toggle(id)}
         />

@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RouteStep, type RouteStepData } from '@/components/map/route-step';
 
@@ -9,7 +7,6 @@ export type RoutePathProps = {
     steps: RouteStepData[];
     // The same for all the steps of the path
     styles: LabeledCurveStyles;
-    label?: ReactNode;
     selected?: boolean;
     onLabelClick?: () => void;
 };
@@ -18,7 +15,6 @@ export const RoutePath = ({
     id,
     steps,
     styles,
-    label,
     selected,
     onLabelClick,
 }: RoutePathProps) => {
@@ -28,7 +24,6 @@ export const RoutePath = ({
             id={`${id}-${index}`}
             step={step}
             styles={styles}
-            label={label}
             selected={selected}
             onLabelClick={onLabelClick}
         />

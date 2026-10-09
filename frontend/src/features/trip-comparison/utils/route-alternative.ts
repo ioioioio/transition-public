@@ -66,7 +66,13 @@ const createRouteAlternative = (
                 travelTimeSeconds: path.travelTimeSeconds,
                 distanceMeters: path.distanceMeters,
             },
-            steps: [{ geometry: path.geometry, mode: routingMode }],
+            steps: [
+                {
+                    geometry: path.geometry,
+                    mode: routingMode,
+                    travelTimeSeconds: path.travelTimeSeconds,
+                },
+            ],
         };
     }
     if (isTransitRouteResultEntry(entry)) {

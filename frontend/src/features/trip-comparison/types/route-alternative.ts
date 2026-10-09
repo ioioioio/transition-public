@@ -1,4 +1,5 @@
-import type { RouteStepData } from '@/components/map/route-step';
+import type { LineString } from 'geojson';
+
 import type { Mode } from '@/utils/mode';
 
 export type RouteSummary = {
@@ -8,9 +9,15 @@ export type RouteSummary = {
     distanceMeters: number;
 };
 
+export type RouteAlternativeStep = {
+    geometry: LineString;
+    mode: Mode;
+    travelTimeSeconds: number;
+};
+
 // A way to make the trip
 export type RouteAlternative = {
     id: string;
     summary: RouteSummary;
-    steps: RouteStepData[];
+    steps: RouteAlternativeStep[];
 };

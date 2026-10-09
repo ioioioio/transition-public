@@ -11,14 +11,13 @@ import { modeIcons, type Mode } from '@/utils/mode';
 export type RouteStepData = {
     geometry: LineString;
     mode: Mode;
+    label?: ReactNode;
 };
 
 export type RouteStepProps = {
     id: string;
     step: RouteStepData;
     styles: LabeledCurveStyles;
-    /** Shown next to the mode's icon, in a pill on the step. */
-    label?: ReactNode;
     selected?: boolean;
     onLabelClick?: () => void;
 };
@@ -27,11 +26,10 @@ export const RouteStep = ({
     id,
     step,
     styles,
-    label,
     selected,
     onLabelClick,
 }: RouteStepProps) => {
-    const { geometry, mode } = step;
+    const { geometry, mode, label } = step;
     const { coordinates } = geometry;
     const ModeIcon = modeIcons[mode];
 
