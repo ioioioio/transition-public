@@ -18,8 +18,7 @@
         "driving": "Driving",
         "walking": "Walking",
         "bus": "Bus",
-        "other": "Other",
-        "transit": "Transit"
+        "other": "Other"
     },
     "bestRoute": {
         "travelTime": "Fastest"
