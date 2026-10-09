@@ -14,8 +14,9 @@ import type {
     RouteAlternativeOrder,
     RouteSummary,
 } from '@/features/trip-comparison/types/route-alternative';
+import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDistance, formatDuration } from '@/utils/format';
-import { modeIcons, type Mode } from '@/utils/mode';
+import { modeIcons } from '@/utils/mode';
 
 type BestRouteBadgeProps = {
     order: RouteAlternativeOrder;
@@ -42,12 +43,7 @@ type RouteSummaryItemProps = {
 const RouteSummaryItem = ({ id, summary, badge }: RouteSummaryItemProps) => {
     const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
-    const modeLabels: Record<Mode, string> = {
-        driving: t('routeMode.driving'),
-        walking: t('routeMode.walking'),
-        bus: t('routeMode.bus'),
-        other: t('routeMode.other'),
-    };
+    const modeLabels = useModeLabels();
     // Shown by its main mode
     const mode = rankedModes.at(0) ?? 'other';
     const ModeIcon = modeIcons[mode];
