@@ -39,10 +39,12 @@ function AccordionTrigger({
             >
                 {children}
                 <CaretDownIcon
+                    aria-hidden
                     data-slot="accordion-trigger-icon"
                     className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
                 />
                 <CaretUpIcon
+                    aria-hidden
                     data-slot="accordion-trigger-icon"
                     className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
                 />

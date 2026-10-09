@@ -118,7 +118,7 @@ const RouteSummaryItem = ({
         >
             <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
                 <span className="text-lg text-muted-foreground group-aria-expanded/accordion-trigger:text-primary">
-                    <ModeIcon />
+                    <ModeIcon aria-hidden />
                 </span>
                 <span className="flex flex-1 flex-col gap-1">
                     <span className="flex items-center justify-between gap-2">
@@ -145,7 +145,10 @@ const RouteSummaryItem = ({
                         </ul>
                     )}
                     <div className="flex items-center gap-1.5">
-                        <RulerIcon className="text-muted-foreground" />
+                        <RulerIcon
+                            aria-hidden
+                            className="text-muted-foreground"
+                        />
                         <span className="text-muted-foreground">
                             {t('tripComparison.distance')}
                         </span>

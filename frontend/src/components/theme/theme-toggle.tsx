@@ -19,7 +19,7 @@ const ThemeToggle = () => {
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
             className="text-muted-foreground"
         >
-            {isDark ? <SunIcon /> : <MoonIcon />}
+            {isDark ? <SunIcon aria-hidden /> : <MoonIcon aria-hidden />}
         </Button>
     );
 };

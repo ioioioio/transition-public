@@ -134,7 +134,7 @@ const PlaceInput = ({
                                 aria-label={clearLabel}
                                 onClick={clear}
                             >
-                                <XIcon />
+                                <XIcon aria-hidden />
                             </InputGroupButton>
                         </InputGroupAddon>
                     )}
@@ -151,7 +151,10 @@ const PlaceInput = ({
                             value={place}
                             className="min-h-11 cursor-pointer gap-1.5 rounded-sm py-0 ps-2.75 pe-3"
                         >
-                            <MapPinIcon className="text-muted-foreground" />
+                            <MapPinIcon
+                                aria-hidden
+                                className="text-muted-foreground"
+                            />
                             {place.label}
                         </ComboboxItem>
                     )}

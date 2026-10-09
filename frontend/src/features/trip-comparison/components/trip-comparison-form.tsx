@@ -55,7 +55,10 @@ const TripComparisonForm = ({
             <div className="flex flex-col gap-1.5">
                 <PlaceInput
                     icon={
-                        <CircleIcon className="size-3.5 text-muted-foreground" />
+                        <CircleIcon
+                            aria-hidden
+                            className="size-3.5 text-muted-foreground"
+                        />
                     }
                     placeholder={t('tripComparison.origin')}
                     clearLabel={t('tripComparison.clearOrigin')}
@@ -64,7 +67,12 @@ const TripComparisonForm = ({
                     focus={searchFocus}
                 />
                 <PlaceInput
-                    icon={<MapPinIcon className="size-4 text-primary" />}
+                    icon={
+                        <MapPinIcon
+                            aria-hidden
+                            className="size-4 text-primary"
+                        />
+                    }
                     placeholder={t('tripComparison.destination')}
                     clearLabel={t('tripComparison.clearDestination')}
                     value={destination}
