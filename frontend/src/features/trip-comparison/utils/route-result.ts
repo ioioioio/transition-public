@@ -1,6 +1,6 @@
 import type { Api } from 'common';
 
-import { type Mode } from '@/utils/mode';
+import { isMode, type Mode } from '@/utils/mode';
 
 const unimodalRoutingModes = [
     'driving',
@@ -24,3 +24,29 @@ export const isUnimodalRouteResultEntry = (
     entry: [string, unknown],
 ): entry is [UnimodalRoutingMode, UnimodalRouteResult] =>
     isUnimodalRoutingMode(entry[0]) && entry[1] !== undefined;
+
+export type TransitRouteResult = NonNullable<
+    Api.RouteResponse['result']['transit']
+>;
+
+export const isTransitRouteResultEntry = (
+    entry: [string, unknown],
+): entry is ['transit', TransitRouteResult] =>
+    entry[0] === 'transit' && entry[1] !== undefined;
+
+// Longest first, without walking. Unknown modes become `other`.
+export const sortTransitModesByDistance = (
+    path: TransitRouteResult['paths'][number],
+): Mode[] => {
+    const distances = new Map<Mode, number>();
+    for (const step of path.steps) {
+        if (step.action === 'unboarding') {
+            const mode = isMode(step.mode) ? step.mode : 'other';
+            distances.set(
+                mode,
+                (distances.get(mode) ?? 0) + step.inVehicleDistance,
+            );
+        }
+    }
+    return [...distances].sort(([, a], [, b]) => b - a).map(([mode]) => mode);
+};

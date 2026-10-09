@@ -18,6 +18,7 @@
         "driving": "Driving",
         "walking": "Walking",
         "bus": "Bus",
-        "other": "Other"
+        "other": "Other",
+        "transit": "Transit"
     }
 }

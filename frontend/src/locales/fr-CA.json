@@ -18,6 +18,7 @@
         "driving": "Auto",
         "walking": "Marche",
         "bus": "Autobus",
-        "other": "Autre"
+        "other": "Autre",
+        "transit": "Transport en commun"
     }
 }

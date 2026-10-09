@@ -10,19 +10,58 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
+    isTransitRouteResultEntry,
     isUnimodalRouteResultEntry,
     type RoutingMode,
-    type UnimodalRouteResult,
+    sortTransitModesByDistance,
 } from '@/features/trip-comparison/utils/route-result';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons, type Mode } from '@/utils/mode';
 
-type RouteResultItemProps = {
-    value: Mode;
-    result: UnimodalRouteResult;
+type RouteSummary = {
+    id: RoutingMode;
+    // Main one first, by a chosen criterion
+    rankedModes: Mode[];
+    travelTimeSeconds: number;
+    distanceMeters: number;
 };
 
-const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
+const createRouteSummary = (entry: [string, unknown]): RouteSummary | null => {
+    if (isUnimodalRouteResultEntry(entry)) {
+        const [routingMode, result] = entry;
+        const path = result.paths.at(0);
+        if (!path) {
+            return null;
+        }
+        return {
+            id: routingMode,
+            rankedModes: [routingMode],
+            travelTimeSeconds: path.travelTimeSeconds,
+            distanceMeters: path.distanceMeters,
+        };
+    }
+    if (isTransitRouteResultEntry(entry)) {
+        const [routingMode, result] = entry;
+        const path = result.paths.at(0);
+        if (!path) {
+            return null;
+        }
+        return {
+            id: routingMode,
+            rankedModes: sortTransitModesByDistance(path),
+            travelTimeSeconds: path.totalTravelTime,
+            distanceMeters: path.totalDistance,
+        };
+    }
+    return null;
+};
+
+type RouteResultItemProps = {
+    summary: RouteSummary;
+};
+
+const RouteResultItem = ({ summary }: RouteResultItemProps) => {
+    const { id, rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels: Record<Mode, string> = {
         driving: t('routeMode.driving'),
@@ -30,16 +69,13 @@ const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
         bus: t('routeMode.bus'),
         other: t('routeMode.other'),
     };
-    const path = result.paths[0];
-    if (!path) {
-        return null;
-    }
-    const { travelTimeSeconds, distanceMeters } = path;
-    const ModeIcon = modeIcons[value];
+    // Shown by its main mode
+    const mode = rankedModes.at(0) ?? 'other';
+    const ModeIcon = modeIcons[mode];
 
     return (
         <AccordionItem
-            value={value}
+            value={id}
             className="rounded-lg ring-1 ring-foreground/10 ring-inset not-last:border-b-0 hover:bg-card data-open:bg-card data-open:ring-primary/50"
         >
             <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
@@ -47,7 +83,7 @@ const RouteResultItem = ({ value, result }: RouteResultItemProps) => {
                     <ModeIcon />
                 </span>
                 <span className="flex flex-col gap-1">
-                    <span>{modeLabels[value]}</span>
+                    <span>{modeLabels[mode]}</span>
                     <span className="text-[17px] tracking-tight tabular-nums">
                         {formatDuration(travelTimeSeconds, i18n.language)}
                     </span>
@@ -84,6 +120,9 @@ const RouteResults = ({
     onSelect,
 }: RouteResultsProps) => {
     const routeQuery = useRouteQuery(origin, destination, time);
+    const summaries = Object.entries(routeQuery.data?.result ?? {}).flatMap(
+        (entry) => createRouteSummary(entry) ?? [],
+    );
 
     return (
         <Accordion
@@ -93,11 +132,9 @@ const RouteResults = ({
                 onSelect(value.at(0) ?? null)
             }
         >
-            {Object.entries(routeQuery.data?.result ?? {})
-                .filter(isUnimodalRouteResultEntry)
-                .map(([mode, result]) => (
-                    <RouteResultItem key={mode} value={mode} result={result} />
-                ))}
+            {summaries.map((summary) => (
+                <RouteResultItem key={summary.id} summary={summary} />
+            ))}
         </Accordion>
     );
 };
