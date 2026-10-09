@@ -6,7 +6,7 @@ import SidePanel from '@/components/layouts/side-panel';
 import MapView, { type MapViewState } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
 import RoutePaths from '@/features/trip-comparison/components/route-paths';
-import RouteResults from '@/features/trip-comparison/components/route-results';
+import RouteSummaries from '@/features/trip-comparison/components/route-summaries';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import type { RoutingMode } from '@/features/trip-comparison/utils/route-result';
@@ -60,7 +60,7 @@ function TripComparison({
                     onTimeChange={onTimeChange}
                     searchFocus={mapView}
                 />
-                <RouteResults
+                <RouteSummaries
                     result={routeQuery.data?.result}
                     selectedMode={selectedMode}
                     onSelect={setSelectedMode}

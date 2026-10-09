@@ -55,11 +55,11 @@ const createRouteSummary = (entry: [string, unknown]): RouteSummary | null => {
     return null;
 };
 
-type RouteResultItemProps = {
+type RouteSummaryItemProps = {
     summary: RouteSummary;
 };
 
-const RouteResultItem = ({ summary }: RouteResultItemProps) => {
+const RouteSummaryItem = ({ summary }: RouteSummaryItemProps) => {
     const { id, rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels: Record<Mode, string> = {
@@ -103,17 +103,17 @@ const RouteResultItem = ({ summary }: RouteResultItemProps) => {
     );
 };
 
-type RouteResultsProps = {
+type RouteSummariesProps = {
     result: Api.RouteResponse['result'] | undefined;
     selectedMode: RoutingMode | null;
     onSelect: (mode: RoutingMode | null) => void;
 };
 
-const RouteResults = ({
+const RouteSummaries = ({
     result,
     selectedMode,
     onSelect,
-}: RouteResultsProps) => {
+}: RouteSummariesProps) => {
     const summaries = Object.entries(result ?? {}).flatMap(
         (entry) => createRouteSummary(entry) ?? [],
     );
@@ -127,10 +127,10 @@ const RouteResults = ({
             }
         >
             {summaries.map((summary) => (
-                <RouteResultItem key={summary.id} summary={summary} />
+                <RouteSummaryItem key={summary.id} summary={summary} />
             ))}
         </Accordion>
     );
 };
 
-export default RouteResults;
+export default RouteSummaries;
