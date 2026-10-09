@@ -1,8 +1,7 @@
 import { RulerIcon } from '@phosphor-icons/react';
-import type { Api, Utils } from 'common';
+import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
-import { useRouteQuery } from '@/api/route';
 import {
     Accordion,
     AccordionContent,
@@ -105,22 +104,17 @@ const RouteResultItem = ({ summary }: RouteResultItemProps) => {
 };
 
 type RouteResultsProps = {
-    origin: Utils.LngLat | null;
-    destination: Utils.LngLat | null;
-    time: Api.TripTime;
+    result: Api.RouteResponse['result'] | undefined;
     selectedMode: RoutingMode | null;
     onSelect: (mode: RoutingMode | null) => void;
 };
 
 const RouteResults = ({
-    origin,
-    destination,
-    time,
+    result,
     selectedMode,
     onSelect,
 }: RouteResultsProps) => {
-    const routeQuery = useRouteQuery(origin, destination, time);
-    const summaries = Object.entries(routeQuery.data?.result ?? {}).flatMap(
+    const summaries = Object.entries(result ?? {}).flatMap(
         (entry) => createRouteSummary(entry) ?? [],
     );
 

@@ -1,6 +1,7 @@
 import type { Api, Utils } from 'common';
 import { useState } from 'react';
 
+import { useRouteQuery } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView, { type MapViewState } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
@@ -43,6 +44,7 @@ function TripComparison({
 
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
+    const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
 
     const [selectedMode, setSelectedMode] = useState<RoutingMode | null>(null);
 
@@ -59,9 +61,7 @@ function TripComparison({
                     searchFocus={mapView}
                 />
                 <RouteResults
-                    origin={originPosition}
-                    destination={destinationPosition}
-                    time={time}
+                    result={routeQuery.data?.result}
                     selectedMode={selectedMode}
                     onSelect={setSelectedMode}
                 />
@@ -73,9 +73,7 @@ function TripComparison({
                     onMapClick={setOriginOrDestination}
                 >
                     <RoutePaths
-                        origin={originPosition}
-                        destination={destinationPosition}
-                        time={time}
+                        result={routeQuery.data?.result}
                         selectedMode={selectedMode}
                         onSelect={setSelectedMode}
                     />

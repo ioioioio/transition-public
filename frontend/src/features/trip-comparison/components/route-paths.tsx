@@ -1,7 +1,6 @@
-import type { Api, Utils } from 'common';
+import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
-import { useRouteQuery } from '@/api/route';
 import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RoutePath } from '@/components/map/route-path';
 import {
@@ -28,29 +27,20 @@ const createRoutePathStyles = (
 };
 
 type RoutePathsProps = {
-    origin: Utils.LngLat | null;
-    destination: Utils.LngLat | null;
-    time: Api.TripTime;
+    result: Api.RouteResponse['result'] | undefined;
     selectedMode: RoutingMode | null;
     onSelect: (mode: RoutingMode | null) => void;
 };
 
-const RoutePaths = ({
-    origin,
-    destination,
-    time,
-    selectedMode,
-    onSelect,
-}: RoutePathsProps) => {
+const RoutePaths = ({ result, selectedMode, onSelect }: RoutePathsProps) => {
     const { i18n } = useTranslation();
-    const routeQuery = useRouteQuery(origin, destination, time);
     const toggle = (mode: RoutingMode) =>
         onSelect(selectedMode === mode ? null : mode);
 
-    const paths = Object.entries(routeQuery.data?.result ?? {})
+    const paths = Object.entries(result ?? {})
         .filter(isUnimodalRouteResultEntry)
-        .flatMap(([mode, result]) => {
-            const path = result.paths[0];
+        .flatMap(([mode, modeResult]) => {
+            const path = modeResult.paths[0];
             return path ? [{ mode, path }] : [];
         })
         .sort((a, b) => a.path.travelTimeSeconds - b.path.travelTimeSeconds);
