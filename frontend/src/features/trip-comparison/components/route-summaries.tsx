@@ -1,4 +1,4 @@
-import { ClockIcon, RulerIcon, type Icon } from '@phosphor-icons/react';
+import { RulerIcon } from '@phosphor-icons/react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,7 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import type {
     RouteAlternative,
     RouteAlternativeOrder,
@@ -36,23 +37,18 @@ const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
 };
 
 type TimeRowProps = {
-    icon: Icon;
-    // Only when the icon tells more than the label, e.g. walking to a stop
-    iconLabel?: string;
+    icon: ReactNode;
     label: string;
     seconds: number;
 };
 
-const TimeRow = ({ icon: Icon, iconLabel, label, seconds }: TimeRowProps) => {
+const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     const { i18n } = useTranslation();
     return (
         <li className="flex items-center gap-2">
-            <Icon
-                className="size-3.5 text-muted-foreground"
-                {...(iconLabel
-                    ? { role: 'img', 'aria-label': iconLabel }
-                    : { 'aria-hidden': true })}
-            />
+            <span className="flex text-muted-foreground [&>svg]:size-3.5">
+                {icon}
+            </span>
             <span>{label}</span>
             <span className="ms-auto text-muted-foreground tabular-nums">
                 {formatDuration(seconds, i18n.language)}
@@ -79,28 +75,27 @@ const RouteSummaryItem = ({
     const modeLabels = useModeLabels();
     const describeStep = (
         step: RouteAlternativeStep,
-    ): { icon: Icon; iconLabel?: string; label: string } => {
+    ): { icon: ReactNode; label: string } => {
         switch (step.activity) {
+            // The text doesn't say it's on foot, the icon does
             case 'walkingToStop':
                 return {
-                    icon: modeIcons.walking,
-                    iconLabel: modeLabels.walking,
+                    icon: <RouteStepIcon step={step} />,
                     label: t('transitStep.walkingToStop'),
                 };
             case 'walkingToDestination':
                 return {
-                    icon: modeIcons.walking,
-                    iconLabel: modeLabels.walking,
+                    icon: <RouteStepIcon step={step} />,
                     label: t('transitStep.walkingToDestination'),
                 };
             case 'waitingAtStop':
                 return {
-                    icon: ClockIcon,
+                    icon: <RouteStepIcon step={step} decorative />,
                     label: t('transitStep.waitingAtStop'),
                 };
             case 'inVehicle':
                 return {
-                    icon: modeIcons[step.mode],
+                    icon: <RouteStepIcon step={step} decorative />,
                     label: modeLabels[step.mode],
                 };
             default:
