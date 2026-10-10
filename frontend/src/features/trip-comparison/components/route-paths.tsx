@@ -4,6 +4,7 @@ import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
 import { RoutePath } from '@/components/map/route-path';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
+import type { RouteStepData } from '@/types/route-step';
 import { formatDuration } from '@/utils/format';
 
 /**
@@ -23,6 +24,20 @@ const createRoutePathStyles = (
     };
 };
 
+type RouteStepLabelProps = {
+    step: RouteStepData;
+};
+
+const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
+    const { i18n } = useTranslation();
+    return (
+        <>
+            <RouteStepIcon step={step} />
+            {formatDuration(step.durationSeconds, i18n.language)}
+        </>
+    );
+};
+
 type RoutePathsProps = {
     routes: RouteAlternative[];
     selectedId: string | null;
@@ -30,7 +45,6 @@ type RoutePathsProps = {
 };
 
 const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
-    const { i18n } = useTranslation();
     const toggle = (id: string) => onSelect(selectedId === id ? null : id);
 
     const drawnRoutes = routes
@@ -43,24 +57,8 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
         <RoutePath
             key={id}
             id={`route-${id}`}
-            steps={steps.flatMap((step) => {
-                // Stops aren't drawn
-                if (step.activity === 'waitingAtStop') {
-                    return [];
-                }
-                return {
-                    geometry: step.geometry,
-                    label: (
-                        <>
-                            <RouteStepIcon step={step} />
-                            {formatDuration(
-                                step.durationSeconds,
-                                i18n.language,
-                            )}
-                        </>
-                    ),
-                };
-            })}
+            steps={steps}
+            renderStepLabel={(step) => <RouteStepLabel step={step} />}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             selected={selectedId === id}
             onLabelClick={() => toggle(id)}

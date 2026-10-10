@@ -1,20 +1,15 @@
-import type { LineString } from 'geojson';
 import type { ReactNode } from 'react';
 
 import {
     LabeledCurve,
     type LabeledCurveStyles,
 } from '@/components/map/labeled-curve';
-
-// A step of a route path: where it goes, and what's shown on it
-export type RouteStepData = {
-    geometry: LineString;
-    label?: ReactNode;
-};
+import type { RouteStepData } from '@/types/route-step';
 
 export type RouteStepProps = {
     id: string;
     step: RouteStepData;
+    label?: ReactNode;
     styles: LabeledCurveStyles;
     selected?: boolean;
     onLabelClick?: () => void;
@@ -23,12 +18,16 @@ export type RouteStepProps = {
 export const RouteStep = ({
     id,
     step,
+    label,
     styles,
     selected,
     onLabelClick,
 }: RouteStepProps) => {
-    const { geometry, label } = step;
-    const { coordinates } = geometry;
+    // Stops aren't drawn
+    if (step.activity === 'waitingAtStop') {
+        return null;
+    }
+    const { coordinates } = step.geometry;
 
     return (
         <LabeledCurve
