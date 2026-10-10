@@ -5,13 +5,10 @@ import {
     LabeledCurve,
     type LabeledCurveStyles,
 } from '@/components/map/labeled-curve';
-import { modeIcons, type Mode } from '@/utils/mode';
 
-// A step of a route path: where it goes, and how it's travelled
+// A step of a route path: where it goes, and what's shown on it
 export type RouteStepData = {
     geometry: LineString;
-    mode: Mode;
-    iconLabel: string;
     label?: ReactNode;
 };
 
@@ -30,9 +27,8 @@ export const RouteStep = ({
     selected,
     onLabelClick,
 }: RouteStepProps) => {
-    const { geometry, mode, iconLabel, label } = step;
+    const { geometry, label } = step;
     const { coordinates } = geometry;
-    const ModeIcon = modeIcons[mode];
 
     return (
         <LabeledCurve
@@ -41,12 +37,7 @@ export const RouteStep = ({
             to={coordinates[coordinates.length - 1]!}
             styles={styles}
             selected={selected}
-            label={
-                <>
-                    <ModeIcon role="img" aria-label={iconLabel} />
-                    {label}
-                </>
-            }
+            label={label}
             onLabelClick={onLabelClick}
         />
     );
