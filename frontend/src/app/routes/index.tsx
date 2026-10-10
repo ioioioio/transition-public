@@ -48,12 +48,14 @@ function TripPage() {
                 origin: origin ?? undefined,
                 destination: destination ?? undefined,
             }),
+            resetScroll: false,
         });
     };
 
     const setTime = (time: Api.TripTime) => {
         void navigate({
             search: (previous) => ({ ...previous, time }),
+            resetScroll: false,
         });
     };
 
@@ -62,6 +64,7 @@ function TripPage() {
             search: (previous) => ({ ...previous, map }),
             // Panning isn't worth a history entry.
             replace: true,
+            resetScroll: false,
         });
     };
 
