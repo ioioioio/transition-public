@@ -13,10 +13,10 @@ import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon
 import type {
     RouteAlternative,
     RouteAlternativeOrder,
-    RouteAlternativeStep,
     RouteSummary,
 } from '@/features/trip-comparison/types/route-alternative';
 import { useModeLabels } from '@/hooks/use-mode-labels';
+import type { RouteStepData } from '@/types/route-step';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
 
@@ -60,7 +60,7 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
 type RouteSummaryItemProps = {
     id: string;
     summary: RouteSummary;
-    steps: RouteAlternativeStep[];
+    steps: RouteStepData[];
     badge?: ReactNode;
 };
 
@@ -74,7 +74,7 @@ const RouteSummaryItem = ({
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const describeStep = (
-        step: RouteAlternativeStep,
+        step: RouteStepData,
     ): { icon: ReactNode; label: string } => {
         switch (step.activity) {
             // The text doesn't say it's on foot, the icon does

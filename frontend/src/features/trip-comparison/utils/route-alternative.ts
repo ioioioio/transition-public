@@ -4,8 +4,8 @@ import type { Position } from 'geojson';
 import type {
     RouteAlternative,
     RouteAlternativeOrder,
-    RouteAlternativeStep,
 } from '@/features/trip-comparison/types/route-alternative';
+import type { RouteStepData } from '@/types/route-step';
 import { isMode, type Mode } from '@/utils/mode';
 
 const unimodalRoutingModes = [
@@ -56,7 +56,7 @@ const sortTransitModesByDistance = (
 const createUnimodalStep = (
     routingMode: UnimodalRoutingMode,
     path: UnimodalRouteResult['paths'][number],
-): RouteAlternativeStep => {
+): RouteStepData => {
     switch (routingMode) {
         case 'walking':
             return {
@@ -80,8 +80,8 @@ const createTransitSteps = (
     path: TransitRouteResult['paths'][number],
     origin: Position,
     destination: Position,
-): RouteAlternativeStep[] => {
-    const steps: RouteAlternativeStep[] = [];
+): RouteStepData[] => {
+    const steps: RouteStepData[] = [];
     let from = origin;
     path.steps.forEach((step, index) => {
         switch (step.action) {
