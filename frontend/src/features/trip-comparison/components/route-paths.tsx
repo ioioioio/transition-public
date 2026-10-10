@@ -61,7 +61,7 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
             renderStepLabel={(step) => <RouteStepLabel step={step} />}
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             selected={selectedId === id}
-            onLabelClick={() => toggle(id)}
+            onClick={() => toggle(id)}
         />
     ));
 };

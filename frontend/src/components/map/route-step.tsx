@@ -12,7 +12,7 @@ export type RouteStepProps = {
     label?: ReactNode;
     styles: LabeledCurveStyles;
     selected?: boolean;
-    onLabelClick?: () => void;
+    onClick?: () => void;
 };
 
 export const RouteStep = ({
@@ -21,7 +21,7 @@ export const RouteStep = ({
     label,
     styles,
     selected,
-    onLabelClick,
+    onClick,
 }: RouteStepProps) => {
     // Stops aren't drawn
     if (step.activity === 'waitingAtStop') {
@@ -37,7 +37,7 @@ export const RouteStep = ({
             styles={styles}
             selected={selected}
             label={label}
-            onLabelClick={onLabelClick}
+            onClick={onClick}
         />
     );
 };

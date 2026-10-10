@@ -1,11 +1,15 @@
-import { Map } from '@vis.gl/react-maplibre';
+import { Map, type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Utils } from 'common';
 import { setWorkerUrl, type LngLat } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { mapStyleDark, mapStyleLight } from '@/config/env';
+import {
+    createLayerClickHandlers,
+    LayerClickHandlersContext,
+} from '@/hooks/use-layer-click';
 import { useTheme } from '@/hooks/use-theme';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
@@ -27,6 +31,14 @@ const MapView = ({
     children,
 }: MapViewProps) => {
     const { theme } = useTheme();
+    const [handlers] = useState(createLayerClickHandlers);
+    // The topmost of the clickable layers under the pointer
+    const findClickedLayerId = ({ target, point }: MapLayerMouseEvent) => {
+        const layers = [...handlers.keys()].filter((id) => target.getLayer(id));
+        return layers.length > 0
+            ? target.queryRenderedFeatures(point, { layers }).at(0)?.layer.id
+            : undefined;
+    };
     return (
         <Map
             initialViewState={{
@@ -38,7 +50,21 @@ const MapView = ({
             // Attribution should always be visible so people don't forget to turn it on for screenshots
             attributionControl={{ compact: false }}
             mapStyle={theme === 'light' ? mapStyleLight : mapStyleDark}
-            onClick={(event) => onMapClick(event.lngLat)}
+            onClick={(event) => {
+                const layerId = findClickedLayerId(event);
+                if (layerId) {
+                    handlers.get(layerId)?.();
+                } else {
+                    onMapClick(event.lngLat);
+                }
+            }}
+            onMouseMove={(event) => {
+                event.target.getCanvas().style.cursor = findClickedLayerId(
+                    event,
+                )
+                    ? 'pointer'
+                    : '';
+            }}
             onMoveEnd={({ viewState }) =>
                 onViewChange?.({
                     lng: viewState.longitude,
@@ -47,7 +73,9 @@ const MapView = ({
                 })
             }
         >
-            {children}
+            <LayerClickHandlersContext value={handlers}>
+                {children}
+            </LayerClickHandlersContext>
         </Map>
     );
 };

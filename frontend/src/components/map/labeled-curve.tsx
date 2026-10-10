@@ -2,6 +2,8 @@ import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { Position } from 'geojson';
 import type { ReactNode } from 'react';
 
+import { useLayerClick } from '@/hooks/use-layer-click';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
 import { createCurve, getPointAlong } from '@/utils/geo';
@@ -25,7 +27,7 @@ export type LabeledCurveProps = {
     selected?: boolean;
     /** Shown in a pill on the arc. */
     label?: ReactNode;
-    onLabelClick?: () => void;
+    onClick?: () => void;
 };
 
 // An arc between two points, with an optional label on it
@@ -36,11 +38,15 @@ export const LabeledCurve = ({
     styles,
     selected = false,
     label,
-    onLabelClick,
+    onClick,
 }: LabeledCurveProps) => {
     const { bend, dashArray, labelPosition = 0.5 } = styles;
     const color = useThemeColor(selected ? '--primary' : '--foreground');
     const curve = createCurve(from, to, bend);
+    const hitLayerId = `${id}-hit`;
+    useLayerClick(hitLayerId, onClick);
+    // A finger needs a wider target than a mouse
+    const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
 
     return (
         <>
@@ -68,12 +74,18 @@ export const LabeledCurve = ({
                         ...(dashArray && { 'line-dasharray': dashArray }),
                     }}
                 />
+                {/* Wider than the line, so it's easy to click or tap */}
+                <Layer
+                    id={hitLayerId}
+                    type="line"
+                    paint={{ 'line-width': hitWidth, 'line-opacity': 0 }}
+                />
             </Source>
             {label && (
                 <CurveLabel
                     position={getPointAlong(curve, labelPosition)}
                     selected={selected}
-                    onClick={onLabelClick}
+                    onClick={onClick}
                 >
                     {label}
                 </CurveLabel>

@@ -12,7 +12,7 @@ export type RoutePathProps = {
     // The same for all the steps of the path
     styles: LabeledCurveStyles;
     selected?: boolean;
-    onLabelClick?: () => void;
+    onClick?: () => void;
 };
 
 export const RoutePath = ({
@@ -21,7 +21,7 @@ export const RoutePath = ({
     renderStepLabel,
     styles,
     selected,
-    onLabelClick,
+    onClick,
 }: RoutePathProps) => {
     return steps.map((step, index) => (
         <RouteStep
@@ -31,7 +31,7 @@ export const RoutePath = ({
             label={renderStepLabel?.(step)}
             styles={styles}
             selected={selected}
-            onLabelClick={onLabelClick}
+            onClick={onClick}
         />
     ));
 };
