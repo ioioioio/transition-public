@@ -72,7 +72,7 @@ function TripComparison({
                     onSelect={setSelectedId}
                 />
             </SidePanel>
-            <div className="order-first h-[60dvh] md:order-0 md:h-auto md:flex-1">
+            <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
                 <MapView
                     mapView={mapView}
                     onViewChange={onMapViewChange}
