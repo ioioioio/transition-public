@@ -58,7 +58,12 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
             key={id}
             id={`route-${id}`}
             steps={steps}
-            renderStepLabel={(step) => <RouteStepLabel step={step} />}
+            // When a route is selected, the others' labels are hidden
+            renderStepLabel={
+                selectedId === null || selectedId === id
+                    ? (step) => <RouteStepLabel step={step} />
+                    : undefined
+            }
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             selected={selectedId === id}
             onClick={() => toggle(id)}
