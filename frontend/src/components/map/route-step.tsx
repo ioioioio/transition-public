@@ -34,16 +34,19 @@ export const RouteStep = ({
         return null;
     }
     const { coordinates } = step.geometry;
+    const hasOnlyEnds = coordinates.length <= 2;
+    const line = hasOnlyEnds
+        ? createCurve(
+              coordinates[0]!,
+              coordinates[coordinates.length - 1]!,
+              styles.bend,
+          )
+        : step.geometry;
 
     return (
         <LabeledLine
             id={id}
-            // An arc between its ends
-            line={createCurve(
-                coordinates[0]!,
-                coordinates[coordinates.length - 1]!,
-                styles.bend,
-            )}
+            line={line}
             styles={styles}
             selected={selected}
             label={label}
