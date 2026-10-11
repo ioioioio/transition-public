@@ -5,12 +5,18 @@ import {
     type LabeledLineStyles,
 } from '@/components/map/labeled-line';
 import type { RouteStepData } from '@/types/route-step';
+import { createCurve } from '@/utils/geo';
+
+export type RouteStepStyles = LabeledLineStyles & {
+    /** How far the arc bends from the straight line, as a fraction of its length. */
+    bend: number;
+};
 
 export type RouteStepProps = {
     id: string;
     step: RouteStepData;
     label?: ReactNode;
-    styles: LabeledLineStyles;
+    styles: RouteStepStyles;
     selected?: boolean;
     onClick?: () => void;
 };
@@ -32,8 +38,12 @@ export const RouteStep = ({
     return (
         <LabeledLine
             id={id}
-            from={coordinates[0]!}
-            to={coordinates[coordinates.length - 1]!}
+            // An arc between its ends
+            line={createCurve(
+                coordinates[0]!,
+                coordinates[coordinates.length - 1]!,
+                styles.bend,
+            )}
             styles={styles}
             selected={selected}
             label={label}

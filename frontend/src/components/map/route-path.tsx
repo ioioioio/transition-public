@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { LabeledLineStyles } from '@/components/map/labeled-line';
-import { RouteStep } from '@/components/map/route-step';
+import { RouteStep, type RouteStepStyles } from '@/components/map/route-step';
 import type { RouteStepData } from '@/types/route-step';
 
 export type RoutePathProps = {
@@ -10,7 +9,7 @@ export type RoutePathProps = {
     steps: RouteStepData[];
     renderStepLabel?: (step: RouteStepData) => ReactNode;
     // The same for all the steps of the path
-    styles: LabeledLineStyles;
+    styles: RouteStepStyles;
     selected?: boolean;
     onClick?: () => void;
 };

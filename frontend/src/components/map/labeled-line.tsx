@@ -1,48 +1,41 @@
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
-import type { Position } from 'geojson';
+import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
 
 import { useLayerClick } from '@/hooks/use-layer-click';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
-import { createCurve, getPointAlong } from '@/utils/geo';
+import { getPointAlong } from '@/utils/geo';
 
 export type LabeledLineStyles = {
-    /** How far the arc bends from the straight line, as a fraction of its length. */
-    bend: number;
     /** Dash and gap lengths, in line widths. Solid when omitted. */
     dashArray?: [number, number];
-    /** Where the label sits along the arc, from `0` (start) to `1` (end). */
+    /** Where the label sits along the line, from `0` (start) to `1` (end). */
     labelPosition?: number;
 };
 
 export type LabeledLineProps = {
     id: string;
-    /** As `[longitude, latitude]`. */
-    from: Position;
-    /** As `[longitude, latitude]`. */
-    to: Position;
+    line: LineString;
     styles: LabeledLineStyles;
     selected?: boolean;
-    /** Shown in a pill on the arc. */
+    /** Shown in a pill on the line. */
     label?: ReactNode;
     onClick?: () => void;
 };
 
-// An arc between two points, with an optional label on it
+// A line, with an optional label on it
 export const LabeledLine = ({
     id,
-    from,
-    to,
+    line,
     styles,
     selected = false,
     label,
     onClick,
 }: LabeledLineProps) => {
-    const { bend, dashArray, labelPosition = 0.5 } = styles;
+    const { dashArray, labelPosition = 0.5 } = styles;
     const color = useThemeColor(selected ? '--primary' : '--foreground');
-    const curve = createCurve(from, to, bend);
     const hitLayerId = `${id}-hit`;
     useLayerClick(hitLayerId, onClick);
     // A finger needs a wider target than a mouse
@@ -50,7 +43,7 @@ export const LabeledLine = ({
 
     return (
         <>
-            <Source id={id} type="geojson" data={curve}>
+            <Source id={id} type="geojson" data={line}>
                 {selected && (
                     <Layer
                         id={`${id}-glow`}
@@ -83,7 +76,7 @@ export const LabeledLine = ({
             </Source>
             {label && (
                 <LineLabel
-                    position={getPointAlong(curve, labelPosition)}
+                    position={getPointAlong(line, labelPosition)}
                     selected={selected}
                     onClick={onClick}
                 >
