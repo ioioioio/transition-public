@@ -1,16 +1,16 @@
 import type { ReactNode } from 'react';
 
 import {
-    LabeledCurve,
-    type LabeledCurveStyles,
-} from '@/components/map/labeled-curve';
+    LabeledLine,
+    type LabeledLineStyles,
+} from '@/components/map/labeled-line';
 import type { RouteStepData } from '@/types/route-step';
 
 export type RouteStepProps = {
     id: string;
     step: RouteStepData;
     label?: ReactNode;
-    styles: LabeledCurveStyles;
+    styles: LabeledLineStyles;
     selected?: boolean;
     onClick?: () => void;
 };
@@ -30,7 +30,7 @@ export const RouteStep = ({
     const { coordinates } = step.geometry;
 
     return (
-        <LabeledCurve
+        <LabeledLine
             id={id}
             from={coordinates[0]!}
             to={coordinates[coordinates.length - 1]!}

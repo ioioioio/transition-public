@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import type { LabeledCurveStyles } from '@/components/map/labeled-curve';
+import type { LabeledLineStyles } from '@/components/map/labeled-line';
 import { RoutePath } from '@/components/map/route-path';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
@@ -13,7 +13,7 @@ import { formatDuration } from '@/utils/format';
 const createRoutePathStyles = (
     rank: number,
     count: number,
-): LabeledCurveStyles => {
+): LabeledLineStyles => {
     // From 0 for the fastest to 1 for the slowest
     const slowness = count > 1 ? rank / (count - 1) : 0;
     const side = rank % 2 === 0 ? 1 : -1;

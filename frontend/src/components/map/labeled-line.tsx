@@ -8,7 +8,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
 import { createCurve, getPointAlong } from '@/utils/geo';
 
-export type LabeledCurveStyles = {
+export type LabeledLineStyles = {
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
     /** Dash and gap lengths, in line widths. Solid when omitted. */
@@ -17,13 +17,13 @@ export type LabeledCurveStyles = {
     labelPosition?: number;
 };
 
-export type LabeledCurveProps = {
+export type LabeledLineProps = {
     id: string;
     /** As `[longitude, latitude]`. */
     from: Position;
     /** As `[longitude, latitude]`. */
     to: Position;
-    styles: LabeledCurveStyles;
+    styles: LabeledLineStyles;
     selected?: boolean;
     /** Shown in a pill on the arc. */
     label?: ReactNode;
@@ -31,7 +31,7 @@ export type LabeledCurveProps = {
 };
 
 // An arc between two points, with an optional label on it
-export const LabeledCurve = ({
+export const LabeledLine = ({
     id,
     from,
     to,
@@ -39,7 +39,7 @@ export const LabeledCurve = ({
     selected = false,
     label,
     onClick,
-}: LabeledCurveProps) => {
+}: LabeledLineProps) => {
     const { bend, dashArray, labelPosition = 0.5 } = styles;
     const color = useThemeColor(selected ? '--primary' : '--foreground');
     const curve = createCurve(from, to, bend);
@@ -82,19 +82,19 @@ export const LabeledCurve = ({
                 />
             </Source>
             {label && (
-                <CurveLabel
+                <LineLabel
                     position={getPointAlong(curve, labelPosition)}
                     selected={selected}
                     onClick={onClick}
                 >
                     {label}
-                </CurveLabel>
+                </LineLabel>
             )}
         </>
     );
 };
 
-type CurveLabelProps = {
+type LineLabelProps = {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
@@ -102,12 +102,12 @@ type CurveLabelProps = {
     children: ReactNode;
 };
 
-const CurveLabel = ({
+const LineLabel = ({
     position,
     selected,
     onClick,
     children,
-}: CurveLabelProps) => {
+}: LineLabelProps) => {
     const [longitude, latitude] = position;
 
     return (
