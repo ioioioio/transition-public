@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { RoutePath } from '@/components/map/route-path';
-import type { RouteStepStyles } from '@/components/map/route-step';
+import { RoutePathLayer } from '@/components/map/route-path-layer';
+import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
 import type { RouteStepData } from '@/types/route-step';
@@ -13,7 +13,7 @@ import { formatDuration } from '@/utils/format';
 const createRoutePathStyles = (
     rank: number,
     count: number,
-): RouteStepStyles => {
+): RouteStepLayerStyles => {
     // From 0 for the fastest to 1 for the slowest
     const slowness = count > 1 ? rank / (count - 1) : 0;
     const side = rank % 2 === 0 ? 1 : -1;
@@ -38,13 +38,17 @@ const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
     );
 };
 
-type RoutePathsProps = {
+type RoutePathLayersProps = {
     routes: RouteAlternative[];
     selectedId: string | null;
     onSelect: (id: string | null) => void;
 };
 
-const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
+const RoutePathLayers = ({
+    routes,
+    selectedId,
+    onSelect,
+}: RoutePathLayersProps) => {
     const toggle = (id: string) => onSelect(selectedId === id ? null : id);
 
     const drawnRoutes = routes
@@ -54,7 +58,7 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
         );
 
     return drawnRoutes.map(({ id, steps }, rank) => (
-        <RoutePath
+        <RoutePathLayer
             key={id}
             id={`route-${id}`}
             steps={steps}
@@ -71,4 +75,4 @@ const RoutePaths = ({ routes, selectedId, onSelect }: RoutePathsProps) => {
     ));
 };
 
-export default RoutePaths;
+export default RoutePathLayers;

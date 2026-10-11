@@ -8,17 +8,17 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
 import { getPointAlong } from '@/utils/geo';
 
-export type LabeledLineStyles = {
+export type LabeledLineLayerStyles = {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
     dashArray?: [number, number];
     /** Where the label sits along the line, from `0` (start) to `1` (end). */
     labelPosition?: number;
 };
 
-export type LabeledLineProps = {
+export type LabeledLineLayerProps = {
     id: string;
     line: LineString;
-    styles: LabeledLineStyles;
+    styles: LabeledLineLayerStyles;
     selected?: boolean;
     /** Shown in a pill on the line. */
     label?: ReactNode;
@@ -26,14 +26,14 @@ export type LabeledLineProps = {
 };
 
 // A line, with an optional label on it
-export const LabeledLine = ({
+export const LabeledLineLayer = ({
     id,
     line,
     styles,
     selected = false,
     label,
     onClick,
-}: LabeledLineProps) => {
+}: LabeledLineLayerProps) => {
     const { dashArray, labelPosition = 0.5 } = styles;
     const color = useThemeColor(selected ? '--primary' : '--foreground');
     const hitLayerId = `${id}-hit`;

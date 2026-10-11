@@ -1,34 +1,34 @@
 import type { ReactNode } from 'react';
 
 import {
-    LabeledLine,
-    type LabeledLineStyles,
-} from '@/components/map/labeled-line';
+    LabeledLineLayer,
+    type LabeledLineLayerStyles,
+} from '@/components/map/labeled-line-layer';
 import type { RouteStepData } from '@/types/route-step';
 import { createCurve } from '@/utils/geo';
 
-export type RouteStepStyles = LabeledLineStyles & {
+export type RouteStepLayerStyles = LabeledLineLayerStyles & {
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
 };
 
-export type RouteStepProps = {
+export type RouteStepLayerProps = {
     id: string;
     step: RouteStepData;
     label?: ReactNode;
-    styles: RouteStepStyles;
+    styles: RouteStepLayerStyles;
     selected?: boolean;
     onClick?: () => void;
 };
 
-export const RouteStep = ({
+export const RouteStepLayer = ({
     id,
     step,
     label,
     styles,
     selected,
     onClick,
-}: RouteStepProps) => {
+}: RouteStepLayerProps) => {
     // Stops aren't drawn
     if (step.activity === 'waitingAtStop') {
         return null;
@@ -44,7 +44,7 @@ export const RouteStep = ({
         : step.geometry;
 
     return (
-        <LabeledLine
+        <LabeledLineLayer
             id={id}
             line={line}
             styles={styles}

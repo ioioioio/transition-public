@@ -1,29 +1,32 @@
 import type { ReactNode } from 'react';
 
-import { RouteStep, type RouteStepStyles } from '@/components/map/route-step';
+import {
+    RouteStepLayer,
+    type RouteStepLayerStyles,
+} from '@/components/map/route-step-layer';
 import type { RouteStepData } from '@/types/route-step';
 
-export type RoutePathProps = {
+export type RoutePathLayerProps = {
     id: string;
     // Drawn in order, e.g. a single one for a path with one mode
     steps: RouteStepData[];
     renderStepLabel?: (step: RouteStepData) => ReactNode;
     // The same for all the steps of the path
-    styles: RouteStepStyles;
+    styles: RouteStepLayerStyles;
     selected?: boolean;
     onClick?: () => void;
 };
 
-export const RoutePath = ({
+export const RoutePathLayer = ({
     id,
     steps,
     renderStepLabel,
     styles,
     selected,
     onClick,
-}: RoutePathProps) => {
+}: RoutePathLayerProps) => {
     return steps.map((step, index) => (
-        <RouteStep
+        <RouteStepLayer
             key={index}
             id={`${id}-${index}`}
             step={step}
