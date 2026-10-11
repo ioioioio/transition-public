@@ -79,7 +79,14 @@ function TripComparison({
                 <MapView
                     mapView={mapView}
                     onViewChange={onMapViewChange}
-                    onMapClick={setOriginOrDestination}
+                    onMapClick={(position) => {
+                        // Clicking off the selected route only deselects it
+                        if (selectedRoute) {
+                            onSelectedRouteIdChange(null);
+                        } else {
+                            setOriginOrDestination(position);
+                        }
+                    }}
                 >
                     <RoutePaths
                         routes={routes}
