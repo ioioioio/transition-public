@@ -1,5 +1,4 @@
 import type { Api, Utils } from 'common';
-import { useState } from 'react';
 
 import { useRouteQuery } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
@@ -19,6 +18,8 @@ type TripComparisonProps = TripPlaces & {
     onTimeChange: (time: Api.TripTime) => void;
     mapView: MapViewState;
     onMapViewChange?: (view: MapViewState) => void;
+    selectedRouteId: string | null;
+    onSelectedRouteIdChange: (id: string | null) => void;
 };
 
 function TripComparison({
@@ -29,6 +30,8 @@ function TripComparison({
     onTimeChange,
     mapView,
     onMapViewChange,
+    selectedRouteId,
+    onSelectedRouteIdChange,
 }: TripComparisonProps) {
     const setOrigin = (place: PlaceRef | null) =>
         onPlacesChange({ origin: place, destination });
@@ -50,8 +53,8 @@ function TripComparison({
     const routes = routeQuery.data
         ? createSortedRouteAlternatives(routeQuery.data, order)
         : [];
-
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    // Not found when the URL is older than the routes
+    const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
 
     return (
         <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
@@ -68,8 +71,8 @@ function TripComparison({
                 <RouteSummaries
                     routes={routes}
                     order={order}
-                    selectedId={selectedId}
-                    onSelect={setSelectedId}
+                    selectedId={selectedRoute?.id ?? null}
+                    onSelect={onSelectedRouteIdChange}
                 />
             </SidePanel>
             <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
@@ -80,8 +83,8 @@ function TripComparison({
                 >
                     <RoutePaths
                         routes={routes}
-                        selectedId={selectedId}
-                        onSelect={setSelectedId}
+                        selectedId={selectedRoute?.id ?? null}
+                        onSelect={onSelectedRouteIdChange}
                     />
                     {originPosition && (
                         <PlaceMarker

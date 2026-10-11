@@ -25,11 +25,14 @@ const MapSearchSchema = Utils.LngLatSchema.extend({
 
 const TimeSearchSchema = Api.TripTimeSchema.optional().catch(undefined);
 
+const SelectedRouteSearchSchema = z.string().optional().catch(undefined);
+
 const TripSearchSchema = z.object({
     origin: PlaceSearchSchema,
     destination: PlaceSearchSchema,
     time: TimeSearchSchema,
     map: MapSearchSchema,
+    route: SelectedRouteSearchSchema,
 });
 
 export const Route = createFileRoute('/')({
@@ -68,6 +71,15 @@ function TripPage() {
         });
     };
 
+    const setSelectedRoute = (route: string | null) => {
+        void navigate({
+            search: (previous) => ({ ...previous, route: route ?? undefined }),
+            // Like panning, selecting isn't worth a history entry.
+            replace: true,
+            resetScroll: false,
+        });
+    };
+
     return (
         <TripComparison
             origin={search.origin ?? null}
@@ -77,6 +89,8 @@ function TripPage() {
             onTimeChange={setTime}
             mapView={search.map ?? mapDefaultView}
             onMapViewChange={setMapView}
+            selectedRouteId={search.route ?? null}
+            onSelectedRouteIdChange={setSelectedRoute}
         />
     );
 }
