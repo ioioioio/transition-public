@@ -12,7 +12,8 @@
         "time": "Time",
         "timeType": "Leave or arrive",
         "departAt": "Leave at",
-        "arriveAt": "Arrive by"
+        "arriveAt": "Arrive by",
+        "loadingRoutes": "Calculating routes…"
     },
     "routeMode": {
         "driving": "Driving",

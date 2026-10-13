@@ -12,7 +12,8 @@
         "time": "Heure",
         "timeType": "Départ ou arrivée",
         "departAt": "Partir à",
-        "arriveAt": "Arriver à"
+        "arriveAt": "Arriver à",
+        "loadingRoutes": "Calcul des trajets…"
     },
     "routeMode": {
         "driving": "Auto",

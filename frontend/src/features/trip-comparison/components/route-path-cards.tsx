@@ -9,6 +9,7 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import type {
     RouteAlternative,
@@ -155,6 +156,7 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
 
 type RoutePathCardsProps = {
     routes: RouteAlternative[];
+    isLoading: boolean;
     order: RouteAlternativeOrder;
     selectedId: string | null;
     onSelect: (id: string | null) => void;
@@ -162,10 +164,27 @@ type RoutePathCardsProps = {
 
 const RoutePathCards = ({
     routes,
+    isLoading,
     order,
     selectedId,
     onSelect,
 }: RoutePathCardsProps) => {
+    const { t } = useTranslation();
+    if (isLoading) {
+        return (
+            <div role="status" className="flex flex-col gap-2">
+                <span className="sr-only">
+                    {t('tripComparison.loadingRoutes')}
+                </span>
+                {Array.from({ length: 3 }, (_, index) => (
+                    <Skeleton
+                        key={index}
+                        className="h-18.5 rounded-lg motion-reduce:animate-none"
+                    />
+                ))}
+            </div>
+        );
+    }
     return (
         <Accordion
             className="gap-2"

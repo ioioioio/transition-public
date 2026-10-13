@@ -70,6 +70,7 @@ function TripComparison({
                 />
                 <RoutePathCards
                     routes={routes}
+                    isLoading={routeQuery.isFetching}
                     order={order}
                     selectedId={selectedRoute?.id ?? null}
                     onSelect={onSelectedRouteIdChange}
