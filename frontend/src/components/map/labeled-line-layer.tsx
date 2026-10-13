@@ -87,6 +87,15 @@ export const LabeledLineLayer = ({
     );
 };
 
+const stopPropagation = (event: Event) => event.stopPropagation();
+
+// So clicking a label twice doesn't zoom. Layers need to be handled
+// differently, see MapView.
+const stopGesturesReachingMap = (button: HTMLButtonElement | null) => {
+    button?.addEventListener('dblclick', stopPropagation);
+    button?.addEventListener('touchstart', stopPropagation);
+};
+
 type LineLabelProps = {
     /** As `[longitude, latitude]`. */
     position: Position;
@@ -115,6 +124,7 @@ const LineLabel = ({
             }}
         >
             <button
+                ref={stopGesturesReachingMap}
                 type="button"
                 aria-pressed={selected}
                 className={cn(
