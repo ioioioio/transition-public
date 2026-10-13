@@ -98,9 +98,7 @@ const TripComparisonForm = ({
                         <ToggleGroupItem
                             key={type}
                             value={type}
-                            // Buttons overlap by their border, so their shared edge is
-                            // drawn by the focused one, then by the selected one
-                            className="bg-card not-first:-ms-px not-first:border-s! focus-visible:z-20 aria-pressed:z-10 aria-pressed:border-primary aria-pressed:bg-card aria-pressed:text-primary aria-pressed:hover:text-primary"
+                            className="bg-card not-first:border-s! aria-pressed:border-primary aria-pressed:bg-card aria-pressed:text-primary aria-pressed:hover:text-primary"
                         >
                             {timeTypeLabels[type]}
                         </ToggleGroupItem>
