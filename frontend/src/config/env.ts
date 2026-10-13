@@ -30,7 +30,7 @@ const getHourListEnv = (key: string): number[] => {
     return hours;
 };
 
-export const mapDefaultView = {
+export const mapDefaultCamera = {
     lng: getNumberEnv('VITE_MAP_DEFAULT_LONGITUDE'),
     lat: getNumberEnv('VITE_MAP_DEFAULT_LATITUDE'),
     zoom: getNumberEnv('VITE_MAP_DEFAULT_ZOOM'),

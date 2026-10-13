@@ -2,7 +2,7 @@ import type { Api, Utils } from 'common';
 
 import { useRouteQuery } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
-import MapView, { type MapViewState } from '@/components/map/map-view';
+import MapView, { type MapCamera } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
 import RoutePathCards from '@/features/trip-comparison/components/route-path-cards';
 import RoutePathLayers from '@/features/trip-comparison/components/route-path-layers';
@@ -16,8 +16,8 @@ type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
     time: Api.TripTime;
     onTimeChange: (time: Api.TripTime) => void;
-    mapView: MapViewState;
-    onMapViewChange?: (view: MapViewState) => void;
+    mapCamera: MapCamera;
+    onMapCameraChange?: (camera: MapCamera) => void;
     selectedRouteId: string | null;
     onSelectedRouteIdChange: (id: string | null) => void;
 };
@@ -28,8 +28,8 @@ function TripComparison({
     onPlacesChange,
     time,
     onTimeChange,
-    mapView,
-    onMapViewChange,
+    mapCamera,
+    onMapCameraChange,
     selectedRouteId,
     onSelectedRouteIdChange,
 }: TripComparisonProps) {
@@ -66,7 +66,7 @@ function TripComparison({
                     onDestinationChange={setDestination}
                     time={time}
                     onTimeChange={onTimeChange}
-                    searchFocus={mapView}
+                    searchFocus={mapCamera}
                 />
                 <RoutePathCards
                     routes={routes}
@@ -77,8 +77,8 @@ function TripComparison({
             </SidePanel>
             <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
                 <MapView
-                    mapView={mapView}
-                    onViewChange={onMapViewChange}
+                    camera={mapCamera}
+                    onCameraChange={onMapCameraChange}
                     onMapClick={(position) => {
                         // Clicking off the selected route only deselects it
                         if (selectedRoute) {

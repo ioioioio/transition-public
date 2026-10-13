@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Api, Utils } from 'common';
 import { z } from 'zod';
 
-import type { MapViewState } from '@/components/map/map-view';
-import { mapDefaultView } from '@/config/env';
+import type { MapCamera } from '@/components/map/map-view';
+import { mapDefaultCamera } from '@/config/env';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { defaultTripTime } from '@/features/trip-comparison/utils/trip-time';
@@ -62,7 +62,7 @@ function TripPage() {
         });
     };
 
-    const setMapView = (map: MapViewState) => {
+    const setMapCamera = (map: MapCamera) => {
         void navigate({
             search: (previous) => ({ ...previous, map }),
             // Panning isn't worth a history entry.
@@ -87,8 +87,8 @@ function TripPage() {
             onPlacesChange={setPlaces}
             time={search.time ?? defaultTripTime}
             onTimeChange={setTime}
-            mapView={search.map ?? mapDefaultView}
-            onMapViewChange={setMapView}
+            mapCamera={search.map ?? mapDefaultCamera}
+            onMapCameraChange={setMapCamera}
             selectedRouteId={search.route ?? null}
             onSelectedRouteIdChange={setSelectedRoute}
         />
