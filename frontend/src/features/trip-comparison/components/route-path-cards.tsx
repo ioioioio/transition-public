@@ -57,19 +57,15 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     );
 };
 
-type RouteSummaryItemProps = {
+type RoutePathCardProps = {
     id: string;
     summary: RouteSummary;
     steps: RouteStepData[];
     badge?: ReactNode;
 };
 
-const RouteSummaryItem = ({
-    id,
-    summary,
-    steps,
-    badge,
-}: RouteSummaryItemProps) => {
+// An accordion item, styled as a card
+const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
     const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
@@ -157,19 +153,19 @@ const RouteSummaryItem = ({
     );
 };
 
-type RouteSummariesProps = {
+type RoutePathCardsProps = {
     routes: RouteAlternative[];
     order: RouteAlternativeOrder;
     selectedId: string | null;
     onSelect: (id: string | null) => void;
 };
 
-const RouteSummaries = ({
+const RoutePathCards = ({
     routes,
     order,
     selectedId,
     onSelect,
-}: RouteSummariesProps) => {
+}: RoutePathCardsProps) => {
     return (
         <Accordion
             className="gap-2"
@@ -177,7 +173,7 @@ const RouteSummaries = ({
             onValueChange={(value: string[]) => onSelect(value.at(0) ?? null)}
         >
             {routes.map(({ id, summary, steps }, index) => (
-                <RouteSummaryItem
+                <RoutePathCard
                     key={id}
                     id={id}
                     summary={summary}
@@ -192,4 +188,4 @@ const RouteSummaries = ({
     );
 };
 
-export default RouteSummaries;
+export default RoutePathCards;

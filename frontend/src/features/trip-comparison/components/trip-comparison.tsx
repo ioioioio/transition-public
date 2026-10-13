@@ -4,8 +4,8 @@ import { useRouteQuery } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView, { type MapViewState } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
+import RoutePathCards from '@/features/trip-comparison/components/route-path-cards';
 import RoutePathLayers from '@/features/trip-comparison/components/route-path-layers';
-import RouteSummaries from '@/features/trip-comparison/components/route-summaries';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
@@ -68,7 +68,7 @@ function TripComparison({
                     onTimeChange={onTimeChange}
                     searchFocus={mapView}
                 />
-                <RouteSummaries
+                <RoutePathCards
                     routes={routes}
                     order={order}
                     selectedId={selectedRoute?.id ?? null}
