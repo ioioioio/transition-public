@@ -5,8 +5,8 @@
     "type": "module",
     "scripts": {
         "build": "tsc && node build.ts",
+        "codegen": "npx orval",
         "dev": "tsx watch --env-file=../.env src/index.ts",
-        "gen:transition-api": "npx orval",
         "lint": "eslint .",
         "format": "npx prettier . -w",
         "start": "node --env-file=../.env dist/index.js"

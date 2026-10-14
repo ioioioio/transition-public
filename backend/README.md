@@ -15,5 +15,5 @@ Do not edit the generated files: regenerate them instead, e.g. when Transition's
 2. Generate the code:
 
     ```sh
-    npm run gen:transition-api
+    npm run codegen
     ```
