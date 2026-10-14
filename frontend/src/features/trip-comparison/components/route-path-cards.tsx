@@ -11,6 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
+import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
 import type {
     RouteAlternative,
     RouteAlternativeOrder,
@@ -70,6 +71,7 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
     const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
+    const { getWalkingToLabel, getWaitingAtLabel } = useTransitStepLabels();
     const describeStep = (
         step: RouteStepData,
     ): { icon: ReactNode; label: string } => {
@@ -78,7 +80,7 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
             case 'walkingToStop':
                 return {
                     icon: <RouteStepIcon step={step} />,
-                    label: t('transitStep.walkingToStop'),
+                    label: getWalkingToLabel(step.boardingMode),
                 };
             case 'walkingToDestination':
                 return {
@@ -88,7 +90,7 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
             case 'waitingAtStop':
                 return {
                     icon: <RouteStepIcon step={step} decorative />,
-                    label: t('transitStep.waitingAtStop'),
+                    label: getWaitingAtLabel(step.boardingMode),
                 };
             case 'inVehicle':
                 return {

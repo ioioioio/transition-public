@@ -36,14 +36,17 @@ const isTransitRouteResultEntry = (
 ): entry is ['transit', TransitRouteResult] =>
     entry[0] === 'transit' && entry[1] !== undefined;
 
-// Longest first, without walking. Unknown modes become `other`.
+// A mode unknown to the app becomes `other`
+const getKnownMode = (mode: string): Mode => (isMode(mode) ? mode : 'other');
+
+// Longest first, without walking
 const sortTransitModesByDistance = (
     path: TransitRouteResult['paths'][number],
 ): Mode[] => {
     const distances = new Map<Mode, number>();
     for (const step of path.steps) {
         if (step.action === 'unboarding') {
-            const mode = isMode(step.mode) ? step.mode : 'other';
+            const mode = getKnownMode(step.mode);
             distances.set(
                 mode,
                 (distances.get(mode) ?? 0) + step.inVehicleDistance,
@@ -87,19 +90,35 @@ const createTransitSteps = (
         switch (step.action) {
             case 'walking': {
                 const next = path.steps.at(index + 1);
-                const toStop = next?.action === 'boarding';
-                const to = toStop ? next.nodeCoordinates : destination;
-                steps.push({
-                    activity: toStop ? 'walkingToStop' : 'walkingToDestination',
-                    geometry: { type: 'LineString', coordinates: [from, to] },
-                    durationSeconds: step.travelTime,
-                });
-                from = to;
+                if (next?.action === 'boarding') {
+                    const to = next.nodeCoordinates;
+                    steps.push({
+                        activity: 'walkingToStop',
+                        boardingMode: getKnownMode(next.mode),
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: [from, to],
+                        },
+                        durationSeconds: step.travelTime,
+                    });
+                    from = to;
+                } else {
+                    steps.push({
+                        activity: 'walkingToDestination',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: [from, destination],
+                        },
+                        durationSeconds: step.travelTime,
+                    });
+                    from = destination;
+                }
                 break;
             }
             case 'boarding':
                 steps.push({
                     activity: 'waitingAtStop',
+                    boardingMode: getKnownMode(step.mode),
                     geometry: {
                         type: 'Point',
                         coordinates: step.nodeCoordinates,
@@ -112,7 +131,7 @@ const createTransitSteps = (
                 const to = step.nodeCoordinates;
                 steps.push({
                     activity: 'inVehicle',
-                    mode: isMode(step.mode) ? step.mode : 'other',
+                    mode: getKnownMode(step.mode),
                     geometry: { type: 'LineString', coordinates: [from, to] },
                     durationSeconds: step.inVehicleTime,
                 });

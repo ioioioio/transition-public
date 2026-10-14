@@ -27,8 +27,16 @@
         "travelTime": "Fastest"
     },
     "transitStep": {
-        "walkingToStop": "To the stop",
-        "waitingAtStop": "Waiting at the stop",
+        "walkingTo": {
+            "stop": "To the stop",
+            "station": "To the station",
+            "trainStation": "To the station"
+        },
+        "waitingAt": {
+            "stop": "Waiting at the stop",
+            "station": "Waiting at the station",
+            "trainStation": "Waiting at the station"
+        },
         "walkingToDestination": "To your destination"
     }
 }

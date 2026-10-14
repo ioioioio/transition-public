@@ -25,6 +25,7 @@ const createTransitionRouteBody = ({
     routingModes,
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
+    maxTotalTravelTimeSeconds: 172800,
 });
 
 const handleRoute = async (req: express.Request, res: express.Response) => {
