@@ -154,6 +154,16 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
     );
 };
 
+const RoutePathCardSkeleton = () => (
+    <div className="flex h-18.5 items-center gap-3 rounded-lg px-4 ring-1 ring-foreground/10 ring-inset">
+        <Skeleton className="size-4.5 rounded-full motion-reduce:animate-none" />
+        <div className="flex flex-col gap-2.5">
+            <Skeleton className="h-3 w-16 motion-reduce:animate-none" />
+            <Skeleton className="h-4 w-14 motion-reduce:animate-none" />
+        </div>
+    </div>
+);
+
 type RoutePathCardsProps = {
     routes: RouteAlternative[];
     isLoading: boolean;
@@ -177,10 +187,7 @@ const RoutePathCards = ({
                     {t('tripComparison.loadingRoutes')}
                 </span>
                 {Array.from({ length: 3 }, (_, index) => (
-                    <Skeleton
-                        key={index}
-                        className="h-18.5 rounded-lg motion-reduce:animate-none"
-                    />
+                    <RoutePathCardSkeleton key={index} />
                 ))}
             </div>
         );
