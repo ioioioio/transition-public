@@ -1,8 +1,9 @@
 import express from 'express';
-import { Api, Transition } from 'common';
+import { Api } from 'common';
 import { createRouteAlternatives } from '../transition/route-alternatives';
 import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
+import * as TransitionSchema from '../transition/generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
 import { getEnv, getListEnv } from '../utils/env';
 import { createPointFeature } from '../utils/geo';
@@ -42,7 +43,7 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
         throw new ApiError(response.status, response.data);
     }
     const transitionResponse = parseUpstreamResponse(
-        Transition.Schema.PostApiV1RouteResponse,
+        TransitionSchema.PostApiV1RouteResponse,
         response.data,
     );
     res.json(
