@@ -19,6 +19,8 @@
         "driving": "Driving",
         "walking": "Walking",
         "bus": "Bus",
+        "metro": "Metro",
+        "rail": "Train",
         "other": "Other"
     },
     "bestRoute": {

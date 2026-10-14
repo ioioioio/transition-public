@@ -8,6 +8,8 @@ export const useModeLabels = (): Record<Mode, string> => {
         driving: t('routeMode.driving'),
         walking: t('routeMode.walking'),
         bus: t('routeMode.bus'),
+        metro: t('routeMode.metro'),
+        rail: t('routeMode.rail'),
         other: t('routeMode.other'),
     };
 };
