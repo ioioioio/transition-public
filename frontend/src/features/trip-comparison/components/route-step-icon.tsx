@@ -1,12 +1,12 @@
 import { ClockIcon, type Icon } from '@phosphor-icons/react';
+import type { Api } from 'common';
 
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
 import { useModeLabels } from '@/hooks/use-mode-labels';
-import type { RouteStepData } from '@/types/route-step';
 import { modeIcons } from '@/utils/mode';
 
 type RouteStepIconProps = {
-    step: RouteStepData;
+    step: Api.RouteStep;
     // Hidden from screen readers, when the text next to it already says it
     decorative?: boolean;
     className?: string;

@@ -1,16 +1,16 @@
+import type { Api } from 'common';
 import type { ReactNode } from 'react';
 
 import {
     RouteStepLayer,
     type RouteStepLayerStyles,
 } from '@/components/map/route-step-layer';
-import type { RouteStepData } from '@/types/route-step';
 
 export type RoutePathLayerProps = {
     id: string;
     // Drawn in order, e.g. a single one for a path with one mode
-    steps: RouteStepData[];
-    renderStepLabel?: (step: RouteStepData) => ReactNode;
+    steps: Api.RouteStep[];
+    renderStepLabel?: (step: Api.RouteStep) => ReactNode;
     // The same for all the steps of the path
     styles: RouteStepLayerStyles;
     selected?: boolean;

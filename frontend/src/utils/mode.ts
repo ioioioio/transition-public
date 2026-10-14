@@ -7,22 +7,9 @@ import {
     TrainIcon,
     type Icon,
 } from '@phosphor-icons/react';
+import type { Api } from 'common';
 
-export const modes = [
-    'bus',
-    'driving',
-    'metro',
-    'rail',
-    'walking',
-    'other',
-] as const;
-
-export type Mode = (typeof modes)[number];
-
-export const isMode = (value: string): value is Mode =>
-    (modes as readonly string[]).includes(value);
-
-export const modeIcons: Record<Mode, Icon> = {
+export const modeIcons: Record<Api.Mode, Icon> = {
     bus: BusIcon,
     driving: CarIcon,
     metro: SubwayIcon,

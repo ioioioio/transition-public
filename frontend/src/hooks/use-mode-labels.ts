@@ -1,8 +1,7 @@
+import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
-import type { Mode } from '@/utils/mode';
-
-export const useModeLabels = (): Record<Mode, string> => {
+export const useModeLabels = (): Record<Api.Mode, string> => {
     const { t } = useTranslation();
     return {
         driving: t('routeMode.driving'),

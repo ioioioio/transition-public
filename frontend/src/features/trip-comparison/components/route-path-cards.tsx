@@ -1,4 +1,5 @@
 import { RulerIcon } from '@phosphor-icons/react';
+import type { Api } from 'common';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,13 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
-import type {
-    RouteAlternative,
-    RouteAlternativeOrder,
-    RouteSummary,
-} from '@/features/trip-comparison/types/route-alternative';
+import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
 import { useModeLabels } from '@/hooks/use-mode-labels';
-import type { RouteStepData } from '@/types/route-step';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
 
@@ -61,8 +57,8 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
 
 type RoutePathCardProps = {
     id: string;
-    summary: RouteSummary;
-    steps: RouteStepData[];
+    summary: Api.RouteSummary;
+    steps: Api.RouteStep[];
     badge?: ReactNode;
 };
 
@@ -73,7 +69,7 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
     const modeLabels = useModeLabels();
     const { getWalkingToLabel, getWaitingAtLabel } = useTransitStepLabels();
     const describeStep = (
-        step: RouteStepData,
+        step: Api.RouteStep,
     ): { icon: ReactNode; label: string } => {
         switch (step.activity) {
             // The text doesn't say it's on foot, the icon does
@@ -167,7 +163,7 @@ const RoutePathCardSkeleton = () => (
 );
 
 type RoutePathCardsProps = {
-    routes: RouteAlternative[];
+    routes: Api.RouteAlternative[];
     isLoading: boolean;
     order: RouteAlternativeOrder;
     selectedId: string | null;

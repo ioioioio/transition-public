@@ -1,6 +1,6 @@
 import type { LineString, Point } from 'geojson';
 
-import type { Mode } from '@/utils/mode';
+import type { Mode } from './mode';
 
 type WalkingToStopStep = {
     activity: 'walkingToStop';
@@ -32,5 +32,19 @@ type VehicleStep = {
 };
 
 // A step of a route, by what's done during it
-export type RouteStepData =
+export type RouteStep =
     WalkingToStopStep | WalkingToDestinationStep | WaitingStep | VehicleStep;
+
+export type RouteSummary = {
+    // Main one first, by a chosen criterion
+    rankedModes: Mode[];
+    travelTimeSeconds: number;
+    distanceMeters: number;
+};
+
+// A way to make the trip
+export type RouteAlternative = {
+    id: string;
+    summary: RouteSummary;
+    steps: RouteStep[];
+};

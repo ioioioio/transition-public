@@ -1,10 +1,10 @@
+import type { Api } from 'common';
 import type { ReactNode } from 'react';
 
 import {
     LabeledLineLayer,
     type LabeledLineLayerStyles,
 } from '@/components/map/labeled-line-layer';
-import type { RouteStepData } from '@/types/route-step';
 import { createCurve } from '@/utils/geo';
 
 export type RouteStepLayerStyles = LabeledLineLayerStyles & {
@@ -14,7 +14,7 @@ export type RouteStepLayerStyles = LabeledLineLayerStyles & {
 
 export type RouteStepLayerProps = {
     id: string;
-    step: RouteStepData;
+    step: Api.RouteStep;
     label?: ReactNode;
     styles: RouteStepLayerStyles;
     selected?: boolean;

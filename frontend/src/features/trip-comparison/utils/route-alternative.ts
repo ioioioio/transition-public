@@ -1,17 +1,12 @@
-import type { Api } from 'common';
+import { Api } from 'common';
 import type { Position } from 'geojson';
 
-import type {
-    RouteAlternative,
-    RouteAlternativeOrder,
-} from '@/features/trip-comparison/types/route-alternative';
-import type { RouteStepData } from '@/types/route-step';
-import { isMode, type Mode } from '@/utils/mode';
+import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
 
 const unimodalRoutingModes = [
     'driving',
     'walking',
-] as const satisfies readonly Mode[];
+] as const satisfies readonly Api.Mode[];
 
 type UnimodalRoutingMode = (typeof unimodalRoutingModes)[number];
 
@@ -37,13 +32,14 @@ const isTransitRouteResultEntry = (
     entry[0] === 'transit' && entry[1] !== undefined;
 
 // A mode unknown to the app becomes `other`
-const getKnownMode = (mode: string): Mode => (isMode(mode) ? mode : 'other');
+const getKnownMode = (mode: string): Api.Mode =>
+    Api.isMode(mode) ? mode : 'other';
 
 // Longest first, without walking
 const sortTransitModesByDistance = (
     path: TransitRouteResult['paths'][number],
-): Mode[] => {
-    const distances = new Map<Mode, number>();
+): Api.Mode[] => {
+    const distances = new Map<Api.Mode, number>();
     for (const step of path.steps) {
         if (step.action === 'unboarding') {
             const mode = getKnownMode(step.mode);
@@ -59,7 +55,7 @@ const sortTransitModesByDistance = (
 const createUnimodalStep = (
     routingMode: UnimodalRoutingMode,
     path: UnimodalRouteResult['paths'][number],
-): RouteStepData => {
+): Api.RouteStep => {
     switch (routingMode) {
         case 'walking':
             return {
@@ -83,8 +79,8 @@ const createTransitSteps = (
     path: TransitRouteResult['paths'][number],
     origin: Position,
     destination: Position,
-): RouteStepData[] => {
-    const steps: RouteStepData[] = [];
+): Api.RouteStep[] => {
+    const steps: Api.RouteStep[] = [];
     let from = origin;
     path.steps.forEach((step, index) => {
         switch (step.action) {
@@ -151,7 +147,7 @@ const createRouteAlternative = (
     origin: Position,
     destination: Position,
     scenarioId: string | null,
-): RouteAlternative | null => {
+): Api.RouteAlternative | null => {
     if (isUnimodalRouteResultEntry(entry)) {
         const [routingMode, result] = entry;
         const path = result.paths.at(0);
@@ -190,7 +186,7 @@ const createRouteAlternative = (
 export const createRouteAlternatives = ({
     query,
     result,
-}: Api.RouteResponse): RouteAlternative[] => {
+}: Api.RouteResponse): Api.RouteAlternative[] => {
     const origin = query.originGeojson.geometry.coordinates;
     const destination = query.destinationGeojson.geometry.coordinates;
     const scenarioId =
@@ -204,7 +200,7 @@ export const createRouteAlternatives = ({
 
 const compareRouteAlternatives: Record<
     RouteAlternativeOrder,
-    (a: RouteAlternative, b: RouteAlternative) => number
+    (a: Api.RouteAlternative, b: Api.RouteAlternative) => number
 > = {
     travelTime: (a, b) =>
         a.summary.travelTimeSeconds - b.summary.travelTimeSeconds,
@@ -213,5 +209,5 @@ const compareRouteAlternatives: Record<
 export const createSortedRouteAlternatives = (
     response: Api.RouteResponse,
     order: RouteAlternativeOrder,
-): RouteAlternative[] =>
+): Api.RouteAlternative[] =>
     createRouteAlternatives(response).toSorted(compareRouteAlternatives[order]);

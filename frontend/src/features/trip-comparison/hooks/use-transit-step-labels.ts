@@ -1,11 +1,10 @@
+import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
-
-import type { Mode } from '@/utils/mode';
 
 type StopKind = 'stop' | 'station' | 'trainStation';
 
 // Where a vehicle of the given mode is boarded
-const getStopKind = (mode: Mode): StopKind => {
+const getStopKind = (mode: Api.Mode): StopKind => {
     switch (mode) {
         case 'metro':
             return 'station';
@@ -30,9 +29,9 @@ export const useTransitStepLabels = () => {
         trainStation: t('transitStep.waitingAt.trainStation'),
     };
     return {
-        getWalkingToLabel: (boardingMode: Mode) =>
+        getWalkingToLabel: (boardingMode: Api.Mode) =>
             walkingToLabels[getStopKind(boardingMode)],
-        getWaitingAtLabel: (boardingMode: Mode) =>
+        getWaitingAtLabel: (boardingMode: Api.Mode) =>
             waitingAtLabels[getStopKind(boardingMode)],
     };
 };

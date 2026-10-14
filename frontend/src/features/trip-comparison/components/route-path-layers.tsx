@@ -1,10 +1,9 @@
+import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
-import type { RouteAlternative } from '@/features/trip-comparison/types/route-alternative';
-import type { RouteStepData } from '@/types/route-step';
 import { formatDuration } from '@/utils/format';
 
 /**
@@ -25,7 +24,7 @@ const createRoutePathStyles = (
 };
 
 type RouteStepLabelProps = {
-    step: RouteStepData;
+    step: Api.RouteStep;
 };
 
 const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
@@ -39,7 +38,7 @@ const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
 };
 
 type RoutePathLayersProps = {
-    routes: RouteAlternative[];
+    routes: Api.RouteAlternative[];
     selectedId: string | null;
     onSelect: (id: string | null) => void;
 };
