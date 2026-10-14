@@ -9,7 +9,9 @@ export const LngLatSchema = z.object({
 export type LngLat = z.infer<typeof LngLatSchema>;
 
 // As `[longitude, latitude]`
-const PositionSchema = z.array(z.number()).min(2);
+export const PositionSchema = z.array(z.number()).min(2);
+
+export type Position = z.infer<typeof PositionSchema>;
 
 export const PointSchema = z.object({
     type: z.literal('Point'),

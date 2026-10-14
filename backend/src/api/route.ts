@@ -1,5 +1,6 @@
 import express from 'express';
-import { Api } from 'common';
+import { Api, Transition } from 'common';
+import { createRouteAlternatives } from '../transition/route-alternatives';
 import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
@@ -40,7 +41,15 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
     if (response.status !== 200) {
         throw new ApiError(response.status, response.data);
     }
-    res.json(parseUpstreamResponse(Api.routeEndpoint.response, response.data));
+    const transitionResponse = parseUpstreamResponse(
+        Transition.Schema.PostApiV1RouteResponse,
+        response.data,
+    );
+    res.json(
+        Api.routeEndpoint.response.parse({
+            alternatives: createRouteAlternatives(transitionResponse),
+        }),
+    );
 };
 
 export const routeRouter = express.Router();

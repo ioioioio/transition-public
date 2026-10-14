@@ -9,7 +9,7 @@ import RoutePathLayers from '@/features/trip-comparison/components/route-path-la
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
-import { createSortedRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
+import { sortRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = TripPlaces & {
@@ -51,7 +51,7 @@ function TripComparison({
     const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
     const order: RouteAlternativeOrder = 'travelTime'; // Not configurable yet
     const routes = routeQuery.data
-        ? createSortedRouteAlternatives(routeQuery.data, order)
+        ? sortRouteAlternatives(routeQuery.data.alternatives, order)
         : [];
     // Not found when the URL is older than the routes
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
