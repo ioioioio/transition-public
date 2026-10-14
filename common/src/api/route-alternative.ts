@@ -1,50 +1,61 @@
-import type { LineString, Point } from 'geojson';
+import { z } from 'zod';
 
-import type { Mode } from './mode';
+import * as Utils from '../utils';
+import { ModeSchema } from './mode';
 
-type WalkingToStopStep = {
-    activity: 'walkingToStop';
+const WalkingToStopStepSchema = z.object({
+    activity: z.literal('walkingToStop'),
     // Of the vehicle boarded at the stop
-    boardingMode: Mode;
-    geometry: LineString;
-    durationSeconds: number;
-};
+    boardingMode: ModeSchema,
+    geometry: Utils.LineStringSchema,
+    durationSeconds: z.number(),
+});
 
-type WalkingToDestinationStep = {
-    activity: 'walkingToDestination';
-    geometry: LineString;
-    durationSeconds: number;
-};
+const WalkingToDestinationStepSchema = z.object({
+    activity: z.literal('walkingToDestination'),
+    geometry: Utils.LineStringSchema,
+    durationSeconds: z.number(),
+});
 
-type WaitingStep = {
-    activity: 'waitingAtStop';
+const WaitingStepSchema = z.object({
+    activity: z.literal('waitingAtStop'),
     // Of the vehicle waited for
-    boardingMode: Mode;
-    geometry: Point;
-    durationSeconds: number;
-};
+    boardingMode: ModeSchema,
+    geometry: Utils.PointSchema,
+    durationSeconds: z.number(),
+});
 
-type VehicleStep = {
-    activity: 'inVehicle';
-    mode: Mode;
-    geometry: LineString;
-    durationSeconds: number;
-};
+const VehicleStepSchema = z.object({
+    activity: z.literal('inVehicle'),
+    mode: ModeSchema,
+    geometry: Utils.LineStringSchema,
+    durationSeconds: z.number(),
+});
 
 // A step of a route, by what's done during it
-export type RouteStep =
-    WalkingToStopStep | WalkingToDestinationStep | WaitingStep | VehicleStep;
+export const RouteStepSchema = z.discriminatedUnion('activity', [
+    WalkingToStopStepSchema,
+    WalkingToDestinationStepSchema,
+    WaitingStepSchema,
+    VehicleStepSchema,
+]);
 
-export type RouteSummary = {
+export type RouteStep = z.infer<typeof RouteStepSchema>;
+
+export const RouteSummarySchema = z.object({
     // Main one first, by a chosen criterion
-    rankedModes: Mode[];
-    travelTimeSeconds: number;
-    distanceMeters: number;
-};
+    rankedModes: z.array(ModeSchema),
+    travelTimeSeconds: z.number(),
+    distanceMeters: z.number(),
+});
+
+export type RouteSummary = z.infer<typeof RouteSummarySchema>;
 
 // A way to make the trip
-export type RouteAlternative = {
-    id: string;
-    summary: RouteSummary;
-    steps: RouteStep[];
-};
+export const RouteAlternativeSchema = z.object({
+    id: z.string(),
+    summary: RouteSummarySchema,
+    steps: z.array(RouteStepSchema),
+});
+
+export type RouteAlternative = z.infer<typeof RouteAlternativeSchema>;

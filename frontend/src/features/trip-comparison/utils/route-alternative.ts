@@ -33,7 +33,7 @@ const isTransitRouteResultEntry = (
 
 // A mode unknown to the app becomes `other`
 const getKnownMode = (mode: string): Api.Mode =>
-    Api.isMode(mode) ? mode : 'other';
+    Api.ModeSchema.catch('other').parse(mode);
 
 // Longest first, without walking
 const sortTransitModesByDistance = (
