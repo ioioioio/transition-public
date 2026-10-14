@@ -40,6 +40,7 @@
         "distance": "Distance",
         "loadingRoutes": "Calcul des trajets…",
         "origin": "Origine",
+        "swapPlaces": "Inverser l’origine et la destination",
         "time": "Heure",
         "timeType": "Départ ou arrivée"
     }

@@ -40,6 +40,7 @@
         "distance": "Distance",
         "loadingRoutes": "Calculating routes…",
         "origin": "Origin",
+        "swapPlaces": "Swap origin and destination",
         "time": "Time",
         "timeType": "Leave or arrive"
     }
