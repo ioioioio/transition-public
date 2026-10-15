@@ -16,9 +16,17 @@ const MapConfigSchema = z.object({
 
 export type MapConfig = z.infer<typeof MapConfigSchema>;
 
+const RoutingSetupSchema = z.object({
+    scenarioId: z.uuid(),
+    modes: z.array(z.string().min(1)).min(1),
+});
+
+export type RoutingSetup = z.infer<typeof RoutingSetupSchema>;
+
 // Everything in it must be safe to expose to the browser, even by accident
 export const PublicConfigSchema = z.object({
     map: MapConfigSchema,
+    routingSetups: z.array(RoutingSetupSchema).min(1),
 });
 
 export type PublicConfig = z.infer<typeof PublicConfigSchema>;

@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc && node build.ts",
         "codegen": "npx orval",
-        "dev": "tsx watch --env-file=../.env src/index.ts",
+        "dev": "tsx watch --env-file=../.env --include ../config.public.json src/index.ts",
         "lint": "eslint .",
         "format": "npx prettier . -w",
         "start": "node --env-file=../.env dist/index.js"

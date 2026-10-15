@@ -5,12 +5,15 @@ import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
 import * as TransitionSchema from '../transition/generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from '../transition/generated/model';
-import { getEnv, getListEnv } from '../utils/env';
+import { config } from '../config';
 import { createPointFeature } from '../utils/geo';
 import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
 
-const scenarioId = getEnv('TRANSITION_SCENARIO_1_ID');
-const routingModes = getListEnv('TRANSITION_SCENARIO_1_MODES');
+// Only one routing setup is supported for now
+const [routingSetup] = config.routingSetups;
+if (routingSetup === undefined) {
+    throw new Error('Missing routing setup in config');
+}
 
 const createTransitionTime = ({ type, secondsSinceMidnight }: Api.TripTime) =>
     type === 'departure'
@@ -22,9 +25,9 @@ const createTransitionRouteBody = ({
     destination,
     time,
 }: Api.RouteBody): PostApiV1RouteBody => ({
-    scenarioId,
+    scenarioId: routingSetup.scenarioId,
     ...createTransitionTime(time),
-    routingModes,
+    routingModes: routingSetup.modes,
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
     maxTotalTravelTimeSeconds: 172800,
