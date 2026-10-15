@@ -12,6 +12,7 @@
   },
   "routingSetups": [
     {
+      "id": "base",
       "scenarioId": "83712744-6ce6-4058-8afb-234886f57255",
       "modes": ["driving", "transit", "walking"]
     }

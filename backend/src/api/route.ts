@@ -51,7 +51,10 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
     );
     res.json(
         Api.routeEndpoint.response.parse({
-            alternatives: createRouteAlternatives(transitionResponse),
+            alternatives: createRouteAlternatives(
+                transitionResponse,
+                routingSetup.id,
+            ),
         }),
     );
 };

@@ -152,7 +152,7 @@ const createRouteAlternative = (
     entry: [string, unknown],
     origin: Utils.Position,
     destination: Utils.Position,
-    scenarioId: string | null,
+    routingSetupId: string,
 ): Api.RouteAlternative | null => {
     if (isUnimodalRouteResultEntry(entry)) {
         const [routingMode, result] = entry;
@@ -161,7 +161,7 @@ const createRouteAlternative = (
             return null;
         }
         return {
-            id: `${routingMode}-0`,
+            id: `${routingSetupId}-${routingMode}`,
             summary: {
                 rankedModes: [routingMode],
                 travelTimeSeconds: path.travelTimeSeconds,
@@ -171,13 +171,13 @@ const createRouteAlternative = (
         };
     }
     if (isTransitRouteResultEntry(entry)) {
-        const [routingMode, result] = entry;
+        const [, result] = entry;
         const path = result.paths.at(0);
-        if (!path || scenarioId === null) {
+        if (!path) {
             return null;
         }
         return {
-            id: `${routingMode}-${scenarioId}-0`,
+            id: `${routingSetupId}-transit`,
             summary: {
                 rankedModes: sortTransitModesByDistance(path),
                 travelTimeSeconds: path.totalTravelTime,
@@ -189,17 +189,19 @@ const createRouteAlternative = (
     return null;
 };
 
-export const createRouteAlternatives = ({
-    query,
-    result,
-}: TransitionRouteResponse): Api.RouteAlternative[] => {
+export const createRouteAlternatives = (
+    { query, result }: TransitionRouteResponse,
+    routingSetupId: string,
+): Api.RouteAlternative[] => {
     const origin = query.originGeojson.geometry.coordinates;
     const destination = query.destinationGeojson.geometry.coordinates;
-    const scenarioId =
-        typeof query.scenarioId === 'string' ? query.scenarioId : null;
     return Object.entries(result).flatMap(
         (entry) =>
-            createRouteAlternative(entry, origin, destination, scenarioId) ??
-            [],
+            createRouteAlternative(
+                entry,
+                origin,
+                destination,
+                routingSetupId,
+            ) ?? [],
     );
 };
