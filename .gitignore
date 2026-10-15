@@ -1,3 +1,4 @@
 .env
+config.public.json
 .DS_Store
 node_modules

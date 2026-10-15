@@ -1,12 +1,40 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 
 const envDir = '..';
+
+const configFileName = 'config.public.json';
+
+const configPath = fileURLToPath(
+    new URL(`../${configFileName}`, import.meta.url),
+);
+
+const readConfig = (): string => {
+    if (!existsSync(configPath)) {
+        throw new Error(
+            `Missing ${configFileName} at the root: copy and edit config.public.json.example to start`,
+        );
+    }
+    return readFileSync(configPath, 'utf8');
+};
+
+const restartOnConfigChange = (): Plugin => ({
+    name: 'restart-on-config-change',
+    configureServer(server) {
+        server.watcher.add(configPath);
+        server.watcher.on('change', (file) => {
+            if (file === configPath) {
+                void server.restart();
+            }
+        });
+    },
+});
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -26,11 +54,13 @@ export default defineConfig(({ mode }) => {
             react(),
             babel({ presets: [reactCompilerPreset()] }),
             tailwindcss(),
+            restartOnConfigChange(),
         ],
         resolve: {
             alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
         },
         envDir,
+        define: { __CONFIG__: readConfig() },
         server: {
             proxy: { '/api': `http://localhost:${BACKEND_PORT}` },
         },

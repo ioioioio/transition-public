@@ -1,9 +1,13 @@
 import type { LineString, Point } from 'geojson';
 import { z } from 'zod';
 
+export const LongitudeSchema = z.number().min(-180).max(180);
+
+export const LatitudeSchema = z.number().min(-90).max(90);
+
 export const LngLatSchema = z.object({
-    lng: z.number().min(-180).max(180),
-    lat: z.number().min(-90).max(90),
+    lng: LongitudeSchema,
+    lat: LatitudeSchema,
 });
 
 export type LngLat = z.infer<typeof LngLatSchema>;

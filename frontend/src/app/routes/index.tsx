@@ -3,7 +3,7 @@ import { Api, Utils } from 'common';
 import { z } from 'zod';
 
 import type { MapCamera } from '@/components/map/map-view';
-import { mapDefaultCamera } from '@/config/env';
+import { config } from '@/config/config';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { defaultTripTime } from '@/features/trip-comparison/utils/trip-time';
@@ -87,7 +87,7 @@ function TripPage() {
             onPlacesChange={setPlaces}
             time={search.time ?? defaultTripTime}
             onTimeChange={setTime}
-            mapCamera={search.map ?? mapDefaultCamera}
+            mapCamera={search.map ?? config.map.defaultCamera}
             onMapCameraChange={setMapCamera}
             selectedRouteId={search.route ?? null}
             onSelectedRouteIdChange={setSelectedRoute}

@@ -5,7 +5,7 @@ import { setWorkerUrl, type LngLat } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import { useRef, useState, type ReactNode } from 'react';
 
-import { mapStyleDark, mapStyleLight } from '@/config/env';
+import { config } from '@/config/config';
 import {
     createLayerClickHandlers,
     LayerClickHandlersContext,
@@ -59,7 +59,7 @@ const MapView = ({
             style={{ width: '100%', height: '100%' }}
             // Attribution should always be visible so people don't forget to turn it on for screenshots
             attributionControl={{ compact: false }}
-            mapStyle={theme === 'light' ? mapStyleLight : mapStyleDark}
+            mapStyle={config.map.styles[theme]}
             onClick={(event) => {
                 const layerId = findClickedLayerId(event);
                 if (layerId) {
