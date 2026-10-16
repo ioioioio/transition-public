@@ -5,10 +5,6 @@ import { useTranslation } from 'react-i18next';
 import PlaceInput from '@/components/inputs/place-input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { config } from '@/config/config';
-import {
-    calculateHours,
-    calculateSecondsSinceMidnight,
-} from '@/features/trip-comparison/utils/trip-time';
 import type { PlaceRef } from '@/types/place';
 
 /**
@@ -43,7 +39,6 @@ const TripComparisonForm = ({
     searchFocus,
 }: TripComparisonFormProps) => {
     const { t, i18n } = useTranslation();
-    const hour = calculateHours(time.secondsSinceMidnight);
 
     const timeTypeLabels: Record<Api.TripTimeType, string> = {
         departure: t('tripComparison.departAt'),
@@ -108,17 +103,11 @@ const TripComparisonForm = ({
                     aria-label={t('tripComparison.time')}
                     variant="outline"
                     spacing={1.5}
-                    value={[String(hour)]}
+                    value={[String(time.hour)]}
                     onValueChange={([value]) => {
                         // Keep an hour selected when its button is pressed again
                         if (value) {
-                            onTimeChange({
-                                ...time,
-                                secondsSinceMidnight:
-                                    calculateSecondsSinceMidnight(
-                                        Number(value),
-                                    ),
-                            });
+                            onTimeChange({ ...time, hour: Number(value) });
                         }
                     }}
                 >

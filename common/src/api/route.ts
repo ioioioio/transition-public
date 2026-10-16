@@ -8,7 +8,7 @@ export type TripTimeType = z.infer<typeof TripTimeTypeSchema>;
 
 export const TripTimeSchema = z.object({
     type: TripTimeTypeSchema,
-    secondsSinceMidnight: z.int().min(0),
+    hour: z.int().min(0).max(23),
 });
 
 export type TripTime = z.infer<typeof TripTimeSchema>;

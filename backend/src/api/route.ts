@@ -19,10 +19,21 @@ const getRoutingSetup = (id: string): PublicConfig.RoutingSetup => {
     return routingSetup;
 };
 
-const createTransitionTime = ({ type, secondsSinceMidnight }: Api.TripTime) =>
-    type === 'departure'
+const checkTripHour = (hour: number) => {
+    if (!config.tripHours.includes(hour)) {
+        // Prevent users from trying arbitrary hours
+        throw new ApiError(400, { error: `Unsupported trip hour: ${hour}` });
+    }
+};
+
+const secondsPerHour = 60 * 60;
+
+const createTransitionTime = ({ type, hour }: Api.TripTime) => {
+    const secondsSinceMidnight = hour * secondsPerHour;
+    return type === 'departure'
         ? { departureTimeSecondsSinceMidnight: secondsSinceMidnight }
         : { arrivalTimeSecondsSinceMidnight: secondsSinceMidnight };
+};
 
 const createTransitionRouteBody = (
     { origin, destination, time }: Api.RouteBody,
@@ -39,6 +50,7 @@ const createTransitionRouteBody = (
 const handleRoute = async (req: express.Request, res: express.Response) => {
     const body = parseRequest(Api.routeEndpoint.body, req.body);
     const routingSetup = getRoutingSetup(body.routingSetupId);
+    checkTripHour(body.time.hour);
     const response = await postApiV1Route(
         createTransitionRouteBody(body, routingSetup),
         undefined,
