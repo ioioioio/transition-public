@@ -1,5 +1,7 @@
-import { queryOptions, skipToken, useQuery } from '@tanstack/react-query';
+import { queryOptions, skipToken, useQueries } from '@tanstack/react-query';
 import { Api, Utils } from 'common';
+
+import { config } from '@/config/config';
 
 const fetchRoute = async (
     body: Api.RouteBody,
@@ -21,25 +23,39 @@ const fetchRoute = async (
 };
 
 export const createRouteQueryOptions = (
+    routingSetupId: string,
     origin: Utils.LngLat | null,
     destination: Utils.LngLat | null,
     time: Api.TripTime,
 ) => {
     return queryOptions({
-        queryKey: ['route', origin, destination, time],
+        queryKey: ['route', routingSetupId, origin, destination, time],
         queryFn:
             origin && destination
                 ? ({ signal }) =>
-                      fetchRoute({ origin, destination, time }, signal)
+                      fetchRoute(
+                          { routingSetupId, origin, destination, time },
+                          signal,
+                      )
                 : skipToken,
         staleTime: Infinity, // Routes are never updated on the backend
     });
 };
 
-export const useRouteQuery = (
+export const useRouteQueries = (
     origin: Utils.LngLat | null,
     destination: Utils.LngLat | null,
     time: Api.TripTime,
 ) => {
-    return useQuery(createRouteQueryOptions(origin, destination, time));
+    return useQueries({
+        queries: config.routingSetups.map(({ id }) =>
+            createRouteQueryOptions(id, origin, destination, time),
+        ),
+        combine: (results) => ({
+            alternatives: results.flatMap(
+                ({ data }) => data?.alternatives ?? [],
+            ),
+            isFetching: results.some(({ isFetching }) => isFetching),
+        }),
+    });
 };

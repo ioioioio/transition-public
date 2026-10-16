@@ -178,37 +178,45 @@ const RoutePathCards = ({
     onSelect,
 }: RoutePathCardsProps) => {
     const { t } = useTranslation();
-    if (isLoading) {
-        return (
-            <div role="status" className="flex flex-col gap-2">
-                <span className="sr-only">
-                    {t('tripComparison.loadingRoutes')}
-                </span>
-                {Array.from({ length: 3 }, (_, index) => (
-                    <RoutePathCardSkeleton key={index} />
-                ))}
-            </div>
-        );
-    }
     return (
-        <Accordion
-            className="gap-2"
-            value={selectedId ? [selectedId] : []}
-            onValueChange={(value: string[]) => onSelect(value.at(0) ?? null)}
-        >
-            {routes.map(({ id, summary, steps }, index) => (
-                <RoutePathCard
-                    key={id}
-                    id={id}
-                    summary={summary}
-                    steps={steps}
-                    badge={
-                        index === 0 &&
-                        routes.length > 1 && <BestRouteBadge order={order} />
-                    }
-                />
-            ))}
-        </Accordion>
+        <div className="flex flex-col gap-2">
+            <Accordion
+                className="gap-2"
+                value={selectedId ? [selectedId] : []}
+                onValueChange={(value: string[]) =>
+                    onSelect(value.at(0) ?? null)
+                }
+            >
+                {routes.map(({ id, summary, steps }, index) => (
+                    <RoutePathCard
+                        key={id}
+                        id={id}
+                        summary={summary}
+                        steps={steps}
+                        badge={
+                            index === 0 &&
+                            routes.length > 1 && (
+                                <BestRouteBadge order={order} />
+                            )
+                        }
+                    />
+                ))}
+            </Accordion>
+            {isLoading && (
+                <div role="status" className="flex flex-col gap-2">
+                    <span className="sr-only">
+                        {t('tripComparison.loadingRoutes')}
+                    </span>
+                    {/* Fewer once some routes are shown */}
+                    {Array.from(
+                        { length: routes.length > 0 ? 1 : 3 },
+                        (_, index) => (
+                            <RoutePathCardSkeleton key={index} />
+                        ),
+                    )}
+                </div>
+            )}
+        </div>
     );
 };
 

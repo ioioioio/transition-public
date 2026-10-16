@@ -1,6 +1,6 @@
 import type { Api, Utils } from 'common';
 
-import { useRouteQuery } from '@/api/route';
+import { useRouteQueries } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView, { type MapCamera } from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
@@ -48,11 +48,13 @@ function TripComparison({
 
     const originPosition = origin?.position ?? null;
     const destinationPosition = destination?.position ?? null;
-    const routeQuery = useRouteQuery(originPosition, destinationPosition, time);
+    const routeQueries = useRouteQueries(
+        originPosition,
+        destinationPosition,
+        time,
+    );
     const order: RouteAlternativeOrder = 'travelTime'; // Not configurable yet
-    const routes = routeQuery.data
-        ? sortRouteAlternatives(routeQuery.data.alternatives, order)
-        : [];
+    const routes = sortRouteAlternatives(routeQueries.alternatives, order);
     // Not found when the URL is older than the routes
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
 
@@ -70,7 +72,7 @@ function TripComparison({
                 />
                 <RoutePathCards
                     routes={routes}
-                    isLoading={routeQuery.isFetching}
+                    isLoading={routeQueries.isFetching}
                     order={order}
                     selectedId={selectedRoute?.id ?? null}
                     onSelect={onSelectedRouteIdChange}

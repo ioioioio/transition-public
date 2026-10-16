@@ -14,6 +14,7 @@ export const TripTimeSchema = z.object({
 export type TripTime = z.infer<typeof TripTimeSchema>;
 
 export const RouteBodySchema = z.object({
+    routingSetupId: z.string().min(1),
     origin: Utils.LngLatSchema,
     destination: Utils.LngLatSchema,
     time: TripTimeSchema,

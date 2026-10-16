@@ -1,5 +1,5 @@
 import express from 'express';
-import { Api } from 'common';
+import { Api, type PublicConfig } from 'common';
 import { createRouteAlternatives } from '../transition/route-alternatives';
 import { transitionToken } from '../transition/token';
 import { postApiV1Route } from '../transition/generated/transitionAPI';
@@ -9,22 +9,25 @@ import { config } from '../config';
 import { createPointFeature } from '../utils/geo';
 import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
 
-// Only one routing setup is supported for now
-const [routingSetup] = config.routingSetups;
-if (routingSetup === undefined) {
-    throw new Error('Missing routing setup in config');
-}
+const getRoutingSetup = (id: string): PublicConfig.RoutingSetup => {
+    const routingSetup = config.routingSetups.find(
+        (routingSetup) => routingSetup.id === id,
+    );
+    if (!routingSetup) {
+        throw new ApiError(400, { error: `Unknown routing setup: ${id}` });
+    }
+    return routingSetup;
+};
 
 const createTransitionTime = ({ type, secondsSinceMidnight }: Api.TripTime) =>
     type === 'departure'
         ? { departureTimeSecondsSinceMidnight: secondsSinceMidnight }
         : { arrivalTimeSecondsSinceMidnight: secondsSinceMidnight };
 
-const createTransitionRouteBody = ({
-    origin,
-    destination,
-    time,
-}: Api.RouteBody): PostApiV1RouteBody => ({
+const createTransitionRouteBody = (
+    { origin, destination, time }: Api.RouteBody,
+    routingSetup: PublicConfig.RoutingSetup,
+): PostApiV1RouteBody => ({
     scenarioId: routingSetup.scenarioId,
     ...createTransitionTime(time),
     routingModes: routingSetup.modes,
@@ -35,8 +38,9 @@ const createTransitionRouteBody = ({
 
 const handleRoute = async (req: express.Request, res: express.Response) => {
     const body = parseRequest(Api.routeEndpoint.body, req.body);
+    const routingSetup = getRoutingSetup(body.routingSetupId);
     const response = await postApiV1Route(
-        createTransitionRouteBody(body),
+        createTransitionRouteBody(body, routingSetup),
         undefined,
         {
             headers: { Authorization: `Bearer ${transitionToken}` },
