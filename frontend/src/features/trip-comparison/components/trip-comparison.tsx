@@ -37,6 +37,8 @@ function TripComparison({
         onPlacesChange({ origin: place, destination });
     const setDestination = (place: PlaceRef | null) =>
         onPlacesChange({ origin, destination: place });
+    const swapPlaces = () =>
+        onPlacesChange({ origin: destination, destination: origin });
 
     const setOriginOrDestination = (position: Utils.LngLat) => {
         if (origin === null) {
@@ -66,6 +68,7 @@ function TripComparison({
                     destination={destination}
                     onOriginChange={setOrigin}
                     onDestinationChange={setDestination}
+                    onPlacesSwap={swapPlaces}
                     time={time}
                     onTimeChange={onTimeChange}
                     searchFocus={mapCamera}
