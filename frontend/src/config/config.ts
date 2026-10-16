@@ -6,4 +6,5 @@ declare const __CONFIG__: unknown;
 export const config = PublicConfig.PublicConfigSchema.pick({
     map: true,
     routingSetups: true,
+    tripHours: true,
 }).parse(__CONFIG__);

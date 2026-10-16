@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { tripHours } from '@/config/env';
+import { config } from '@/config/config';
 import {
     calculateHours,
     calculateSecondsSinceMidnight,
@@ -122,7 +122,7 @@ const TripComparisonForm = ({
                         }
                     }}
                 >
-                    {tripHours.map((tripHour) => (
+                    {config.tripHours.map((tripHour) => (
                         <ToggleGroupItem
                             key={tripHour}
                             value={String(tripHour)}

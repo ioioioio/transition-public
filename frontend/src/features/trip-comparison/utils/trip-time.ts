@@ -1,6 +1,6 @@
 import type { Api } from 'common';
 
-import { tripHours } from '@/config/env';
+import { config } from '@/config/config';
 
 const secondsPerHour = 60 * 60;
 
@@ -12,5 +12,5 @@ export const calculateHours = (secondsSinceMidnight: number) =>
 
 export const defaultTripTime: Api.TripTime = {
     type: 'departure',
-    secondsSinceMidnight: calculateSecondsSinceMidnight(tripHours[0]!),
+    secondsSinceMidnight: calculateSecondsSinceMidnight(config.tripHours[0]!),
 };

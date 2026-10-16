@@ -36,6 +36,8 @@ export const PublicConfigSchema = z.object({
                 routingSetups.length,
             'Routing setup ids must be unique',
         ),
+    // Hours of the day the trips can be made at
+    tripHours: z.array(z.int().min(0).max(23)).min(1),
 });
 
 export type PublicConfig = z.infer<typeof PublicConfigSchema>;
