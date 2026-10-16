@@ -1,13 +1,8 @@
 import express from 'express';
 import { Api, type PublicConfig } from 'common';
-import { createRouteAlternatives } from '../transition/route-alternatives';
-import { transitionToken } from '../transition/token';
-import { postApiV1Route } from '../transition/generated/transitionAPI';
-import * as TransitionSchema from '../transition/generated/transitionAPI.zod';
-import type { PostApiV1RouteBody } from '../transition/generated/model';
+import { fetchTransitionRouteAlternatives } from '../transition/route';
 import { config } from '../config';
-import { createPointFeature } from '../utils/geo';
-import { ApiError, parseRequest, parseUpstreamResponse } from '../utils/http';
+import { ApiError, parseRequest } from '../utils/http';
 
 const getRoutingSetup = (id: string): PublicConfig.RoutingSetup => {
     const routingSetup = config.routingSetups.find(
@@ -28,47 +23,30 @@ const checkTripHour = (hour: number) => {
 
 const secondsPerHour = 60 * 60;
 
-const createTransitionTime = ({ type, hour }: Api.TripTime) => {
-    const secondsSinceMidnight = hour * secondsPerHour;
-    return type === 'departure'
-        ? { departureTimeSecondsSinceMidnight: secondsSinceMidnight }
-        : { arrivalTimeSecondsSinceMidnight: secondsSinceMidnight };
-};
-
-const createTransitionRouteBody = (
-    { origin, destination, time }: Api.RouteBody,
-    routingSetup: PublicConfig.RoutingSetup,
-): PostApiV1RouteBody => ({
-    scenarioId: routingSetup.scenarioId,
-    ...createTransitionTime(time),
-    routingModes: routingSetup.modes,
-    originGeojson: createPointFeature(origin),
-    destinationGeojson: createPointFeature(destination),
-    maxTotalTravelTimeSeconds: 172800,
-});
-
 const handleRoute = async (req: express.Request, res: express.Response) => {
-    const body = parseRequest(Api.routeEndpoint.body, req.body);
-    const routingSetup = getRoutingSetup(body.routingSetupId);
-    checkTripHour(body.time.hour);
-    const response = await postApiV1Route(
-        createTransitionRouteBody(body, routingSetup),
-        undefined,
-        {
-            headers: { Authorization: `Bearer ${transitionToken}` },
+    const { routingSetupId, origin, destination, time } = parseRequest(
+        Api.routeEndpoint.body,
+        req.body,
+    );
+    const routingSetup = getRoutingSetup(routingSetupId);
+    checkTripHour(time.hour);
+    const odTrip = {
+        origin,
+        destination,
+        time: {
+            type: time.type,
+            secondsSinceMidnight: time.hour * secondsPerHour,
         },
-    );
-    if (response.status !== 200) {
-        throw new ApiError(response.status, response.data);
-    }
-    const transitionResponse = parseUpstreamResponse(
-        TransitionSchema.PostApiV1RouteResponse,
-        response.data,
-    );
+    };
+    const routingParameters = {
+        scenarioId: routingSetup.scenarioId,
+        modes: routingSetup.modes,
+    };
     res.json(
         Api.routeEndpoint.response.parse({
-            alternatives: createRouteAlternatives(
-                transitionResponse,
+            alternatives: await fetchTransitionRouteAlternatives(
+                odTrip,
+                routingParameters,
                 routingSetup.id,
             ),
         }),
