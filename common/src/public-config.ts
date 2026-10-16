@@ -16,11 +16,54 @@ const MapConfigSchema = z.object({
 
 export type MapConfig = z.infer<typeof MapConfigSchema>;
 
-const RoutingSetupSchema = z.object({
+// Routes from the origin to the destination, with the scenario's modes
+const StandardRoutingSetupSchema = z.object({
     id: z.string().min(1),
+    type: z.literal('standard'),
     scenarioId: z.uuid(),
     modes: z.array(z.string().min(1)).min(1),
 });
+
+export type StandardRoutingSetup = z.infer<typeof StandardRoutingSetupSchema>;
+
+const AirportSchema = z.object({
+    id: z.string().min(1),
+    position: Utils.LngLatSchema,
+});
+
+// The same in both directions
+const FlightSchema = z.object({
+    between: z.tuple([z.string().min(1), z.string().min(1)]),
+    minutes: z.number().positive(),
+});
+
+// Going to and from the airports uses the scenario, the flight uses the
+// configured flight times
+const PlaneRoutingSetupSchema = z
+    .object({
+        id: z.string().min(1),
+        type: z.literal('plane'),
+        scenarioId: z.uuid(),
+        modes: z.array(z.string().min(1)).min(1),
+        airports: z.array(AirportSchema).min(2),
+        flights: z.array(FlightSchema).min(1),
+    })
+    .refine(
+        ({ airports, flights }) =>
+            flights.every(({ between }) =>
+                between.every((airportId) =>
+                    airports.some(({ id }) => id === airportId),
+                ),
+            ),
+        'Flights must be between listed airports',
+    );
+
+export type PlaneRoutingSetup = z.infer<typeof PlaneRoutingSetupSchema>;
+
+const RoutingSetupSchema = z.discriminatedUnion('type', [
+    StandardRoutingSetupSchema,
+    PlaneRoutingSetupSchema,
+]);
 
 export type RoutingSetup = z.infer<typeof RoutingSetupSchema>;
 

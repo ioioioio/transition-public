@@ -13,8 +13,52 @@
   "routingSetups": [
     {
       "id": "base",
+      "type": "standard",
       "scenarioId": "83712744-6ce6-4058-8afb-234886f57255",
       "modes": ["driving", "transit", "walking"]
+    },
+    {
+      "id": "with-plane",
+      "type": "plane",
+      "scenarioId": "83712744-6ce6-4058-8afb-234886f57255",
+      "modes": ["driving", "transit"],
+      "airports": [
+        {
+          "id": "montreal",
+          "position": {
+            "lng": -73.7516,
+            "lat": 45.4565
+          }
+        },
+        {
+          "id": "trois-rivieres",
+          "position": {
+            "lng": -72.679,
+            "lat": 46.353
+          }
+        },
+        {
+          "id": "quebec",
+          "position": {
+            "lng": -71.3834,
+            "lat": 46.7919
+          }
+        }
+      ],
+      "flights": [
+        {
+          "between": ["montreal", "trois-rivieres"],
+          "minutes": 30
+        },
+        {
+          "between": ["montreal", "quebec"],
+          "minutes": 45
+        },
+        {
+          "between": ["trois-rivieres", "quebec"],
+          "minutes": 25
+        }
+      ]
     }
   ],
   "tripHours": [8, 12, 16]
