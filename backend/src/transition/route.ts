@@ -21,10 +21,14 @@ export type RoutingParameters = {
 const createTransitionTime = ({
     type,
     secondsSinceMidnight,
-}: OdTrip['time']) =>
-    type === 'departure'
-        ? { departureTimeSecondsSinceMidnight: secondsSinceMidnight }
-        : { arrivalTimeSecondsSinceMidnight: secondsSinceMidnight };
+}: OdTrip['time']) => {
+    // Times computed from Transition's travel times have decimals, but it
+    // only accepts whole seconds in requests
+    const wholeSeconds = Math.round(secondsSinceMidnight);
+    return type === 'departure'
+        ? { departureTimeSecondsSinceMidnight: wholeSeconds }
+        : { arrivalTimeSecondsSinceMidnight: wholeSeconds };
+};
 
 const createTransitionRouteBody = (
     { origin, destination, time }: OdTrip,

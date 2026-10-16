@@ -28,6 +28,7 @@
         "typescript-eslint": "^8.70.1"
     },
     "dependencies": {
+        "@turf/turf": "^7.4.0",
         "common": "*",
         "express": "^5.2.1",
         "zod": "4.6.5"

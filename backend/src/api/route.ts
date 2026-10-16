@@ -1,6 +1,7 @@
 import express from 'express';
 import { Api, type PublicConfig } from 'common';
-import { fetchTransitionRouteAlternatives } from '../transition/route';
+import { fetchPlaneRouteAlternatives } from '../routing-setups/plane';
+import { fetchStandardRouteAlternatives } from '../routing-setups/standard';
 import { config } from '../config';
 import { ApiError, parseRequest } from '../utils/http';
 
@@ -23,13 +24,10 @@ const checkTripHour = (hour: number) => {
 
 const secondsPerHour = 60 * 60;
 
-const handleRoute = async (req: express.Request, res: express.Response) => {
-    const { routingSetupId, origin, destination, time } = parseRequest(
-        Api.routeEndpoint.body,
-        req.body,
-    );
-    const routingSetup = getRoutingSetup(routingSetupId);
-    checkTripHour(time.hour);
+const fetchRouteAlternatives = (
+    { origin, destination, time }: Api.RouteBody,
+    routingSetup: PublicConfig.RoutingSetup,
+) => {
     const odTrip = {
         origin,
         destination,
@@ -38,17 +36,23 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
             secondsSinceMidnight: time.hour * secondsPerHour,
         },
     };
-    const routingParameters = {
-        scenarioId: routingSetup.scenarioId,
-        modes: routingSetup.modes,
-    };
+    switch (routingSetup.type) {
+        case 'standard':
+            return fetchStandardRouteAlternatives(odTrip, routingSetup);
+        case 'plane':
+            return fetchPlaneRouteAlternatives(odTrip, routingSetup);
+        default:
+            return routingSetup satisfies never;
+    }
+};
+
+const handleRoute = async (req: express.Request, res: express.Response) => {
+    const body = parseRequest(Api.routeEndpoint.body, req.body);
+    const routingSetup = getRoutingSetup(body.routingSetupId);
+    checkTripHour(body.time.hour);
     res.json(
         Api.routeEndpoint.response.parse({
-            alternatives: await fetchTransitionRouteAlternatives(
-                odTrip,
-                routingParameters,
-                routingSetup.id,
-            ),
+            alternatives: await fetchRouteAlternatives(body, routingSetup),
         }),
     );
 };
