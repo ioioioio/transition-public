@@ -68,6 +68,7 @@ const createUnimodalStep = (
                 activity: 'walkingToDestination',
                 geometry: path.geometry,
                 durationSeconds: path.travelTimeSeconds,
+                distanceMeters: path.distanceMeters,
             };
         case 'driving':
             return {
@@ -75,6 +76,7 @@ const createUnimodalStep = (
                 mode: routingMode,
                 geometry: path.geometry,
                 durationSeconds: path.travelTimeSeconds,
+                distanceMeters: path.distanceMeters,
             };
         default:
             return routingMode satisfies never;
@@ -102,6 +104,7 @@ const createTransitSteps = (
                             coordinates: [from, to],
                         },
                         durationSeconds: step.travelTime,
+                        distanceMeters: step.distance,
                     });
                     from = to;
                 } else {
@@ -112,6 +115,7 @@ const createTransitSteps = (
                             coordinates: [from, destination],
                         },
                         durationSeconds: step.travelTime,
+                        distanceMeters: step.distance,
                     });
                     from = destination;
                 }
@@ -136,6 +140,7 @@ const createTransitSteps = (
                     mode: getKnownMode(step.mode),
                     geometry: { type: 'LineString', coordinates: [from, to] },
                     durationSeconds: step.inVehicleTime,
+                    distanceMeters: step.inVehicleDistance,
                 });
                 from = to;
                 break;

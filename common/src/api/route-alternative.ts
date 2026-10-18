@@ -9,12 +9,14 @@ const WalkingToStopStepSchema = z.object({
     boardingMode: ModeSchema,
     geometry: Utils.LineStringSchema,
     durationSeconds: z.number(),
+    distanceMeters: z.number(),
 });
 
 const WalkingToDestinationStepSchema = z.object({
     activity: z.literal('walkingToDestination'),
     geometry: Utils.LineStringSchema,
     durationSeconds: z.number(),
+    distanceMeters: z.number(),
 });
 
 const WaitingStepSchema = z.object({
@@ -30,6 +32,7 @@ const VehicleStepSchema = z.object({
     mode: ModeSchema,
     geometry: Utils.LineStringSchema,
     durationSeconds: z.number(),
+    distanceMeters: z.number(),
 });
 
 // A step of a route, by what's done during it

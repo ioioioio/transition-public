@@ -29,6 +29,7 @@ const createFlightStep = (
         ],
     },
     durationSeconds,
+    distanceMeters: calculateDistanceMeters(from.position, to.position),
 });
 
 const createPlaneRouteAlternative = ({
