@@ -97,9 +97,12 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
                 return step satisfies never;
         }
     };
-    // Shown by its main mode
-    const mode = rankedModes.at(0) ?? 'other';
-    const ModeIcon = modeIcons[mode];
+    const mainMode = rankedModes.at(0) ?? 'other';
+    const MainModeIcon = modeIcons[mainMode];
+    // E.g. "Plane + Bus"
+    const title = (rankedModes.length > 0 ? rankedModes : [mainMode])
+        .map((rankedMode) => modeLabels[rankedMode])
+        .join(' + ');
 
     return (
         <AccordionItem
@@ -108,11 +111,11 @@ const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
         >
             <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
                 <span className="text-lg text-muted-foreground group-aria-expanded/accordion-trigger:text-primary">
-                    <ModeIcon aria-hidden />
+                    <MainModeIcon aria-hidden />
                 </span>
                 <span className="flex flex-1 flex-col gap-1">
                     <span className="flex items-center justify-between gap-2">
-                        {modeLabels[mode]}
+                        {title}
                         {badge}
                     </span>
                     <span className="text-[17px] tracking-tight tabular-nums">
