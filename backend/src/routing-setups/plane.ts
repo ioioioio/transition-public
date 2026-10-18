@@ -20,8 +20,7 @@ const createFlightStep = (
     durationSeconds: number,
 ): Api.RouteStep => ({
     activity: 'inVehicle',
-    // Until the app has a plane mode
-    mode: 'other',
+    mode: 'plane',
     geometry: {
         type: 'LineString',
         coordinates: [
@@ -54,7 +53,7 @@ const createPlaneRouteAlternative = ({
     return {
         id,
         summary: {
-            rankedModes: [...new Set<Api.Mode>(['other', ...groundModes])],
+            rankedModes: [...new Set<Api.Mode>(['plane', ...groundModes])],
             travelTimeSeconds:
                 access.summary.travelTimeSeconds +
                 flightSeconds +

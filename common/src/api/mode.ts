@@ -5,6 +5,7 @@ export const ModeSchema = z.enum([
     'bus',
     'driving',
     'metro',
+    'plane',
     'rail',
     'walking',
     'other',
