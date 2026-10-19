@@ -1,4 +1,5 @@
 import type { Api, Utils } from 'common';
+import { config } from '../config';
 import { ApiError, parseUpstreamResponse } from '../utils/http';
 import { createPointFeature } from '../utils/geo';
 import { postApiV1Route } from './generated/transitionAPI';
@@ -39,7 +40,8 @@ const createTransitionRouteBody = (
     routingModes: modes,
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
-    maxTotalTravelTimeSeconds: 172800,
+    maxTotalTravelTimeSeconds:
+        config.transitionRouting.maxTotalTravelTimeSeconds,
 });
 
 export const fetchTransitionRouteAlternatives = async (

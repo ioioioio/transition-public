@@ -77,6 +77,10 @@ export const PublicConfigSchema = z.object({
         ),
     // Hours of the day the trips can be made at
     tripHours: z.array(z.int().min(0).max(23)).min(1),
+    // Passed as is to each of Transition's route requests
+    transitionRouting: z.object({
+        maxTotalTravelTimeSeconds: z.int().positive(),
+    }),
 });
 
 export type PublicConfig = z.infer<typeof PublicConfigSchema>;

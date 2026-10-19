@@ -63,5 +63,8 @@
       ]
     }
   ],
-  "tripHours": [8, 12, 16]
+  "tripHours": [8, 12, 16],
+  "transitionRouting": {
+    "maxTotalTravelTimeSeconds": 172800
+  }
 }
