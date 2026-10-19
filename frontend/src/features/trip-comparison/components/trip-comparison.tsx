@@ -12,7 +12,8 @@ import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { sortRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
 import type { PlaceRef } from '@/types/place';
 
-type TripComparisonProps = TripPlaces & {
+type TripComparisonProps = {
+    places: TripPlaces;
     onPlacesChange: (places: TripPlaces) => void;
     time: Api.TripTime;
     onTimeChange: (time: Api.TripTime) => void;
@@ -23,8 +24,7 @@ type TripComparisonProps = TripPlaces & {
 };
 
 function TripComparison({
-    origin,
-    destination,
+    places,
     onPlacesChange,
     time,
     onTimeChange,
@@ -33,6 +33,7 @@ function TripComparison({
     selectedRouteId,
     onSelectedRouteIdChange,
 }: TripComparisonProps) {
+    const { origin, destination } = places;
     const setOrigin = (place: PlaceRef | null) =>
         onPlacesChange({ origin: place, destination });
     const setDestination = (place: PlaceRef | null) =>

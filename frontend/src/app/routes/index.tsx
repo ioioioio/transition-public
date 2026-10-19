@@ -77,8 +77,10 @@ function TripPage() {
 
     return (
         <TripComparison
-            origin={search.origin ?? null}
-            destination={search.destination ?? null}
+            places={{
+                origin: search.origin ?? null,
+                destination: search.destination ?? null,
+            }}
             onPlacesChange={setPlaces}
             time={search.time ?? defaultTripTime}
             onTimeChange={setTime}
