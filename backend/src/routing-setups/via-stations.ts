@@ -8,8 +8,8 @@ import { calculateDistanceMeters } from '../utils/geo';
 // For trips that go through stations, like airports or train stations
 type Station = { id: string; position: Utils.LngLat };
 
-export const findClosestStation = (
-    stations: Station[],
+export const findClosestStation = <S extends Station>(
+    stations: S[],
     position: Utils.LngLat,
 ) =>
     stations.reduce((closest, station) =>

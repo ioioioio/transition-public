@@ -38,6 +38,7 @@
             "station": "Waiting at the station",
             "trainStation": "Waiting at the station"
         },
-        "walkingToDestination": "To your destination"
+        "walkingToDestination": "To your destination",
+        "securityAndBoarding": "Security and boarding"
     }
 }

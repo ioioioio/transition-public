@@ -1,5 +1,10 @@
-import { ClockIcon, type Icon } from '@phosphor-icons/react';
+import {
+    ClockIcon,
+    IdentificationCardIcon,
+    type Icon,
+} from '@phosphor-icons/react';
 import type { Api } from 'common';
+import { useTranslation } from 'react-i18next';
 
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
 import { useModeLabels } from '@/hooks/use-mode-labels';
@@ -17,6 +22,7 @@ const RouteStepIcon = ({
     decorative = false,
     className,
 }: RouteStepIconProps) => {
+    const { t } = useTranslation();
     const modeLabels = useModeLabels();
     const { getWaitingAtLabel } = useTransitStepLabels();
     const describeIcon = (): { icon: Icon; label: string } => {
@@ -28,6 +34,11 @@ const RouteStepIcon = ({
                 return {
                     icon: ClockIcon,
                     label: getWaitingAtLabel(step.boardingMode),
+                };
+            case 'boarding':
+                return {
+                    icon: IdentificationCardIcon,
+                    label: t('transitStep.securityAndBoarding'),
                 };
             case 'inVehicle':
                 return {

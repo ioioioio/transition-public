@@ -38,6 +38,7 @@
             "station": "Attente à la station",
             "trainStation": "Attente à la gare"
         },
-        "walkingToDestination": "Vers votre destination"
+        "walkingToDestination": "Vers votre destination",
+        "securityAndBoarding": "Sécurité et embarquement"
     }
 }

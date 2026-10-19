@@ -20,6 +20,7 @@ const getStepMode = (step: Api.RouteStep): Api.Mode | null => {
         case 'walkingToDestination':
             return 'walking';
         case 'waitingAtStop':
+        case 'boarding':
             return null;
         case 'inVehicle':
             return step.mode;

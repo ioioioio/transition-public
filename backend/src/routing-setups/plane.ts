@@ -14,6 +14,19 @@ const findFlight = (
         ({ between }) => between.includes(from.id) && between.includes(to.id),
     );
 
+const createBoardingStep = (
+    airport: Airport,
+    durationSeconds: number,
+): Api.RouteStep => ({
+    activity: 'boarding',
+    boardingMode: 'plane',
+    geometry: {
+        type: 'Point',
+        coordinates: [airport.position.lng, airport.position.lat],
+    },
+    durationSeconds,
+});
+
 const createFlightStep = (
     from: Airport,
     to: Airport,
@@ -36,6 +49,7 @@ const createPlaneRouteAlternative = ({
     id,
     access,
     originAirport,
+    securityAndBoardingSeconds,
     flightSeconds,
     destinationAirport,
     egress,
@@ -43,6 +57,7 @@ const createPlaneRouteAlternative = ({
     id: string;
     access: Api.RouteAlternative;
     originAirport: Airport;
+    securityAndBoardingSeconds: number;
     flightSeconds: number;
     destinationAirport: Airport;
     egress: Api.RouteAlternative;
@@ -50,6 +65,7 @@ const createPlaneRouteAlternative = ({
     id,
     steps: [
         ...access.steps,
+        createBoardingStep(originAirport, securityAndBoardingSeconds),
         createFlightStep(originAirport, destinationAirport, flightSeconds),
         ...egress.steps,
     ],
@@ -67,13 +83,15 @@ export const fetchPlaneRouteAlternatives = async (
     if (originAirport === destinationAirport || !flight) {
         return [];
     }
+    const securityAndBoardingSeconds =
+        originAirport.securityAndBoardingMinutes * 60;
     const flightSeconds = flight.minutes * 60;
     const alternatives = await Promise.all(
         modes.map(async (mode) => {
             const parts = await fetchAccessAndEgress({
                 odTrip,
                 boardingStation: originAirport,
-                middleSeconds: flightSeconds,
+                middleSeconds: securityAndBoardingSeconds + flightSeconds,
                 alightingStation: destinationAirport,
                 routingSetupId: id,
                 scenarioId,
@@ -86,6 +104,7 @@ export const fetchPlaneRouteAlternatives = async (
                 id: `${id}-${mode}`,
                 access: parts.access,
                 originAirport,
+                securityAndBoardingSeconds,
                 flightSeconds,
                 destinationAirport,
                 egress: parts.egress,

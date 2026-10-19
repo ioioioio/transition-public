@@ -89,6 +89,11 @@ const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
                     icon: <RouteStepIcon step={step} decorative />,
                     label: getWaitingAtLabel(step.boardingMode),
                 };
+            case 'boarding':
+                return {
+                    icon: <RouteStepIcon step={step} decorative />,
+                    label: t('transitStep.securityAndBoarding'),
+                };
             case 'inVehicle':
                 return {
                     icon: <RouteStepIcon step={step} decorative />,

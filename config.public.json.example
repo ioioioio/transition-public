@@ -30,35 +30,38 @@
           "position": {
             "lng": -73.7516,
             "lat": 45.4565
-          }
+          },
+          "securityAndBoardingMinutes": 120
         },
         {
           "id": "trois-rivieres",
           "position": {
             "lng": -72.679,
             "lat": 46.353
-          }
+          },
+          "securityAndBoardingMinutes": 45
         },
         {
           "id": "quebec",
           "position": {
             "lng": -71.3834,
             "lat": 46.7919
-          }
+          },
+          "securityAndBoardingMinutes": 90
         }
       ],
       "flights": [
         {
           "between": ["montreal", "trois-rivieres"],
-          "minutes": 30
+          "minutes": 35
         },
         {
           "between": ["montreal", "quebec"],
-          "minutes": 45
+          "minutes": 60
         },
         {
           "between": ["trois-rivieres", "quebec"],
-          "minutes": 25
+          "minutes": 30
         }
       ]
     }
