@@ -13,20 +13,32 @@ const calculateDistanceMeters = (steps: Api.RouteStep[]) =>
         0,
     );
 
-// The vehicles' modes, by distance travelled, longest first, or walking when
-// there's no vehicle
+// Null when the step covers no distance
+const getStepMode = (step: Api.RouteStep): Api.Mode | null => {
+    switch (step.activity) {
+        case 'walkingToStop':
+        case 'walkingToDestination':
+            return 'walking';
+        case 'waitingAtStop':
+            return null;
+        case 'inVehicle':
+            return step.mode;
+        default:
+            return step satisfies never;
+    }
+};
+
+// By distance travelled, longest first
 const rankModes = (steps: Api.RouteStep[]): Api.Mode[] => {
     const distances = new Map<Api.Mode, number>();
     for (const step of steps) {
-        if (step.activity === 'inVehicle') {
+        const mode = getStepMode(step);
+        if (mode !== null && 'distanceMeters' in step) {
             distances.set(
-                step.mode,
-                (distances.get(step.mode) ?? 0) + step.distanceMeters,
+                mode,
+                (distances.get(mode) ?? 0) + step.distanceMeters,
             );
         }
-    }
-    if (distances.size === 0) {
-        return ['walking'];
     }
     return [...distances].sort(([, a], [, b]) => b - a).map(([mode]) => mode);
 };

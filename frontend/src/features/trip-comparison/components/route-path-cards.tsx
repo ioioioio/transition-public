@@ -98,10 +98,9 @@ const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
                 return step satisfies never;
         }
     };
-    const mainMode = rankedModes.at(0) ?? 'other';
-    const MainModeIcon = modeIcons[mainMode];
+    const MainModeIcon = modeIcons[rankedModes.at(0) ?? 'other'];
     // E.g. "Plane + Bus"
-    const title = (rankedModes.length > 0 ? rankedModes : [mainMode])
+    const title = rankedModes
         .map((rankedMode) => modeLabels[rankedMode])
         .join(' + ');
 
