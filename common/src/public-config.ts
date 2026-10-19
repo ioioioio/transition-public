@@ -3,11 +3,7 @@ import { z } from 'zod';
 import * as Utils from './utils';
 
 const MapConfigSchema = z.object({
-    defaultCamera: z.object({
-        lng: Utils.LongitudeSchema,
-        lat: Utils.LatitudeSchema,
-        zoom: z.number().min(0).max(24),
-    }),
+    defaultCamera: Utils.MapCameraSchema,
     styles: z.object({
         light: z.url(),
         dark: z.url(),

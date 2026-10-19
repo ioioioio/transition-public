@@ -2,7 +2,7 @@ import type { Api, Utils } from 'common';
 
 import { useRouteQueries } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
-import MapView, { type MapCamera } from '@/components/map/map-view';
+import MapView from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
 import RoutePathCards from '@/features/trip-comparison/components/route-path-cards';
 import RoutePathLayers from '@/features/trip-comparison/components/route-path-layers';
@@ -16,8 +16,8 @@ type TripComparisonProps = TripPlaces & {
     onPlacesChange: (places: TripPlaces) => void;
     time: Api.TripTime;
     onTimeChange: (time: Api.TripTime) => void;
-    mapCamera: MapCamera;
-    onMapCameraChange?: (camera: MapCamera) => void;
+    mapCamera: Utils.MapCamera;
+    onMapCameraChange?: (camera: Utils.MapCamera) => void;
     selectedRouteId: string | null;
     onSelectedRouteIdChange: (id: string | null) => void;
 };
@@ -68,7 +68,7 @@ function TripComparison({
                     onDestinationChange={setDestination}
                     time={time}
                     onTimeChange={onTimeChange}
-                    searchFocus={mapCamera}
+                    searchFocus={mapCamera.center}
                 />
                 <RoutePathCards
                     routes={routes}

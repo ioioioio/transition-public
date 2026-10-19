@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Api, Utils } from 'common';
 import { z } from 'zod';
 
-import type { MapCamera } from '@/components/map/map-view';
 import { config } from '@/config/config';
 import TripComparison from '@/features/trip-comparison/components/trip-comparison';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
@@ -17,11 +16,7 @@ const PlaceSearchSchema = z
     // Drop an invalid place rather than failing the page.
     .catch(undefined);
 
-const MapSearchSchema = Utils.LngLatSchema.extend({
-    zoom: z.number().min(0).max(24),
-})
-    .optional()
-    .catch(undefined);
+const MapSearchSchema = Utils.MapCameraSchema.optional().catch(undefined);
 
 const TimeSearchSchema = Api.TripTimeSchema.optional().catch(undefined);
 
@@ -62,7 +57,7 @@ function TripPage() {
         });
     };
 
-    const setMapCamera = (map: MapCamera) => {
+    const setMapCamera = (map: Utils.MapCamera) => {
         void navigate({
             search: (previous) => ({ ...previous, map }),
             // Panning isn't worth a history entry.

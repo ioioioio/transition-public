@@ -1,8 +1,10 @@
 {
   "map": {
     "defaultCamera": {
-      "lng": -73.554167,
-      "lat": 45.508889,
+      "center": {
+        "lng": -73.554167,
+        "lat": 45.508889
+      },
       "zoom": 3.5
     },
     "styles": {

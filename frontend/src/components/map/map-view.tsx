@@ -15,11 +15,9 @@ import { useTheme } from '@/hooks/use-theme';
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);
 
-export type MapCamera = Utils.LngLat & { zoom: number };
-
 type MapViewProps = {
-    camera: MapCamera;
-    onCameraChange?: (camera: MapCamera) => void;
+    camera: Utils.MapCamera;
+    onCameraChange?: (camera: Utils.MapCamera) => void;
     onMapClick: (position: LngLat) => void;
     children?: ReactNode;
 };
@@ -52,8 +50,8 @@ const MapView = ({
     return (
         <Map
             initialViewState={{
-                longitude: camera.lng,
-                latitude: camera.lat,
+                longitude: camera.center.lng,
+                latitude: camera.center.lat,
                 zoom: camera.zoom,
             }}
             style={{ width: '100%', height: '100%' }}
@@ -78,8 +76,10 @@ const MapView = ({
             }}
             onMoveEnd={({ viewState }) =>
                 onCameraChange?.({
-                    lng: viewState.longitude,
-                    lat: viewState.latitude,
+                    center: {
+                        lng: viewState.longitude,
+                        lat: viewState.latitude,
+                    },
                     zoom: viewState.zoom,
                 })
             }
