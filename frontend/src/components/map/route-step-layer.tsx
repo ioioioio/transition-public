@@ -36,7 +36,7 @@ export const RouteStepLayer = ({
     }
     const { coordinates } = step.geometry;
     const hasOnlyEnds = coordinates.length <= 2;
-    const line = hasOnlyEnds
+    const geometry = hasOnlyEnds
         ? createCurve(
               coordinates[0]!,
               coordinates[coordinates.length - 1]!,
@@ -47,7 +47,7 @@ export const RouteStepLayer = ({
     return (
         <LabeledLineLayer
             id={id}
-            line={line}
+            geometry={geometry}
             styles={styles.line}
             selected={selected}
             label={label}

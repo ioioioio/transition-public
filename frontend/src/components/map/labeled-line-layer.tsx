@@ -17,7 +17,7 @@ export type LabeledLineLayerStyles = {
 
 export type LabeledLineLayerProps = {
     id: string;
-    line: LineString;
+    geometry: LineString;
     styles: LabeledLineLayerStyles;
     selected?: boolean;
     /** Shown in a pill on the line. */
@@ -28,7 +28,7 @@ export type LabeledLineLayerProps = {
 // A line, with an optional label on it
 export const LabeledLineLayer = ({
     id,
-    line,
+    geometry,
     styles,
     selected = false,
     label,
@@ -43,7 +43,7 @@ export const LabeledLineLayer = ({
 
     return (
         <>
-            <Source id={id} type="geojson" data={line}>
+            <Source id={id} type="geojson" data={geometry}>
                 {selected && (
                     <Layer
                         id={`${id}-glow`}
@@ -76,7 +76,7 @@ export const LabeledLineLayer = ({
             </Source>
             {label && (
                 <LineLabel
-                    position={getPointAlong(line, labelPosition)}
+                    position={getPointAlong(geometry, labelPosition)}
                     selected={selected}
                     onClick={onClick}
                 >
