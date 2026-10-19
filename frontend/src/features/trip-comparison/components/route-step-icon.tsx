@@ -1,6 +1,7 @@
 import {
     ClockIcon,
     IdentificationCardIcon,
+    SuitcaseRollingIcon,
     type Icon,
 } from '@phosphor-icons/react';
 import type { Api } from 'common';
@@ -39,6 +40,11 @@ const RouteStepIcon = ({
                 return {
                     icon: IdentificationCardIcon,
                     label: t('transitStep.securityAndBoarding'),
+                };
+            case 'unboarding':
+                return {
+                    icon: SuitcaseRollingIcon,
+                    label: t('transitStep.unboardingAndLuggage'),
                 };
             case 'inVehicle':
                 return {

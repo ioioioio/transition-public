@@ -31,7 +31,8 @@
             "lng": -73.7516,
             "lat": 45.4565
           },
-          "securityAndBoardingMinutes": 120
+          "securityAndBoardingMinutes": 120,
+          "unboardingAndLuggageMinutes": 45
         },
         {
           "id": "trois-rivieres",
@@ -39,7 +40,8 @@
             "lng": -72.679,
             "lat": 46.353
           },
-          "securityAndBoardingMinutes": 45
+          "securityAndBoardingMinutes": 45,
+          "unboardingAndLuggageMinutes": 25
         },
         {
           "id": "quebec",
@@ -47,7 +49,8 @@
             "lng": -71.3834,
             "lat": 46.7919
           },
-          "securityAndBoardingMinutes": 90
+          "securityAndBoardingMinutes": 90,
+          "unboardingAndLuggageMinutes": 30
         }
       ],
       "flights": [

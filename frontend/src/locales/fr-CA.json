@@ -39,6 +39,7 @@
             "trainStation": "Attente à la gare"
         },
         "walkingToDestination": "Vers votre destination",
-        "securityAndBoarding": "Sécurité et embarquement"
+        "securityAndBoarding": "Sécurité et embarquement",
+        "unboardingAndLuggage": "Débarquement et bagages"
     }
 }

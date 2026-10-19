@@ -27,6 +27,19 @@ const createBoardingStep = (
     durationSeconds,
 });
 
+const createUnboardingStep = (
+    airport: Airport,
+    durationSeconds: number,
+): Api.RouteStep => ({
+    activity: 'unboarding',
+    unboardingMode: 'plane',
+    geometry: {
+        type: 'Point',
+        coordinates: [airport.position.lng, airport.position.lat],
+    },
+    durationSeconds,
+});
+
 const createFlightStep = (
     from: Airport,
     to: Airport,
@@ -52,6 +65,7 @@ const createPlaneRouteAlternative = ({
     securityAndBoardingSeconds,
     flightSeconds,
     destinationAirport,
+    unboardingAndLuggageSeconds,
     egress,
 }: {
     id: string;
@@ -60,6 +74,7 @@ const createPlaneRouteAlternative = ({
     securityAndBoardingSeconds: number;
     flightSeconds: number;
     destinationAirport: Airport;
+    unboardingAndLuggageSeconds: number;
     egress: Api.RouteAlternative;
 }): Api.RouteAlternative => ({
     id,
@@ -67,6 +82,7 @@ const createPlaneRouteAlternative = ({
         ...access.steps,
         createBoardingStep(originAirport, securityAndBoardingSeconds),
         createFlightStep(originAirport, destinationAirport, flightSeconds),
+        createUnboardingStep(destinationAirport, unboardingAndLuggageSeconds),
         ...egress.steps,
     ],
 });
@@ -86,12 +102,17 @@ export const fetchPlaneRouteAlternatives = async (
     const securityAndBoardingSeconds =
         originAirport.securityAndBoardingMinutes * 60;
     const flightSeconds = flight.minutes * 60;
+    const unboardingAndLuggageSeconds =
+        destinationAirport.unboardingAndLuggageMinutes * 60;
     const alternatives = await Promise.all(
         modes.map(async (mode) => {
             const parts = await fetchAccessAndEgress({
                 odTrip,
                 boardingStation: originAirport,
-                middleSeconds: securityAndBoardingSeconds + flightSeconds,
+                middleSeconds:
+                    securityAndBoardingSeconds +
+                    flightSeconds +
+                    unboardingAndLuggageSeconds,
                 alightingStation: destinationAirport,
                 routingSetupId: id,
                 scenarioId,
@@ -107,6 +128,7 @@ export const fetchPlaneRouteAlternatives = async (
                 securityAndBoardingSeconds,
                 flightSeconds,
                 destinationAirport,
+                unboardingAndLuggageSeconds,
                 egress: parts.egress,
             });
         }),

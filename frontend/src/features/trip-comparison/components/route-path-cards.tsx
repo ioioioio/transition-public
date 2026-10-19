@@ -94,6 +94,11 @@ const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
                     icon: <RouteStepIcon step={step} decorative />,
                     label: t('transitStep.securityAndBoarding'),
                 };
+            case 'unboarding':
+                return {
+                    icon: <RouteStepIcon step={step} decorative />,
+                    label: t('transitStep.unboardingAndLuggage'),
+                };
             case 'inVehicle':
                 return {
                     icon: <RouteStepIcon step={step} decorative />,

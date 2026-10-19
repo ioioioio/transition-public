@@ -31,7 +31,11 @@ export const RouteStepLayer = ({
     onClick,
 }: RouteStepLayerProps) => {
     // Stops aren't drawn
-    if (step.activity === 'waitingAtStop' || step.activity === 'boarding') {
+    if (
+        step.activity === 'waitingAtStop' ||
+        step.activity === 'boarding' ||
+        step.activity === 'unboarding'
+    ) {
         return null;
     }
     const { coordinates } = step.geometry;

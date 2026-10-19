@@ -39,6 +39,7 @@
             "trainStation": "Waiting at the station"
         },
         "walkingToDestination": "To your destination",
-        "securityAndBoarding": "Security and boarding"
+        "securityAndBoarding": "Security and boarding",
+        "unboardingAndLuggage": "Unboarding and luggage"
     }
 }

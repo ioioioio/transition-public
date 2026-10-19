@@ -34,6 +34,13 @@ const BoardingStepSchema = z.object({
     durationSeconds: z.number(),
 });
 
+const UnboardingStepSchema = z.object({
+    activity: z.literal('unboarding'),
+    unboardingMode: z.literal('plane'),
+    geometry: Utils.PointSchema,
+    durationSeconds: z.number(),
+});
+
 const VehicleStepSchema = z.object({
     activity: z.literal('inVehicle'),
     mode: ModeSchema,
@@ -48,6 +55,7 @@ export const RouteStepSchema = z.discriminatedUnion('activity', [
     WalkingToDestinationStepSchema,
     WaitingStepSchema,
     BoardingStepSchema,
+    UnboardingStepSchema,
     VehicleStepSchema,
 ]);
 

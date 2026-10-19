@@ -26,6 +26,7 @@ const AirportSchema = z.object({
     id: z.string().min(1),
     position: Utils.LngLatSchema,
     securityAndBoardingMinutes: z.number().min(0),
+    unboardingAndLuggageMinutes: z.number().min(0),
 });
 
 // The same in both directions
