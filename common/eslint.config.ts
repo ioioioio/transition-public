@@ -16,7 +16,7 @@ export default defineConfig([
             },
         },
     },
-    tseslint.configs.recommended,
+    tseslint.configs.strict,
     {
         files: ['**/*.md'],
         plugins: { markdown },
