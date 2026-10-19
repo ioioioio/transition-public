@@ -35,14 +35,13 @@ export const RouteStepLayer = ({
         return null;
     }
     const { coordinates } = step.geometry;
-    const hasOnlyEnds = coordinates.length <= 2;
-    const geometry = hasOnlyEnds
-        ? createCurve(
-              coordinates[0]!,
-              coordinates[coordinates.length - 1]!,
-              styles.bend,
-          )
-        : step.geometry;
+    const start = coordinates.at(0);
+    const end = coordinates.at(-1);
+    // A step known only by its ends is drawn as an arc between them
+    const geometry =
+        coordinates.length === 2 && start && end
+            ? createCurve(start, end, styles.bend)
+            : step.geometry;
 
     return (
         <LabeledLineLayer
