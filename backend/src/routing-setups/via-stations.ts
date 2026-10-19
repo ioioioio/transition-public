@@ -1,4 +1,4 @@
-import type { Api, Utils } from 'common';
+import { type Api, Utils } from 'common';
 import {
     fetchTransitionRouteAlternatives,
     type OdTrip,
@@ -65,7 +65,7 @@ const fetchFromDeparture = async (
     }
     const egressDepartureSeconds =
         odTrip.time.secondsSinceMidnight +
-        access.summary.travelTimeSeconds +
+        Utils.calculateTotalDurationSeconds(access.steps) +
         middleSeconds;
     const egress = await fetchRouteWithMode(odTripViaStations, {
         origin: alightingStation.position,
@@ -98,7 +98,7 @@ const fetchFromArrival = async (
     }
     const accessArrivalSeconds =
         odTrip.time.secondsSinceMidnight -
-        egress.summary.travelTimeSeconds -
+        Utils.calculateTotalDurationSeconds(egress.steps) -
         middleSeconds;
     const access = await fetchRouteWithMode(odTripViaStations, {
         origin: odTrip.origin,

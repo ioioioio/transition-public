@@ -46,34 +46,14 @@ const createPlaneRouteAlternative = ({
     flightSeconds: number;
     destinationAirport: Airport;
     egress: Api.RouteAlternative;
-}): Api.RouteAlternative => {
-    const groundModes = [
-        ...access.summary.rankedModes,
-        ...egress.summary.rankedModes,
-    ];
-    return {
-        id,
-        summary: {
-            rankedModes: [...new Set<Api.Mode>(['plane', ...groundModes])],
-            travelTimeSeconds:
-                access.summary.travelTimeSeconds +
-                flightSeconds +
-                egress.summary.travelTimeSeconds,
-            distanceMeters:
-                access.summary.distanceMeters +
-                calculateDistanceMeters(
-                    originAirport.position,
-                    destinationAirport.position,
-                ) +
-                egress.summary.distanceMeters,
-        },
-        steps: [
-            ...access.steps,
-            createFlightStep(originAirport, destinationAirport, flightSeconds),
-            ...egress.steps,
-        ],
-    };
-};
+}): Api.RouteAlternative => ({
+    id,
+    steps: [
+        ...access.steps,
+        createFlightStep(originAirport, destinationAirport, flightSeconds),
+        ...egress.steps,
+    ],
+});
 
 // One per mode, the same to and from the airports
 export const fetchPlaneRouteAlternatives = async (

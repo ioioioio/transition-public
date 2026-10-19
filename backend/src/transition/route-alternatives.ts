@@ -41,23 +41,6 @@ const isTransitRouteResultEntry = (
 const getKnownMode = (mode: string): Api.Mode =>
     Api.ModeSchema.catch('other').parse(mode);
 
-// Longest first, without walking
-const sortTransitModesByDistance = (
-    path: TransitRouteResult['paths'][number],
-): Api.Mode[] => {
-    const distances = new Map<Api.Mode, number>();
-    for (const step of path.steps) {
-        if (step.action === 'unboarding') {
-            const mode = getKnownMode(step.mode);
-            distances.set(
-                mode,
-                (distances.get(mode) ?? 0) + step.inVehicleDistance,
-            );
-        }
-    }
-    return [...distances].sort(([, a], [, b]) => b - a).map(([mode]) => mode);
-};
-
 const createUnimodalStep = (
     routingMode: UnimodalRoutingMode,
     path: UnimodalRouteResult['paths'][number],
@@ -167,11 +150,6 @@ const createRouteAlternative = (
         }
         return {
             id: `${routingSetupId}-${routingMode}`,
-            summary: {
-                rankedModes: [routingMode],
-                travelTimeSeconds: path.travelTimeSeconds,
-                distanceMeters: path.distanceMeters,
-            },
             steps: [createUnimodalStep(routingMode, path)],
         };
     }
@@ -183,11 +161,6 @@ const createRouteAlternative = (
         }
         return {
             id: `${routingSetupId}-transit`,
-            summary: {
-                rankedModes: sortTransitModesByDistance(path),
-                travelTimeSeconds: path.totalTravelTime,
-                distanceMeters: path.totalDistance,
-            },
             steps: createTransitSteps(path, origin, destination),
         };
     }

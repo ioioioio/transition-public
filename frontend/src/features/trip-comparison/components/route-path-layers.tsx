@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
+import { sortRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
 import { formatDuration } from '@/utils/format';
 
 /**
@@ -50,11 +51,10 @@ const RoutePathLayers = ({
 }: RoutePathLayersProps) => {
     const toggle = (id: string) => onSelect(selectedId === id ? null : id);
 
-    const drawnRoutes = routes
-        .filter(({ steps }) => steps.length > 0)
-        .sort(
-            (a, b) => a.summary.travelTimeSeconds - b.summary.travelTimeSeconds,
-        );
+    const drawnRoutes = sortRouteAlternatives(
+        routes.filter(({ steps }) => steps.length > 0),
+        'travelTime',
+    );
 
     return drawnRoutes.map(({ id, steps }, rank) => (
         <RoutePathLayer

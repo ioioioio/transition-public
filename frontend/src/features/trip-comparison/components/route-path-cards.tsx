@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
 import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
+import { createRouteSummary } from '@/features/trip-comparison/utils/route-alternative';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
@@ -57,14 +58,14 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
 
 type RoutePathCardProps = {
     id: string;
-    summary: Api.RouteSummary;
     steps: Api.RouteStep[];
     badge?: ReactNode;
 };
 
 // An accordion item, styled as a card
-const RoutePathCard = ({ id, summary, steps, badge }: RoutePathCardProps) => {
-    const { rankedModes, travelTimeSeconds, distanceMeters } = summary;
+const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
+    const { rankedModes, travelTimeSeconds, distanceMeters } =
+        createRouteSummary(steps);
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const { getWalkingToLabel, getWaitingAtLabel } = useTransitStepLabels();
@@ -190,11 +191,10 @@ const RoutePathCards = ({
                     onSelect(value.at(0) ?? null)
                 }
             >
-                {routes.map(({ id, summary, steps }, index) => (
+                {routes.map(({ id, steps }, index) => (
                     <RoutePathCard
                         key={id}
                         id={id}
-                        summary={summary}
                         steps={steps}
                         badge={
                             index === 0 &&

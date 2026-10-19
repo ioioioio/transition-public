@@ -45,19 +45,9 @@ export const RouteStepSchema = z.discriminatedUnion('activity', [
 
 export type RouteStep = z.infer<typeof RouteStepSchema>;
 
-export const RouteSummarySchema = z.object({
-    // Main one first, by a chosen criterion
-    rankedModes: z.array(ModeSchema),
-    travelTimeSeconds: z.number(),
-    distanceMeters: z.number(),
-});
-
-export type RouteSummary = z.infer<typeof RouteSummarySchema>;
-
 // A way to make the trip
 export const RouteAlternativeSchema = z.object({
     id: z.string(),
-    summary: RouteSummarySchema,
     steps: z.array(RouteStepSchema),
 });
 
