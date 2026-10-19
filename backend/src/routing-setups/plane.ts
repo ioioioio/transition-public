@@ -1,5 +1,5 @@
 import type { Api, PublicConfig } from 'common';
-import { fetchAccessAndEgress, findClosestStation } from './via-stations';
+import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import type { OdTrip } from '../transition/route';
 import { calculateDistanceMeters } from '../utils/geo';
 
@@ -58,35 +58,6 @@ const createFlightStep = (
     distanceMeters: calculateDistanceMeters(from.position, to.position),
 });
 
-const createPlaneRouteAlternative = ({
-    id,
-    access,
-    originAirport,
-    securityAndBoardingSeconds,
-    flightSeconds,
-    destinationAirport,
-    unboardingAndLuggageSeconds,
-    egress,
-}: {
-    id: string;
-    access: Api.RouteAlternative;
-    originAirport: Airport;
-    securityAndBoardingSeconds: number;
-    flightSeconds: number;
-    destinationAirport: Airport;
-    unboardingAndLuggageSeconds: number;
-    egress: Api.RouteAlternative;
-}): Api.RouteAlternative => ({
-    id,
-    steps: [
-        ...access.steps,
-        createBoardingStep(originAirport, securityAndBoardingSeconds),
-        createFlightStep(originAirport, destinationAirport, flightSeconds),
-        createUnboardingStep(destinationAirport, unboardingAndLuggageSeconds),
-        ...egress.steps,
-    ],
-});
-
 // One per mode, the same to and from the airports
 export const fetchPlaneRouteAlternatives = async (
     odTrip: OdTrip,
@@ -104,33 +75,31 @@ export const fetchPlaneRouteAlternatives = async (
     const flightSeconds = flight.minutes * 60;
     const unboardingAndLuggageSeconds =
         destinationAirport.unboardingAndLuggageMinutes * 60;
+    // The same whenever the trip to the airport ends
+    const fetchMiddleSteps = () =>
+        Promise.resolve([
+            createBoardingStep(originAirport, securityAndBoardingSeconds),
+            createFlightStep(originAirport, destinationAirport, flightSeconds),
+            createUnboardingStep(
+                destinationAirport,
+                unboardingAndLuggageSeconds,
+            ),
+        ]);
     const alternatives = await Promise.all(
-        modes.map(async (mode) => {
-            const parts = await fetchAccessAndEgress({
+        modes.map(async (mode): Promise<Api.RouteAlternative | null> => {
+            const steps = await fetchStepsViaStations({
                 odTrip,
                 boardingStation: originAirport,
-                middleSeconds:
-                    securityAndBoardingSeconds +
-                    flightSeconds +
-                    unboardingAndLuggageSeconds,
+                fetchMiddleSteps,
                 alightingStation: destinationAirport,
                 routingSetupId: id,
                 scenarioId,
                 mode,
             });
-            if (!parts) {
+            if (!steps) {
                 return null;
             }
-            return createPlaneRouteAlternative({
-                id: `${id}-${mode}`,
-                access: parts.access,
-                originAirport,
-                securityAndBoardingSeconds,
-                flightSeconds,
-                destinationAirport,
-                unboardingAndLuggageSeconds,
-                egress: parts.egress,
-            });
+            return { id: `${id}-${mode}`, steps };
         }),
     );
     return alternatives.filter((alternative) => alternative !== null);

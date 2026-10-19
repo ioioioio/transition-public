@@ -22,8 +22,10 @@ export const findClosestStation = <S extends Station>(
 type OdTripViaStations = {
     odTrip: OdTrip;
     boardingStation: Station;
-    // Between the boarding and the alighting stations
-    middleSeconds: number;
+    // Between the boarding and the alighting stations, starting at the given
+    // time for a departure, or ending at it for an arrival. Null when there's
+    // no way between them
+    fetchMiddleSteps: (time: OdTrip['time']) => Promise<Api.RouteStep[] | null>;
     alightingStation: Station;
     routingSetupId: string;
     scenarioId: string;
@@ -43,17 +45,11 @@ const fetchRouteWithMode = async (
         )
     ).at(0) ?? null;
 
-type AccessAndEgress = {
-    access: Api.RouteAlternative;
-    egress: Api.RouteAlternative;
-};
-
-// The access starts at the departure time, and the egress once the middle
-// part ends
-const fetchFromDeparture = async (
+// Each part starts at the departure time or when the previous one ends
+const fetchStepsFromDeparture = async (
     odTripViaStations: OdTripViaStations,
-): Promise<AccessAndEgress | null> => {
-    const { odTrip, boardingStation, middleSeconds, alightingStation } =
+): Promise<Api.RouteStep[] | null> => {
+    const { odTrip, boardingStation, fetchMiddleSteps, alightingStation } =
         odTripViaStations;
     const access = await fetchRouteWithMode(odTripViaStations, {
         origin: odTrip.origin,
@@ -63,10 +59,19 @@ const fetchFromDeparture = async (
     if (!access) {
         return null;
     }
-    const egressDepartureSeconds =
+    const middleDepartureSeconds =
         odTrip.time.secondsSinceMidnight +
-        Utils.calculateTotalDurationSeconds(access.steps) +
-        middleSeconds;
+        Utils.calculateTotalDurationSeconds(access.steps);
+    const middleSteps = await fetchMiddleSteps({
+        type: 'departure',
+        secondsSinceMidnight: middleDepartureSeconds,
+    });
+    if (!middleSteps) {
+        return null;
+    }
+    const egressDepartureSeconds =
+        middleDepartureSeconds +
+        Utils.calculateTotalDurationSeconds(middleSteps);
     const egress = await fetchRouteWithMode(odTripViaStations, {
         origin: alightingStation.position,
         destination: odTrip.destination,
@@ -78,15 +83,14 @@ const fetchFromDeparture = async (
     if (!egress) {
         return null;
     }
-    return { access, egress };
+    return [...access.steps, ...middleSteps, ...egress.steps];
 };
 
-// The egress ends at the arrival time, and the access when the middle part
-// starts
-const fetchFromArrival = async (
+// Each part ends at the arrival time or when the next one starts
+const fetchStepsFromArrival = async (
     odTripViaStations: OdTripViaStations,
-): Promise<AccessAndEgress | null> => {
-    const { odTrip, boardingStation, middleSeconds, alightingStation } =
+): Promise<Api.RouteStep[] | null> => {
+    const { odTrip, boardingStation, fetchMiddleSteps, alightingStation } =
         odTripViaStations;
     const egress = await fetchRouteWithMode(odTripViaStations, {
         origin: alightingStation.position,
@@ -96,10 +100,18 @@ const fetchFromArrival = async (
     if (!egress) {
         return null;
     }
-    const accessArrivalSeconds =
+    const middleArrivalSeconds =
         odTrip.time.secondsSinceMidnight -
-        Utils.calculateTotalDurationSeconds(egress.steps) -
-        middleSeconds;
+        Utils.calculateTotalDurationSeconds(egress.steps);
+    const middleSteps = await fetchMiddleSteps({
+        type: 'arrival',
+        secondsSinceMidnight: middleArrivalSeconds,
+    });
+    if (!middleSteps) {
+        return null;
+    }
+    const accessArrivalSeconds =
+        middleArrivalSeconds - Utils.calculateTotalDurationSeconds(middleSteps);
     const access = await fetchRouteWithMode(odTripViaStations, {
         origin: odTrip.origin,
         destination: boardingStation.position,
@@ -108,14 +120,15 @@ const fetchFromArrival = async (
     if (!access) {
         return null;
     }
-    return { access, egress };
+    return [...access.steps, ...middleSteps, ...egress.steps];
 };
 
-// Each part starts when the previous one ends, so the parts are fetched one
-// after the other. Null when either part has no route with the mode
-export const fetchAccessAndEgress = (
+// The steps to the boarding station, between the stations, and from the
+// alighting one. Each part depends on the time of the previous one, so they're
+// fetched one after the other. Null when a part has no route
+export const fetchStepsViaStations = (
     odTripViaStations: OdTripViaStations,
-): Promise<AccessAndEgress | null> =>
+): Promise<Api.RouteStep[] | null> =>
     odTripViaStations.odTrip.time.type === 'departure'
-        ? fetchFromDeparture(odTripViaStations)
-        : fetchFromArrival(odTripViaStations);
+        ? fetchStepsFromDeparture(odTripViaStations)
+        : fetchStepsFromArrival(odTripViaStations);
