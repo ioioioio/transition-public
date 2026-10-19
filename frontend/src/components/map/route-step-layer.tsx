@@ -7,7 +7,8 @@ import {
 } from '@/components/map/labeled-line-layer';
 import { createCurve } from '@/utils/geo';
 
-export type RouteStepLayerStyles = LabeledLineLayerStyles & {
+export type RouteStepLayerStyles = {
+    line: LabeledLineLayerStyles;
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
 };
@@ -47,7 +48,7 @@ export const RouteStepLayer = ({
         <LabeledLineLayer
             id={id}
             line={line}
-            styles={styles}
+            styles={styles.line}
             selected={selected}
             label={label}
             onClick={onClick}

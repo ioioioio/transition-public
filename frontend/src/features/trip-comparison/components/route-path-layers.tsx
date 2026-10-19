@@ -18,9 +18,9 @@ const createRoutePathStyles = (
     const slowness = count > 1 ? rank / (count - 1) : 0;
     const side = rank % 2 === 0 ? 1 : -1;
     return {
+        line: { dashArray: [3 - 2.75 * slowness, 1 + slowness] },
         // More curved when faster, so the fastest is the longest and stands out
         bend: side * (0.2 - 0.12 * slowness),
-        dashArray: [3 - 2.75 * slowness, 1 + slowness],
     };
 };
 
