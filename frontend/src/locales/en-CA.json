@@ -22,6 +22,7 @@
         "metro": "Metro",
         "plane": "Plane",
         "rail": "Train",
+        "highSpeedRail": "High-speed train",
         "other": "Other"
     },
     "bestRoute": {

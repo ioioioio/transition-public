@@ -9,6 +9,7 @@ const getStopKind = (mode: Api.Mode): StopKind => {
         case 'metro':
             return 'station';
         case 'rail':
+        case 'highSpeedRail':
             return 'trainStation';
         default:
             return 'stop';

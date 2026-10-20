@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const ModeSchema = z.enum([
     'bus',
     'driving',
+    'highSpeedRail',
     'metro',
     'plane',
     'rail',

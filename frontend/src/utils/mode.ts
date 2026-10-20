@@ -6,6 +6,7 @@ import {
     PersonSimpleWalkIcon,
     SubwayIcon,
     TrainIcon,
+    TrainSimpleIcon,
     type Icon,
 } from '@phosphor-icons/react';
 import type { Api } from 'common';
@@ -13,6 +14,7 @@ import type { Api } from 'common';
 export const modeIcons: Record<Api.Mode, Icon> = {
     bus: BusIcon,
     driving: CarIcon,
+    highSpeedRail: TrainSimpleIcon,
     metro: SubwayIcon,
     plane: AirplaneTiltIcon,
     rail: TrainIcon,
