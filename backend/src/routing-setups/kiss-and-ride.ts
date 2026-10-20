@@ -1,0 +1,63 @@
+import type { Api, PublicConfig } from 'common';
+import { fetchStepsViaStations, findClosestStation } from './via-stations';
+import {
+    fetchTransitionRoute,
+    type OdTrip,
+    type TransitionRouteResponse,
+} from '../transition/route';
+import { createRouteAlternatives } from '../transition/route-alternatives';
+
+type TransitPath = NonNullable<
+    TransitionRouteResponse['result']['transit']
+>['paths'][number];
+
+const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
+    const usedModes = new Set(
+        path.steps.flatMap((step) =>
+            step.action === 'boarding' ? [step.mode] : [],
+        ),
+    );
+    return requiredModes.every((mode) => usedModes.has(mode));
+};
+
+export const fetchKissAndRideRouteAlternatives = async (
+    odTrip: OdTrip,
+    routingSetup: PublicConfig.KissAndRideRoutingSetup,
+): Promise<Api.RouteAlternative[]> => {
+    const { id, scenarioId, requiredModes, stations } = routingSetup;
+    const originStation = findClosestStation(stations, odTrip.origin);
+    const destinationStation = findClosestStation(stations, odTrip.destination);
+    if (originStation === destinationStation) {
+        return [];
+    }
+    const fetchMiddleSteps = async (time: OdTrip['time']) => {
+        const transitionRoute = await fetchTransitionRoute(
+            {
+                origin: originStation.position,
+                destination: destinationStation.position,
+                time,
+            },
+            { scenarioId, modes: ['transit'] },
+        );
+        const path = transitionRoute.result.transit?.paths.at(0);
+        if (!path || !checkUsesRequiredModes(path, requiredModes)) {
+            return null;
+        }
+        return (
+            createRouteAlternatives(transitionRoute, id).at(0)?.steps ?? null
+        );
+    };
+    const steps = await fetchStepsViaStations({
+        odTrip,
+        boardingStation: originStation,
+        fetchMiddleSteps,
+        alightingStation: destinationStation,
+        routingSetupId: id,
+        scenarioId,
+        mode: 'driving',
+    });
+    if (!steps) {
+        return [];
+    }
+    return [{ id, steps }];
+};

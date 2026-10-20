@@ -1,5 +1,6 @@
 import express from 'express';
 import { Api, type PublicConfig } from 'common';
+import { fetchKissAndRideRouteAlternatives } from '../routing-setups/kiss-and-ride';
 import { fetchPlaneRouteAlternatives } from '../routing-setups/plane';
 import { fetchStandardRouteAlternatives } from '../routing-setups/standard';
 import { config } from '../config';
@@ -41,6 +42,8 @@ const fetchRouteAlternatives = (
             return fetchStandardRouteAlternatives(odTrip, routingSetup);
         case 'plane':
             return fetchPlaneRouteAlternatives(odTrip, routingSetup);
+        case 'kiss-and-ride':
+            return fetchKissAndRideRouteAlternatives(odTrip, routingSetup);
         default:
             return routingSetup satisfies never;
     }

@@ -58,9 +58,29 @@ const PlaneRoutingSetupSchema = z
 
 export type PlaneRoutingSetup = z.infer<typeof PlaneRoutingSetupSchema>;
 
+const StationSchema = z.object({
+    id: z.string().min(1),
+    position: Utils.LngLatSchema,
+});
+
+// Dropped off and picked up by car at the stations, and by the scenario's
+// transit between them
+const KissAndRideRoutingSetupSchema = z.object({
+    id: z.string().min(1),
+    type: z.literal('kiss-and-ride'),
+    scenarioId: z.uuid(),
+    requiredModes: z.array(z.string().min(1)).min(1),
+    stations: z.array(StationSchema).min(2),
+});
+
+export type KissAndRideRoutingSetup = z.infer<
+    typeof KissAndRideRoutingSetupSchema
+>;
+
 const RoutingSetupSchema = z.discriminatedUnion('type', [
     StandardRoutingSetupSchema,
     PlaneRoutingSetupSchema,
+    KissAndRideRoutingSetupSchema,
 ]);
 
 export type RoutingSetup = z.infer<typeof RoutingSetupSchema>;

@@ -1,8 +1,6 @@
 import { type Api, Utils } from 'common';
-import {
-    fetchTransitionRouteAlternatives,
-    type OdTrip,
-} from '../transition/route';
+import { fetchTransitionRoute, type OdTrip } from '../transition/route';
+import { createRouteAlternatives } from '../transition/route-alternatives';
 import { calculateDistanceMeters } from '../utils/geo';
 
 // For trips that go through stations, like airports or train stations
@@ -36,14 +34,15 @@ type OdTripViaStations = {
 const fetchRouteWithMode = async (
     { routingSetupId, scenarioId, mode }: OdTripViaStations,
     odTrip: OdTrip,
-) =>
-    (
-        await fetchTransitionRouteAlternatives(
-            odTrip,
-            { scenarioId, modes: [mode] },
-            routingSetupId,
-        )
-    ).at(0) ?? null;
+) => {
+    const transitionRoute = await fetchTransitionRoute(odTrip, {
+        scenarioId,
+        modes: [mode],
+    });
+    return (
+        createRouteAlternatives(transitionRoute, routingSetupId).at(0) ?? null
+    );
+};
 
 // Each part starts at the departure time or when the previous one ends
 const fetchStepsFromDeparture = async (

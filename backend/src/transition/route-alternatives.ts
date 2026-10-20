@@ -1,11 +1,6 @@
 import { Api, type Utils } from 'common';
-import type { z } from 'zod';
 
-import type * as TransitionSchema from './generated/transitionAPI.zod';
-
-type TransitionRouteResponse = z.infer<
-    typeof TransitionSchema.PostApiV1RouteResponse
->;
+import type { TransitionRouteResponse } from './route';
 
 const unimodalRoutingModes = [
     'driving',

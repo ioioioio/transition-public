@@ -1,11 +1,14 @@
 import type { Api, PublicConfig } from 'common';
-import {
-    fetchTransitionRouteAlternatives,
-    type OdTrip,
-} from '../transition/route';
+import { fetchTransitionRoute, type OdTrip } from '../transition/route';
+import { createRouteAlternatives } from '../transition/route-alternatives';
 
-export const fetchStandardRouteAlternatives = (
+export const fetchStandardRouteAlternatives = async (
     odTrip: OdTrip,
     { id, scenarioId, modes }: PublicConfig.StandardRoutingSetup,
-): Promise<Api.RouteAlternative[]> =>
-    fetchTransitionRouteAlternatives(odTrip, { scenarioId, modes }, id);
+): Promise<Api.RouteAlternative[]> => {
+    const transitionRoute = await fetchTransitionRoute(odTrip, {
+        scenarioId,
+        modes,
+    });
+    return createRouteAlternatives(transitionRoute, id);
+};

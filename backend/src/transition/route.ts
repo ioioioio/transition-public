@@ -1,12 +1,16 @@
 import type { Api, Utils } from 'common';
+import type { z } from 'zod';
 import { config } from '../config';
 import { ApiError, parseUpstreamResponse } from '../utils/http';
 import { createPointFeature } from '../utils/geo';
 import { postApiV1Route } from './generated/transitionAPI';
 import * as TransitionSchema from './generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from './generated/model';
-import { createRouteAlternatives } from './route-alternatives';
 import { transitionToken } from './token';
+
+export type TransitionRouteResponse = z.infer<
+    typeof TransitionSchema.PostApiV1RouteResponse
+>;
 
 export type OdTrip = {
     origin: Utils.LngLat;
@@ -44,11 +48,10 @@ const createTransitionRouteBody = (
         config.transitionRouting.maxTotalTravelTimeSeconds,
 });
 
-export const fetchTransitionRouteAlternatives = async (
+export const fetchTransitionRoute = async (
     odTrip: OdTrip,
     parameters: RoutingParameters,
-    routingSetupId: string,
-): Promise<Api.RouteAlternative[]> => {
+): Promise<TransitionRouteResponse> => {
     const response = await postApiV1Route(
         createTransitionRouteBody(odTrip, parameters),
         undefined,
@@ -59,9 +62,8 @@ export const fetchTransitionRouteAlternatives = async (
     if (response.status !== 200) {
         throw new ApiError(response.status, response.data);
     }
-    const transitionResponse = parseUpstreamResponse(
+    return parseUpstreamResponse(
         TransitionSchema.PostApiV1RouteResponse,
         response.data,
     );
-    return createRouteAlternatives(transitionResponse, routingSetupId);
 };
