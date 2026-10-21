@@ -8,6 +8,7 @@
         "destination": "Destination",
         "clearOrigin": "Effacer l’origine",
         "clearDestination": "Effacer la destination",
+        "swapPlaces": "Inverser l’origine et la destination",
         "distance": "Distance",
         "time": "Heure",
         "timeType": "Départ ou arrivée",

@@ -1,8 +1,13 @@
-import { CircleIcon, MapPinIcon } from '@phosphor-icons/react';
+import {
+    ArrowsDownUpIcon,
+    CircleIcon,
+    MapPinIcon,
+} from '@phosphor-icons/react';
 import { Api, type Utils } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import PlaceInput from '@/components/inputs/place-input';
+import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { config } from '@/config/config';
 import type { PlaceRef } from '@/types/place';
@@ -24,6 +29,7 @@ type TripComparisonFormProps = {
     destination: PlaceRef | null;
     onOriginChange: (origin: PlaceRef | null) => void;
     onDestinationChange: (destination: PlaceRef | null) => void;
+    onPlacesSwap: () => void;
     time: Api.TripTime;
     onTimeChange: (time: Api.TripTime) => void;
     searchFocus: Utils.LngLat;
@@ -34,6 +40,7 @@ const TripComparisonForm = ({
     destination,
     onOriginChange,
     onDestinationChange,
+    onPlacesSwap,
     time,
     onTimeChange,
     searchFocus,
@@ -47,7 +54,7 @@ const TripComparisonForm = ({
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
+            <div className="relative flex flex-col gap-1.5">
                 <PlaceInput
                     icon={
                         <CircleIcon
@@ -74,6 +81,17 @@ const TripComparisonForm = ({
                     onValueChange={onDestinationChange}
                     focus={searchFocus}
                 />
+                <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label={t('tripComparison.swapPlaces')}
+                    // Straddles the fields' end edge, between the two fields
+                    className="absolute -end-4 top-[calc(50%-1rem)] z-10 rounded-full bg-card dark:bg-card dark:hover:bg-muted"
+                    disabled={!origin && !destination}
+                    onClick={onPlacesSwap}
+                >
+                    <ArrowsDownUpIcon aria-hidden />
+                </Button>
             </div>
             <div className="flex flex-wrap gap-3">
                 <ToggleGroup
