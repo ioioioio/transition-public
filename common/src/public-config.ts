@@ -12,6 +12,9 @@ const MapConfigSchema = z.object({
 
 export type MapConfig = z.infer<typeof MapConfigSchema>;
 
+const checkHasUniqueIds = (items: { id: string }[]) =>
+    new Set(items.map(({ id }) => id)).size === items.length;
+
 // Routes from the origin to the destination, with the scenario's modes
 const StandardRoutingSetupSchema = z.object({
     id: z.string().min(1),
@@ -105,30 +108,15 @@ export const PublicConfigSchema = z.object({
     routingSetups: z
         .array(RoutingSetupSchema)
         .min(1)
-        .refine(
-            (routingSetups) =>
-                new Set(routingSetups.map(({ id }) => id)).size ===
-                routingSetups.length,
-            'Routing setup ids must be unique',
-        ),
+        .refine(checkHasUniqueIds, 'Routing setup ids must be unique'),
     // The airports and flights that plane routing setups can use
     planeNetworks: z
         .array(PlaneNetworkSchema)
-        .refine(
-            (planeNetworks) =>
-                new Set(planeNetworks.map(({ id }) => id)).size ===
-                planeNetworks.length,
-            'Plane network ids must be unique',
-        ),
+        .refine(checkHasUniqueIds, 'Plane network ids must be unique'),
     // The stations that kiss-and-ride routing setups can use
     trainNetworks: z
         .array(TrainNetworkSchema)
-        .refine(
-            (trainNetworks) =>
-                new Set(trainNetworks.map(({ id }) => id)).size ===
-                trainNetworks.length,
-            'Train network ids must be unique',
-        ),
+        .refine(checkHasUniqueIds, 'Train network ids must be unique'),
     // Hours of the day the trips can be made at
     tripHours: z.array(z.int().min(0).max(23)).min(1),
     // Passed as is to each of Transition's route requests
