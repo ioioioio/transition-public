@@ -76,7 +76,9 @@ const fetchPlaneRouteAlternatives = async (
         ({ id }) => id === routingSetup.planeNetworkId,
     );
     if (!planeNetwork) {
-        throw new Error(`Unknown plane network: ${routingSetup.planeNetworkId}`);
+        throw new Error(
+            `Unknown plane network: ${routingSetup.planeNetworkId}`,
+        );
     }
     const { airports } = planeNetwork;
     const originAirport = findClosestStation(airports, odTrip.origin);

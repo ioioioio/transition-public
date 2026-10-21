@@ -46,7 +46,6 @@ const fixRouteResult = defineTransformer((spec) => {
     return spec;
 });
 
-
 export default defineConfig({
     transition: {
         input: {
