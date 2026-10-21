@@ -2,7 +2,7 @@ import type { Api, PublicConfig } from 'common';
 import { config } from '../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import {
-    fetchTransitionRoute,
+    fetchTransitRoute,
     type OdTrip,
     type TransitionRouteResponse,
 } from '../transition/route';
@@ -39,13 +39,13 @@ export const fetchKissAndRideRouteAlternatives = async (
         return [];
     }
     const fetchMiddleSteps = async (time: OdTrip['time']) => {
-        const transitionRoute = await fetchTransitionRoute(
+        const transitionRoute = await fetchTransitRoute(
             {
                 origin: originStation.position,
                 destination: destinationStation.position,
                 time,
             },
-            { scenarioId, modes: ['transit'] },
+            scenarioId,
         );
         const path = transitionRoute.result.transit?.paths.at(0);
         if (!path || !checkUsesRequiredModes(path, requiredModes)) {
@@ -62,7 +62,7 @@ export const fetchKissAndRideRouteAlternatives = async (
         alightingStation: destinationStation,
         routingSetupId: id,
         scenarioId,
-        mode: 'driving',
+        accessMode: 'driving',
     });
     if (!steps) {
         return [];

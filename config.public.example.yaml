@@ -8,10 +8,15 @@ map:
     light: https://tiles.openfreemap.org/styles/positron
     dark: https://tiles.openfreemap.org/styles/dark
 routingSetups:
-  - id: base
-    type: standard
+  - id: driving
+    type: unimodal
+    mode: driving
+  - id: walking
+    type: unimodal
+    mode: walking
+  - id: transit-reference
+    type: transit
     scenarioId: 83712744-6ce6-4058-8afb-234886f57255
-    modes: [driving, transit, walking]
   - id: with-plane
     type: plane
     scenarioId: 83712744-6ce6-4058-8afb-234886f57255

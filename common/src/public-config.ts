@@ -15,15 +15,30 @@ export type MapConfig = z.infer<typeof MapConfigSchema>;
 const checkHasUniqueIds = (items: { id: string }[]) =>
     new Set(items.map(({ id }) => id)).size === items.length;
 
-// Routes from the origin to the destination, with the scenario's modes
-const StandardRoutingSetupSchema = z.object({
+const UnimodalModeSchema = z.enum(['driving', 'walking']);
+
+export type UnimodalMode = z.infer<typeof UnimodalModeSchema>;
+
+// To get to and from stations, like airports
+const AccessModeSchema = z.enum([...UnimodalModeSchema.options, 'transit']);
+
+export type AccessMode = z.infer<typeof AccessModeSchema>;
+
+const UnimodalRoutingSetupSchema = z.object({
     id: z.string().min(1),
-    type: z.literal('standard'),
-    scenarioId: z.uuid(),
-    modes: z.array(z.string().min(1)).min(1),
+    type: z.literal('unimodal'),
+    mode: UnimodalModeSchema,
 });
 
-export type StandardRoutingSetup = z.infer<typeof StandardRoutingSetupSchema>;
+export type UnimodalRoutingSetup = z.infer<typeof UnimodalRoutingSetupSchema>;
+
+const TransitRoutingSetupSchema = z.object({
+    id: z.string().min(1),
+    type: z.literal('transit'),
+    scenarioId: z.uuid(),
+});
+
+export type TransitRoutingSetup = z.infer<typeof TransitRoutingSetupSchema>;
 
 const AirportSchema = z.object({
     id: z.string().min(1),
@@ -62,7 +77,7 @@ const PlaneRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('plane'),
     scenarioId: z.uuid(),
-    modes: z.array(z.string().min(1)).min(1),
+    modes: z.array(AccessModeSchema).min(1),
     planeNetworkId: z.string().min(1),
 });
 
@@ -95,7 +110,8 @@ export type KissAndRideRoutingSetup = z.infer<
 >;
 
 const RoutingSetupSchema = z.discriminatedUnion('type', [
-    StandardRoutingSetupSchema,
+    UnimodalRoutingSetupSchema,
+    TransitRoutingSetupSchema,
     PlaneRoutingSetupSchema,
     KissAndRideRoutingSetupSchema,
 ]);

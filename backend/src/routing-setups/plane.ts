@@ -94,7 +94,7 @@ export const fetchPlaneRouteAlternatives = async (
             ),
         ]);
     const alternatives = await Promise.all(
-        modes.map(async (mode): Promise<Api.RouteAlternative | null> => {
+        modes.map(async (accessMode): Promise<Api.RouteAlternative | null> => {
             const steps = await fetchStepsViaStations({
                 odTrip,
                 boardingStation: originAirport,
@@ -102,12 +102,12 @@ export const fetchPlaneRouteAlternatives = async (
                 alightingStation: destinationAirport,
                 routingSetupId: id,
                 scenarioId,
-                mode,
+                accessMode,
             });
             if (!steps) {
                 return null;
             }
-            return { id: `${id}-${mode}`, steps };
+            return { id: `${id}-${accessMode}`, steps };
         }),
     );
     return alternatives.filter((alternative) => alternative !== null);

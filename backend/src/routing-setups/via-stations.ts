@@ -1,5 +1,9 @@
-import { type Api, Utils } from 'common';
-import { fetchTransitionRoute, type OdTrip } from '../transition/route';
+import { type Api, type PublicConfig, Utils } from 'common';
+import {
+    fetchTransitRoute,
+    fetchUnimodalRoute,
+    type OdTrip,
+} from '../transition/route';
 import { createRouteAlternatives } from '../transition/route-alternatives';
 import { calculateDistanceMeters } from '../utils/geo';
 
@@ -27,18 +31,18 @@ type OdTripViaStations = {
     alightingStation: Station;
     routingSetupId: string;
     scenarioId: string;
-    mode: string;
+    accessMode: PublicConfig.AccessMode;
 };
 
 // Null when there's no route with that mode
 const fetchRouteWithMode = async (
-    { routingSetupId, scenarioId, mode }: OdTripViaStations,
+    { routingSetupId, scenarioId, accessMode }: OdTripViaStations,
     odTrip: OdTrip,
 ) => {
-    const transitionRoute = await fetchTransitionRoute(odTrip, {
-        scenarioId,
-        modes: [mode],
-    });
+    const transitionRoute =
+        accessMode === 'transit'
+            ? await fetchTransitRoute(odTrip, scenarioId)
+            : await fetchUnimodalRoute(odTrip, accessMode);
     return (
         createRouteAlternatives(transitionRoute, routingSetupId).at(0) ?? null
     );
