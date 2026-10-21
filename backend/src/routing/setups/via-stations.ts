@@ -1,16 +1,16 @@
 import { type Api, type PublicConfig, Utils } from 'common';
-import { config } from '../config';
+import { config } from '../../config';
 import {
     fetchTransitRoute,
     fetchUnimodalRoute,
     type OdTrip,
     type TransitionRouteResponse,
-} from '../transition/route';
+} from '../../transition/route';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,
-} from '../transition/route-steps';
-import { calculateDistanceMeters } from '../utils/geo';
+} from '../routes/route-steps';
+import { calculateDistanceMeters } from '../../utils/geo';
 
 // For trips that go through stations, like airports or train stations
 type Station = { id: string; position: Utils.LngLat };

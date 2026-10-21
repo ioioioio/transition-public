@@ -1,6 +1,6 @@
 import { Api, type PublicConfig, type Utils } from 'common';
 
-import type { TransitionRouteResponse } from './route';
+import type { TransitionRouteResponse } from '../../transition/route';
 
 type TransitionRouteResult = TransitionRouteResponse['result'];
 

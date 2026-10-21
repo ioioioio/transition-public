@@ -1,16 +1,16 @@
 import type { Api, PublicConfig } from 'common';
-import { config } from '../config';
+import { config } from '../../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import {
     fetchTransitRoute,
     fetchUnimodalRoute,
     type OdTrip,
-} from '../transition/route';
+} from '../../transition/route';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,
-} from '../transition/route-steps';
-import { calculateDistanceMeters } from '../utils/geo';
+} from '../routes/route-steps';
+import { calculateDistanceMeters } from '../../utils/geo';
 
 type Airport = PublicConfig.PlaneNetwork['airports'][number];
 

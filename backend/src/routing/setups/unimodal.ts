@@ -1,6 +1,6 @@
 import type { Api, PublicConfig } from 'common';
-import { fetchUnimodalRoute, type OdTrip } from '../transition/route';
-import { createUnimodalRouteSteps } from '../transition/route-steps';
+import { fetchUnimodalRoute, type OdTrip } from '../../transition/route';
+import { createUnimodalRouteSteps } from '../routes/route-steps';
 
 export const fetchUnimodalRouteAlternatives = async (
     odTrip: OdTrip,

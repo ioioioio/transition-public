@@ -3,10 +3,10 @@ import { Api, type PublicConfig } from 'common';
 import {
     fetchPlaneTransitRouteAlternatives,
     fetchPlaneUnimodalRouteAlternatives,
-} from '../routing-setups/plane';
-import { fetchTransitRouteAlternatives } from '../routing-setups/transit';
-import { fetchUnimodalRouteAlternatives } from '../routing-setups/unimodal';
-import { fetchViaStationsRouteAlternatives } from '../routing-setups/via-stations';
+} from '../routing/setups/plane';
+import { fetchTransitRouteAlternatives } from '../routing/setups/transit';
+import { fetchUnimodalRouteAlternatives } from '../routing/setups/unimodal';
+import { fetchViaStationsRouteAlternatives } from '../routing/setups/via-stations';
 import { config } from '../config';
 import { ApiError, parseRequest } from '../utils/http';
 
