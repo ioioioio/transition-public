@@ -1,11 +1,11 @@
 import { type Api, type PublicConfig, Utils } from 'common';
 import { config } from '../../config';
+import type { TransitionRouteResponse } from '../../transition/route';
 import {
     fetchTransitRoute,
     fetchUnimodalRoute,
     type OdTrip,
-    type TransitionRouteResponse,
-} from '../../transition/route';
+} from '../routes/fetch-routes';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,

@@ -1,8 +1,5 @@
-import type { Api, PublicConfig, Utils } from 'common';
 import type { z } from 'zod';
-import { config } from '../config';
 import { ApiError, parseUpstreamResponse } from '../utils/http';
-import { createPointFeature } from '../utils/geo';
 import { postApiV1Route } from './generated/transitionAPI';
 import * as TransitionSchema from './generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from './generated/model';
@@ -12,38 +9,7 @@ export type TransitionRouteResponse = z.infer<
     typeof TransitionSchema.PostApiV1RouteResponse
 >;
 
-export type OdTrip = {
-    origin: Utils.LngLat;
-    destination: Utils.LngLat;
-    time: { type: Api.TripTimeType; secondsSinceMidnight: number };
-};
-
-const createTransitionTime = ({
-    type,
-    secondsSinceMidnight,
-}: OdTrip['time']) => {
-    // Times computed from Transition's travel times have decimals, but it
-    // only accepts whole seconds in requests
-    const wholeSeconds = Math.round(secondsSinceMidnight);
-    return type === 'departure'
-        ? { departureTimeSecondsSinceMidnight: wholeSeconds }
-        : { arrivalTimeSecondsSinceMidnight: wholeSeconds };
-};
-
-const createTransitTransitionRouteBody = (
-    { origin, destination, time }: OdTrip,
-    scenarioId: string,
-): PostApiV1RouteBody => ({
-    scenarioId,
-    ...createTransitionTime(time),
-    routingModes: ['transit'],
-    originGeojson: createPointFeature(origin),
-    destinationGeojson: createPointFeature(destination),
-    maxTotalTravelTimeSeconds:
-        config.transitionRouting.maxTotalTravelTimeSeconds,
-});
-
-const postTransitionRoute = async (
+export const postTransitionRoute = async (
     body: PostApiV1RouteBody,
 ): Promise<TransitionRouteResponse> => {
     const response = await postApiV1Route(body, undefined, {
@@ -56,24 +22,4 @@ const postTransitionRoute = async (
         TransitionSchema.PostApiV1RouteResponse,
         response.data,
     );
-};
-
-export const fetchTransitRoute = (
-    odTrip: OdTrip,
-    scenarioId: string,
-): Promise<TransitionRouteResponse> => {
-    return postTransitionRoute(
-        createTransitTransitionRouteBody(odTrip, scenarioId),
-    );
-};
-
-export const fetchUnimodalRoute = (
-    { origin, destination }: Pick<OdTrip, 'origin' | 'destination'>,
-    mode: PublicConfig.UnimodalMode,
-): Promise<TransitionRouteResponse> => {
-    return postTransitionRoute({
-        routingModes: [mode],
-        originGeojson: createPointFeature(origin),
-        destinationGeojson: createPointFeature(destination),
-    });
 };

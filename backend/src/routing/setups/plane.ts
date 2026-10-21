@@ -5,7 +5,7 @@ import {
     fetchTransitRoute,
     fetchUnimodalRoute,
     type OdTrip,
-} from '../../transition/route';
+} from '../routes/fetch-routes';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,

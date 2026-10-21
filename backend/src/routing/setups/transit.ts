@@ -1,5 +1,5 @@
 import type { Api, PublicConfig } from 'common';
-import { fetchTransitRoute, type OdTrip } from '../../transition/route';
+import { fetchTransitRoute, type OdTrip } from '../routes/fetch-routes';
 import { createTransitRouteSteps } from '../routes/route-steps';
 
 export const fetchTransitRouteAlternatives = async (
