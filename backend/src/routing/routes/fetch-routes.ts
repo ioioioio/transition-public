@@ -1,8 +1,8 @@
 import type { Api, PublicConfig, Utils } from 'common';
 import { config } from '../../config';
-import type { PostApiV1RouteBody } from '../../transition/generated/model';
 import {
     postTransitionRoute,
+    type TransitionRouteBody,
     type TransitionRouteResponse,
 } from '../../transition/route';
 import { createPointFeature } from '../../utils/geo';
@@ -28,7 +28,7 @@ const createTransitionTime = ({
 const createTransitTransitionRouteBody = (
     { origin, destination, time }: OdTrip,
     scenarioId: string,
-): PostApiV1RouteBody => ({
+): TransitionRouteBody => ({
     scenarioId,
     ...createTransitionTime(time),
     routingModes: ['transit'],

@@ -5,12 +5,14 @@ import * as TransitionSchema from './generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from './generated/model';
 import { transitionToken } from './token';
 
+export type TransitionRouteBody = PostApiV1RouteBody;
+
 export type TransitionRouteResponse = z.infer<
     typeof TransitionSchema.PostApiV1RouteResponse
 >;
 
 export const postTransitionRoute = async (
-    body: PostApiV1RouteBody,
+    body: TransitionRouteBody,
 ): Promise<TransitionRouteResponse> => {
     const response = await postApiV1Route(body, undefined, {
         headers: { Authorization: `Bearer ${transitionToken}` },
