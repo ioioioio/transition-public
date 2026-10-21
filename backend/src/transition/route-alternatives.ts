@@ -1,43 +1,21 @@
-import { Api, type Utils } from 'common';
+import { Api, type PublicConfig, type Utils } from 'common';
 
 import type { TransitionRouteResponse } from './route';
 
-const unimodalRoutingModes = [
-    'driving',
-    'walking',
-] as const satisfies readonly Api.Mode[];
+type TransitionRouteResult = TransitionRouteResponse['result'];
 
-type UnimodalRoutingMode = (typeof unimodalRoutingModes)[number];
-
-const isUnimodalRoutingMode = (value: string): value is UnimodalRoutingMode =>
-    (unimodalRoutingModes as readonly string[]).includes(value);
-
-// The result of a mode other than transit
 type UnimodalRouteResult = NonNullable<
-    // 'walking' is arbitrary. Could have been any other mode other than 'transit'.
-    TransitionRouteResponse['result']['walking']
+    TransitionRouteResult[PublicConfig.UnimodalMode]
 >;
 
-const isUnimodalRouteResultEntry = (
-    entry: [string, unknown],
-): entry is [UnimodalRoutingMode, UnimodalRouteResult] =>
-    isUnimodalRoutingMode(entry[0]) && entry[1] !== undefined;
-
-type TransitRouteResult = NonNullable<
-    TransitionRouteResponse['result']['transit']
->;
-
-const isTransitRouteResultEntry = (
-    entry: [string, unknown],
-): entry is ['transit', TransitRouteResult] =>
-    entry[0] === 'transit' && entry[1] !== undefined;
+type TransitRouteResult = NonNullable<TransitionRouteResult['transit']>;
 
 // A mode unknown to the app becomes `other`
 const getKnownMode = (mode: string): Api.Mode =>
     Api.ModeSchema.catch('other').parse(mode);
 
 const createUnimodalStep = (
-    routingMode: UnimodalRoutingMode,
+    routingMode: PublicConfig.UnimodalMode,
     path: UnimodalRouteResult['paths'][number],
 ): Api.RouteStep => {
     switch (routingMode) {
@@ -130,51 +108,55 @@ const createTransitSteps = (
     return steps;
 };
 
-// Null when the routing mode isn't supported, or no path was found
-const createRouteAlternative = (
-    entry: [string, unknown],
-    origin: Utils.Position,
-    destination: Utils.Position,
-    routingSetupId: string,
-): Api.RouteAlternative | null => {
-    if (isUnimodalRouteResultEntry(entry)) {
-        const [routingMode, result] = entry;
-        const path = result.paths.at(0);
-        if (!path) {
-            return null;
-        }
-        return {
-            id: `${routingSetupId}-${routingMode}`,
-            steps: [createUnimodalStep(routingMode, path)],
-        };
+// Requests are for a single mode and without alternatives, so Transition
+// should answer with at most one path, of that mode
+const warnOfUnexpectedResults = (
+    result: TransitionRouteResult,
+    routingMode: PublicConfig.UnimodalMode | 'transit',
+) => {
+    const unexpectedModes = Object.keys(result).filter(
+        (mode) => mode !== routingMode,
+    );
+    if (unexpectedModes.length > 0) {
+        console.warn(
+            `Transition answered for ${unexpectedModes.join(', ')}, besides ${routingMode}`,
+        );
     }
-    if (isTransitRouteResultEntry(entry)) {
-        const [, result] = entry;
-        const path = result.paths.at(0);
-        if (!path) {
-            return null;
-        }
-        return {
-            id: `${routingSetupId}-transit`,
-            steps: createTransitSteps(path, origin, destination),
-        };
+    const pathCount = result[routingMode]?.paths.length ?? 0;
+    if (pathCount > 1) {
+        console.warn(
+            `Transition answered with ${pathCount} paths for ${routingMode}, instead of one`,
+        );
     }
-    return null;
 };
 
-export const createRouteAlternatives = (
-    { query, result }: TransitionRouteResponse,
-    routingSetupId: string,
-): Api.RouteAlternative[] => {
-    const origin = query.originGeojson.geometry.coordinates;
-    const destination = query.destinationGeojson.geometry.coordinates;
-    return Object.entries(result).flatMap(
-        (entry) =>
-            createRouteAlternative(
-                entry,
-                origin,
-                destination,
-                routingSetupId,
-            ) ?? [],
+// Null when no path was found
+export const createUnimodalRouteSteps = (
+    transitionRoute: TransitionRouteResponse,
+    routingMode: PublicConfig.UnimodalMode,
+): Api.RouteStep[] | null => {
+    const { result } = transitionRoute;
+    warnOfUnexpectedResults(result, routingMode);
+    const path = result[routingMode]?.paths.at(0);
+    if (!path) {
+        return null;
+    }
+    return [createUnimodalStep(routingMode, path)];
+};
+
+// Null when no path was found
+export const createTransitRouteSteps = (
+    transitionRoute: TransitionRouteResponse,
+): Api.RouteStep[] | null => {
+    const { query, result } = transitionRoute;
+    warnOfUnexpectedResults(result, 'transit');
+    const path = result.transit?.paths.at(0);
+    if (!path) {
+        return null;
+    }
+    return createTransitSteps(
+        path,
+        query.originGeojson.geometry.coordinates,
+        query.destinationGeojson.geometry.coordinates,
     );
 };

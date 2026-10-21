@@ -5,8 +5,11 @@ import {
     fetchTransitRoute,
     fetchUnimodalRoute,
     type OdTrip,
-    type TransitionRouteResponse,
 } from '../transition/route';
+import {
+    createTransitRouteSteps,
+    createUnimodalRouteSteps,
+} from '../transition/route-alternatives';
 import { calculateDistanceMeters } from '../utils/geo';
 
 type Airport = PublicConfig.PlaneNetwork['airports'][number];
@@ -67,9 +70,7 @@ const createFlightStep = (
 const fetchPlaneRouteAlternatives = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
-    fetchAccessEgressRoute: (
-        odTrip: OdTrip,
-    ) => Promise<TransitionRouteResponse>,
+    fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>,
 ): Promise<Api.RouteAlternative[]> => {
     const planeNetwork = config.planeNetworks.find(
         ({ id }) => id === routingSetup.planeNetworkId,
@@ -104,8 +105,7 @@ const fetchPlaneRouteAlternatives = async (
         boardingStation: originAirport,
         fetchMiddleSteps,
         alightingStation: destinationAirport,
-        fetchAccessEgressRoute,
-        routingSetupId: routingSetup.id,
+        fetchAccessEgressSteps,
     });
     if (!steps) {
         return [];
@@ -117,8 +117,17 @@ export const fetchPlaneUnimodalRouteAlternatives = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
-        fetchUnimodalRoute(accessOrEgress, routingSetup.mode),
+    const { mode } = routingSetup;
+    return fetchPlaneRouteAlternatives(
+        odTrip,
+        routingSetup,
+        async (accessOrEgress) => {
+            const transitionRoute = await fetchUnimodalRoute(
+                accessOrEgress,
+                mode,
+            );
+            return createUnimodalRouteSteps(transitionRoute, mode);
+        },
     );
 };
 
@@ -126,7 +135,16 @@ export const fetchPlaneTransitRouteAlternatives = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
-        fetchTransitRoute(accessOrEgress, routingSetup.scenarioId),
+    const { scenarioId } = routingSetup;
+    return fetchPlaneRouteAlternatives(
+        odTrip,
+        routingSetup,
+        async (accessOrEgress) => {
+            const transitionRoute = await fetchTransitRoute(
+                accessOrEgress,
+                scenarioId,
+            );
+            return createTransitRouteSteps(transitionRoute);
+        },
     );
 };

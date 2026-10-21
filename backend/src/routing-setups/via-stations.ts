@@ -6,7 +6,10 @@ import {
     type OdTrip,
     type TransitionRouteResponse,
 } from '../transition/route';
-import { createRouteAlternatives } from '../transition/route-alternatives';
+import {
+    createTransitRouteSteps,
+    createUnimodalRouteSteps,
+} from '../transition/route-alternatives';
 import { calculateDistanceMeters } from '../utils/geo';
 
 // For trips that go through stations, like airports or train stations
@@ -31,23 +34,9 @@ type OdTripViaStations = {
     // no way between them
     fetchMiddleSteps: (time: OdTrip['time']) => Promise<Api.RouteStep[] | null>;
     alightingStation: Station;
-    // To the boarding station, or from the alighting one
-    fetchAccessEgressRoute: (
-        odTrip: OdTrip,
-    ) => Promise<TransitionRouteResponse>;
-    routingSetupId: string;
-};
-
-// Null when there's no route
-const fetchAccessOrEgress = async (
-    fetchAccessEgressRoute: OdTripViaStations['fetchAccessEgressRoute'],
-    routingSetupId: string,
-    odTrip: OdTrip,
-) => {
-    const transitionRoute = await fetchAccessEgressRoute(odTrip);
-    return (
-        createRouteAlternatives(transitionRoute, routingSetupId).at(0) ?? null
-    );
+    // To the boarding station, or from the alighting one. Null when there's no
+    // route
+    fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>;
 };
 
 // Each part starts at the departure time or when the previous one ends
@@ -59,24 +48,19 @@ const fetchStepsFromDeparture = async (
         boardingStation,
         fetchMiddleSteps,
         alightingStation,
-        fetchAccessEgressRoute,
-        routingSetupId,
+        fetchAccessEgressSteps,
     } = odTripViaStations;
-    const access = await fetchAccessOrEgress(
-        fetchAccessEgressRoute,
-        routingSetupId,
-        {
-            origin: odTrip.origin,
-            destination: boardingStation.position,
-            time: odTrip.time,
-        },
-    );
-    if (!access) {
+    const accessSteps = await fetchAccessEgressSteps({
+        origin: odTrip.origin,
+        destination: boardingStation.position,
+        time: odTrip.time,
+    });
+    if (!accessSteps) {
         return null;
     }
     const middleDepartureSeconds =
         odTrip.time.secondsSinceMidnight +
-        Utils.calculateTotalDurationSeconds(access.steps);
+        Utils.calculateTotalDurationSeconds(accessSteps);
     const middleSteps = await fetchMiddleSteps({
         type: 'departure',
         secondsSinceMidnight: middleDepartureSeconds,
@@ -87,22 +71,18 @@ const fetchStepsFromDeparture = async (
     const egressDepartureSeconds =
         middleDepartureSeconds +
         Utils.calculateTotalDurationSeconds(middleSteps);
-    const egress = await fetchAccessOrEgress(
-        fetchAccessEgressRoute,
-        routingSetupId,
-        {
-            origin: alightingStation.position,
-            destination: odTrip.destination,
-            time: {
-                type: 'departure',
-                secondsSinceMidnight: egressDepartureSeconds,
-            },
+    const egressSteps = await fetchAccessEgressSteps({
+        origin: alightingStation.position,
+        destination: odTrip.destination,
+        time: {
+            type: 'departure',
+            secondsSinceMidnight: egressDepartureSeconds,
         },
-    );
-    if (!egress) {
+    });
+    if (!egressSteps) {
         return null;
     }
-    return [...access.steps, ...middleSteps, ...egress.steps];
+    return [...accessSteps, ...middleSteps, ...egressSteps];
 };
 
 // Each part ends at the arrival time or when the next one starts
@@ -114,24 +94,19 @@ const fetchStepsFromArrival = async (
         boardingStation,
         fetchMiddleSteps,
         alightingStation,
-        fetchAccessEgressRoute,
-        routingSetupId,
+        fetchAccessEgressSteps,
     } = odTripViaStations;
-    const egress = await fetchAccessOrEgress(
-        fetchAccessEgressRoute,
-        routingSetupId,
-        {
-            origin: alightingStation.position,
-            destination: odTrip.destination,
-            time: odTrip.time,
-        },
-    );
-    if (!egress) {
+    const egressSteps = await fetchAccessEgressSteps({
+        origin: alightingStation.position,
+        destination: odTrip.destination,
+        time: odTrip.time,
+    });
+    if (!egressSteps) {
         return null;
     }
     const middleArrivalSeconds =
         odTrip.time.secondsSinceMidnight -
-        Utils.calculateTotalDurationSeconds(egress.steps);
+        Utils.calculateTotalDurationSeconds(egressSteps);
     const middleSteps = await fetchMiddleSteps({
         type: 'arrival',
         secondsSinceMidnight: middleArrivalSeconds,
@@ -141,22 +116,18 @@ const fetchStepsFromArrival = async (
     }
     const accessArrivalSeconds =
         middleArrivalSeconds - Utils.calculateTotalDurationSeconds(middleSteps);
-    const access = await fetchAccessOrEgress(
-        fetchAccessEgressRoute,
-        routingSetupId,
-        {
-            origin: odTrip.origin,
-            destination: boardingStation.position,
-            time: {
-                type: 'arrival',
-                secondsSinceMidnight: accessArrivalSeconds,
-            },
+    const accessSteps = await fetchAccessEgressSteps({
+        origin: odTrip.origin,
+        destination: boardingStation.position,
+        time: {
+            type: 'arrival',
+            secondsSinceMidnight: accessArrivalSeconds,
         },
-    );
-    if (!access) {
+    });
+    if (!accessSteps) {
         return null;
     }
-    return [...access.steps, ...middleSteps, ...egress.steps];
+    return [...accessSteps, ...middleSteps, ...egressSteps];
 };
 
 // The steps to the boarding station, between the stations, and from the
@@ -218,18 +189,20 @@ export const fetchViaStationsRouteAlternatives = async (
         if (!path || !checkUsesRequiredModes(path, requiredModes)) {
             return null;
         }
-        return (
-            createRouteAlternatives(transitionRoute, id).at(0)?.steps ?? null
-        );
+        return createTransitRouteSteps(transitionRoute);
     };
     const steps = await fetchStepsViaStations({
         odTrip,
         boardingStation: originStation,
         fetchMiddleSteps,
         alightingStation: destinationStation,
-        fetchAccessEgressRoute: (accessOrEgress) =>
-            fetchUnimodalRoute(accessOrEgress, accessEgressMode),
-        routingSetupId: id,
+        fetchAccessEgressSteps: async (accessOrEgress) => {
+            const transitionRoute = await fetchUnimodalRoute(
+                accessOrEgress,
+                accessEgressMode,
+            );
+            return createUnimodalRouteSteps(transitionRoute, accessEgressMode);
+        },
     });
     if (!steps) {
         return [];
