@@ -16,13 +16,21 @@ const configPath = fileURLToPath(
     new URL(`../${configFileName}`, import.meta.url),
 );
 
-const readConfig = (): unknown => {
+const readConfig = (): Record<string, unknown> => {
     if (!existsSync(configPath)) {
         throw new Error(
             `Missing ${configFileName} at the root: copy and edit config.public.example.yaml to start`,
         );
     }
     return YAML.parse(readFileSync(configPath, 'utf8'));
+};
+
+// Only what the browser uses, so that the rest never reaches the bundle. It
+// makes the bundle lighter and avoids exposing unneeded information: even if
+// none of it is secret, we'd rather not expose the stations' exact coordinates.
+const readBrowserConfig = () => {
+    const { map, routingSetups, tripHours } = readConfig();
+    return { map, routingSetups, tripHours };
 };
 
 const restartOnConfigChange = (): Plugin => ({
@@ -61,7 +69,7 @@ export default defineConfig(({ mode }) => {
             alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
         },
         envDir,
-        define: { __CONFIG__: readConfig() },
+        define: { __CONFIG__: readBrowserConfig() },
         server: {
             proxy: { '/api': `http://localhost:${BACKEND_PORT}` },
         },
