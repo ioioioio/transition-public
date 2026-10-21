@@ -1,4 +1,5 @@
 import type { Api, PublicConfig } from 'common';
+import { config } from '../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import {
     fetchTransitionRoute,
@@ -24,7 +25,14 @@ export const fetchKissAndRideRouteAlternatives = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.KissAndRideRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    const { id, scenarioId, requiredModes, stations } = routingSetup;
+    const { id, scenarioId, requiredModes, trainNetworkId } = routingSetup;
+    const trainNetwork = config.trainNetworks.find(
+        ({ id }) => id === trainNetworkId,
+    );
+    if (!trainNetwork) {
+        throw new Error(`Unknown train network: ${trainNetworkId}`);
+    }
+    const { stations } = trainNetwork;
     const originStation = findClosestStation(stations, odTrip.origin);
     const destinationStation = findClosestStation(stations, odTrip.destination);
     if (originStation === destinationStation) {

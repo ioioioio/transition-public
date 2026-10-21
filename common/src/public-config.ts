@@ -70,6 +70,13 @@ const StationSchema = z.object({
     position: Utils.LngLatSchema,
 });
 
+const TrainNetworkSchema = z.object({
+    id: z.string().min(1),
+    stations: z.array(StationSchema).min(2),
+});
+
+export type TrainNetwork = z.infer<typeof TrainNetworkSchema>;
+
 // Dropped off and picked up by car at the stations, and by the scenario's
 // transit between them
 const KissAndRideRoutingSetupSchema = z.object({
@@ -77,7 +84,7 @@ const KissAndRideRoutingSetupSchema = z.object({
     type: z.literal('kiss-and-ride'),
     scenarioId: z.uuid(),
     requiredModes: z.array(z.string().min(1)).min(1),
-    stations: z.array(StationSchema).min(2),
+    trainNetworkId: z.string().min(1),
 });
 
 export type KissAndRideRoutingSetup = z.infer<
@@ -113,6 +120,15 @@ export const PublicConfigSchema = z.object({
                 planeNetworks.length,
             'Plane network ids must be unique',
         ),
+    // The stations that kiss-and-ride routing setups can use
+    trainNetworks: z
+        .array(TrainNetworkSchema)
+        .refine(
+            (trainNetworks) =>
+                new Set(trainNetworks.map(({ id }) => id)).size ===
+                trainNetworks.length,
+            'Train network ids must be unique',
+        ),
     // Hours of the day the trips can be made at
     tripHours: z.array(z.int().min(0).max(23)).min(1),
     // Passed as is to each of Transition's route requests
@@ -133,4 +149,14 @@ export const RefinedPublicConfigSchema = PublicConfigSchema.refine(
                 ),
         ),
     'Plane routing setups must use a listed plane network',
+).refine(
+    ({ routingSetups, trainNetworks }) =>
+        routingSetups.every(
+            (routingSetup) =>
+                routingSetup.type !== 'kiss-and-ride' ||
+                trainNetworks.some(
+                    ({ id }) => id === routingSetup.trainNetworkId,
+                ),
+        ),
+    'Kiss-and-ride routing setups must use a listed train network',
 );
