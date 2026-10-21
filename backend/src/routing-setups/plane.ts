@@ -1,12 +1,13 @@
 import type { Api, PublicConfig } from 'common';
+import { config } from '../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import type { OdTrip } from '../transition/route';
 import { calculateDistanceMeters } from '../utils/geo';
 
-type Airport = PublicConfig.PlaneRoutingSetup['airports'][number];
+type Airport = PublicConfig.PlaneNetwork['airports'][number];
 
 const findFlight = (
-    { flights }: PublicConfig.PlaneRoutingSetup,
+    { flights }: PublicConfig.PlaneNetwork,
     from: Airport,
     to: Airport,
 ) =>
@@ -63,10 +64,17 @@ export const fetchPlaneRouteAlternatives = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    const { id, scenarioId, modes, airports } = routingSetup;
+    const { id, scenarioId, modes, planeNetworkId } = routingSetup;
+    const planeNetwork = config.planeNetworks.find(
+        ({ id }) => id === planeNetworkId,
+    );
+    if (!planeNetwork) {
+        throw new Error(`Unknown plane network: ${planeNetworkId}`);
+    }
+    const { airports } = planeNetwork;
     const originAirport = findClosestStation(airports, odTrip.origin);
     const destinationAirport = findClosestStation(airports, odTrip.destination);
-    const flight = findFlight(routingSetup, originAirport, destinationAirport);
+    const flight = findFlight(planeNetwork, originAirport, destinationAirport);
     if (originAirport === destinationAirport || !flight) {
         return [];
     }

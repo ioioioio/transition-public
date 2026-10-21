@@ -14,4 +14,5 @@ const readConfig = (): unknown => {
     return JSON.parse(readFileSync(configPath, 'utf8'));
 };
 
-export const config = PublicConfig.PublicConfigSchema.parse(readConfig());
+export const config =
+    PublicConfig.RefinedPublicConfigSchema.parse(readConfig());

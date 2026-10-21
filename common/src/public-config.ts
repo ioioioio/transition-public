@@ -35,14 +35,9 @@ const FlightSchema = z.object({
     minutes: z.number().positive(),
 });
 
-// Going to and from the airports uses the scenario, the flight uses the
-// configured flight times
-const PlaneRoutingSetupSchema = z
+const PlaneNetworkSchema = z
     .object({
         id: z.string().min(1),
-        type: z.literal('plane'),
-        scenarioId: z.uuid(),
-        modes: z.array(z.string().min(1)).min(1),
         airports: z.array(AirportSchema).min(2),
         flights: z.array(FlightSchema).min(1),
     })
@@ -55,6 +50,18 @@ const PlaneRoutingSetupSchema = z
             ),
         'Flights must be between listed airports',
     );
+
+export type PlaneNetwork = z.infer<typeof PlaneNetworkSchema>;
+
+// Going to and from the airports uses the scenario, the flight uses the
+// configured flight times
+const PlaneRoutingSetupSchema = z.object({
+    id: z.string().min(1),
+    type: z.literal('plane'),
+    scenarioId: z.uuid(),
+    modes: z.array(z.string().min(1)).min(1),
+    planeNetworkId: z.string().min(1),
+});
 
 export type PlaneRoutingSetup = z.infer<typeof PlaneRoutingSetupSchema>;
 
@@ -97,6 +104,15 @@ export const PublicConfigSchema = z.object({
                 routingSetups.length,
             'Routing setup ids must be unique',
         ),
+    // The airports and flights that plane routing setups can use
+    planeNetworks: z
+        .array(PlaneNetworkSchema)
+        .refine(
+            (planeNetworks) =>
+                new Set(planeNetworks.map(({ id }) => id)).size ===
+                planeNetworks.length,
+            'Plane network ids must be unique',
+        ),
     // Hours of the day the trips can be made at
     tripHours: z.array(z.int().min(0).max(23)).min(1),
     // Passed as is to each of Transition's route requests
@@ -106,3 +122,15 @@ export const PublicConfigSchema = z.object({
 });
 
 export type PublicConfig = z.infer<typeof PublicConfigSchema>;
+
+export const RefinedPublicConfigSchema = PublicConfigSchema.refine(
+    ({ routingSetups, planeNetworks }) =>
+        routingSetups.every(
+            (routingSetup) =>
+                routingSetup.type !== 'plane' ||
+                planeNetworks.some(
+                    ({ id }) => id === routingSetup.planeNetworkId,
+                ),
+        ),
+    'Plane routing setups must use a listed plane network',
+);
