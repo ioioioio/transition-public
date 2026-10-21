@@ -6,7 +6,7 @@ import {
 } from '../routing-setups/plane';
 import { fetchTransitRouteAlternatives } from '../routing-setups/transit';
 import { fetchUnimodalRouteAlternatives } from '../routing-setups/unimodal';
-import { fetchKissAndRideRouteAlternatives } from '../routing-setups/via-stations';
+import { fetchViaStationsRouteAlternatives } from '../routing-setups/via-stations';
 import { config } from '../config';
 import { ApiError, parseRequest } from '../utils/http';
 
@@ -50,8 +50,8 @@ const fetchRouteAlternatives = (
             return fetchPlaneUnimodalRouteAlternatives(odTrip, routingSetup);
         case 'plane-transit':
             return fetchPlaneTransitRouteAlternatives(odTrip, routingSetup);
-        case 'kiss-and-ride':
-            return fetchKissAndRideRouteAlternatives(odTrip, routingSetup);
+        case 'via-stations':
+            return fetchViaStationsRouteAlternatives(odTrip, routingSetup);
         default:
             return routingSetup satisfies never;
     }

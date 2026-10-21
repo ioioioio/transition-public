@@ -182,18 +182,18 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
     return requiredModes.every((mode) => usedModes.has(mode));
 };
 
-export const fetchKissAndRideRouteAlternatives = async (
+export const fetchViaStationsRouteAlternatives = async (
     odTrip: OdTrip,
-    routingSetup: PublicConfig.KissAndRideRoutingSetup,
+    routingSetup: PublicConfig.ViaStationsRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    const { id, scenarioId, requiredModes, trainNetworkId } = routingSetup;
-    const trainNetwork = config.trainNetworks.find(
-        ({ id }) => id === trainNetworkId,
+    const { id, scenarioId, requiredModes, stationNetworkId } = routingSetup;
+    const stationNetwork = config.stationNetworks.find(
+        ({ id }) => id === stationNetworkId,
     );
-    if (!trainNetwork) {
-        throw new Error(`Unknown train network: ${trainNetworkId}`);
+    if (!stationNetwork) {
+        throw new Error(`Unknown station network: ${stationNetworkId}`);
     }
-    const { stations } = trainNetwork;
+    const { stations } = stationNetwork;
     const originStation = findClosestStation(stations, odTrip.origin);
     const destinationStation = findClosestStation(stations, odTrip.destination);
     if (originStation === destinationStation) {
