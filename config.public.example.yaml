@@ -1,0 +1,74 @@
+map:
+  defaultCamera:
+    center:
+      lng: -73.554167
+      lat: 45.508889
+    zoom: 3.5
+  styles:
+    light: https://tiles.openfreemap.org/styles/positron
+    dark: https://tiles.openfreemap.org/styles/dark
+routingSetups:
+  - id: base
+    type: standard
+    scenarioId: 83712744-6ce6-4058-8afb-234886f57255
+    modes: [driving, transit, walking]
+  - id: with-plane
+    type: plane
+    scenarioId: 83712744-6ce6-4058-8afb-234886f57255
+    modes: [driving, transit]
+    planeNetworkId: plane-mtl-qc-corridor
+  - id: driving+highSpeedRail
+    type: kiss-and-ride
+    scenarioId: f337c7e7-b4d5-4de0-8e9e-bcc8ec95e217
+    requiredModes: [highSpeedRail]
+    trainNetworkId: train-mtl-qc-corridor
+planeNetworks:
+  - id: plane-mtl-qc-corridor
+    airports:
+      - id: montreal
+        position:
+          lng: -73.7516
+          lat: 45.4565
+        securityAndBoardingMinutes: 120
+        unboardingAndLuggageMinutes: 45
+      - id: trois-rivieres
+        position:
+          lng: -72.679
+          lat: 46.353
+        securityAndBoardingMinutes: 45
+        unboardingAndLuggageMinutes: 25
+      - id: quebec
+        position:
+          lng: -71.3834
+          lat: 46.7919
+        securityAndBoardingMinutes: 90
+        unboardingAndLuggageMinutes: 30
+    flights:
+      - between: [montreal, trois-rivieres]
+        minutes: 35
+      - between: [montreal, quebec]
+        minutes: 60
+      - between: [trois-rivieres, quebec]
+        minutes: 30
+trainNetworks:
+  - id: train-mtl-qc-corridor
+    stations:
+      - id: quebec
+        position:
+          lng: -71.2309875
+          lat: 46.817253
+      - id: trois-rivieres
+        position:
+          lng: -72.6107917
+          lat: 46.3559573
+      - id: shawinigan
+        position:
+          lng: -72.745263628
+          lat: 46.549822091
+      - id: montreal
+        position:
+          lng: -73.566178542
+          lat: 45.499919522
+tripHours: [8, 12, 16]
+transitionRouting:
+  maxTotalTravelTimeSeconds: 172800

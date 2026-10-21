@@ -6,22 +6,23 @@ import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
+import * as YAML from 'yaml';
 
 const envDir = '..';
 
-const configFileName = 'config.public.json';
+const configFileName = 'config.public.yaml';
 
 const configPath = fileURLToPath(
     new URL(`../${configFileName}`, import.meta.url),
 );
 
-const readConfig = (): string => {
+const readConfig = (): unknown => {
     if (!existsSync(configPath)) {
         throw new Error(
-            `Missing ${configFileName} at the root: copy and edit config.public.json.example to start`,
+            `Missing ${configFileName} at the root: copy and edit config.public.example.yaml to start`,
         );
     }
-    return readFileSync(configPath, 'utf8');
+    return YAML.parse(readFileSync(configPath, 'utf8'));
 };
 
 const restartOnConfigChange = (): Plugin => ({

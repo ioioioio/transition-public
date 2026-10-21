@@ -1,4 +1,4 @@
 .env
-config.public.json
+config.public.yaml
 .DS_Store
 node_modules
