@@ -17,11 +17,14 @@ routingSetups:
   - id: transit-reference
     type: transit
     scenarioId: 83712744-6ce6-4058-8afb-234886f57255
-  - id: with-plane
-    type: plane
-    scenarioId: 83712744-6ce6-4058-8afb-234886f57255
-    modes: [driving, transit]
+  - id: plane+driving
+    type: plane-unimodal
     planeNetworkId: plane-mtl-qc-corridor
+    mode: driving
+  - id: plane+transit
+    type: plane-transit
+    planeNetworkId: plane-mtl-qc-corridor
+    scenarioId: 83712744-6ce6-4058-8afb-234886f57255
   - id: driving+highSpeedRail
     type: kiss-and-ride
     scenarioId: f337c7e7-b4d5-4de0-8e9e-bcc8ec95e217

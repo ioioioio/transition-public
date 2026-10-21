@@ -1,7 +1,10 @@
 import express from 'express';
 import { Api, type PublicConfig } from 'common';
 import { fetchKissAndRideRouteAlternatives } from '../routing-setups/kiss-and-ride';
-import { fetchPlaneRouteAlternatives } from '../routing-setups/plane';
+import {
+    fetchPlaneTransitRouteAlternatives,
+    fetchPlaneUnimodalRouteAlternatives,
+} from '../routing-setups/plane';
 import { fetchTransitRouteAlternatives } from '../routing-setups/transit';
 import { fetchUnimodalRouteAlternatives } from '../routing-setups/unimodal';
 import { config } from '../config';
@@ -43,8 +46,10 @@ const fetchRouteAlternatives = (
             return fetchUnimodalRouteAlternatives(odTrip, routingSetup);
         case 'transit':
             return fetchTransitRouteAlternatives(odTrip, routingSetup);
-        case 'plane':
-            return fetchPlaneRouteAlternatives(odTrip, routingSetup);
+        case 'plane-unimodal':
+            return fetchPlaneUnimodalRouteAlternatives(odTrip, routingSetup);
+        case 'plane-transit':
+            return fetchPlaneTransitRouteAlternatives(odTrip, routingSetup);
         case 'kiss-and-ride':
             return fetchKissAndRideRouteAlternatives(odTrip, routingSetup);
         default:

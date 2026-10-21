@@ -3,6 +3,7 @@ import { config } from '../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import {
     fetchTransitRoute,
+    fetchUnimodalRoute,
     type OdTrip,
     type TransitionRouteResponse,
 } from '../transition/route';
@@ -60,9 +61,9 @@ export const fetchKissAndRideRouteAlternatives = async (
         boardingStation: originStation,
         fetchMiddleSteps,
         alightingStation: destinationStation,
+        fetchAccessEgressRoute: (accessOrEgress) =>
+            fetchUnimodalRoute(accessOrEgress, 'driving'),
         routingSetupId: id,
-        scenarioId,
-        accessMode: 'driving',
     });
     if (!steps) {
         return [];

@@ -1,7 +1,12 @@
 import type { Api, PublicConfig } from 'common';
 import { config } from '../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
-import type { OdTrip } from '../transition/route';
+import {
+    fetchTransitRoute,
+    fetchUnimodalRoute,
+    type OdTrip,
+    type TransitionRouteResponse,
+} from '../transition/route';
 import { calculateDistanceMeters } from '../utils/geo';
 
 type Airport = PublicConfig.PlaneNetwork['airports'][number];
@@ -59,17 +64,18 @@ const createFlightStep = (
     distanceMeters: calculateDistanceMeters(from.position, to.position),
 });
 
-// One per mode, the same to and from the airports
-export const fetchPlaneRouteAlternatives = async (
+const fetchPlaneRouteAlternatives = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
+    fetchAccessEgressRoute: (
+        odTrip: OdTrip,
+    ) => Promise<TransitionRouteResponse>,
 ): Promise<Api.RouteAlternative[]> => {
-    const { id, scenarioId, modes, planeNetworkId } = routingSetup;
     const planeNetwork = config.planeNetworks.find(
-        ({ id }) => id === planeNetworkId,
+        ({ id }) => id === routingSetup.planeNetworkId,
     );
     if (!planeNetwork) {
-        throw new Error(`Unknown plane network: ${planeNetworkId}`);
+        throw new Error(`Unknown plane network: ${routingSetup.planeNetworkId}`);
     }
     const { airports } = planeNetwork;
     const originAirport = findClosestStation(airports, odTrip.origin);
@@ -93,22 +99,34 @@ export const fetchPlaneRouteAlternatives = async (
                 unboardingAndLuggageSeconds,
             ),
         ]);
-    const alternatives = await Promise.all(
-        modes.map(async (accessMode): Promise<Api.RouteAlternative | null> => {
-            const steps = await fetchStepsViaStations({
-                odTrip,
-                boardingStation: originAirport,
-                fetchMiddleSteps,
-                alightingStation: destinationAirport,
-                routingSetupId: id,
-                scenarioId,
-                accessMode,
-            });
-            if (!steps) {
-                return null;
-            }
-            return { id: `${id}-${accessMode}`, steps };
-        }),
+    const steps = await fetchStepsViaStations({
+        odTrip,
+        boardingStation: originAirport,
+        fetchMiddleSteps,
+        alightingStation: destinationAirport,
+        fetchAccessEgressRoute,
+        routingSetupId: routingSetup.id,
+    });
+    if (!steps) {
+        return [];
+    }
+    return [{ id: routingSetup.id, steps }];
+};
+
+export const fetchPlaneUnimodalRouteAlternatives = (
+    odTrip: OdTrip,
+    routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
+): Promise<Api.RouteAlternative[]> => {
+    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
+        fetchUnimodalRoute(accessOrEgress, routingSetup.mode),
     );
-    return alternatives.filter((alternative) => alternative !== null);
+};
+
+export const fetchPlaneTransitRouteAlternatives = (
+    odTrip: OdTrip,
+    routingSetup: PublicConfig.PlaneTransitRoutingSetup,
+): Promise<Api.RouteAlternative[]> => {
+    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
+        fetchTransitRoute(accessOrEgress, routingSetup.scenarioId),
+    );
 };

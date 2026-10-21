@@ -19,11 +19,6 @@ const UnimodalModeSchema = z.enum(['driving', 'walking']);
 
 export type UnimodalMode = z.infer<typeof UnimodalModeSchema>;
 
-// To get to and from stations, like airports
-const AccessModeSchema = z.enum([...UnimodalModeSchema.options, 'transit']);
-
-export type AccessMode = z.infer<typeof AccessModeSchema>;
-
 const UnimodalRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('unimodal'),
@@ -71,17 +66,34 @@ const PlaneNetworkSchema = z
 
 export type PlaneNetwork = z.infer<typeof PlaneNetworkSchema>;
 
-// Going to and from the airports uses the scenario, the flight uses the
-// configured flight times
-const PlaneRoutingSetupSchema = z.object({
+// The plane routing setups stand in for transit with planes, until there's
+// GTFS for them. Going to and from the airports is either unimodal or by
+// transit, like the routing setups without planes
+
+const PlaneUnimodalRoutingSetupSchema = z.object({
     id: z.string().min(1),
-    type: z.literal('plane'),
-    scenarioId: z.uuid(),
-    modes: z.array(AccessModeSchema).min(1),
+    type: z.literal('plane-unimodal'),
     planeNetworkId: z.string().min(1),
+    mode: UnimodalModeSchema,
 });
 
-export type PlaneRoutingSetup = z.infer<typeof PlaneRoutingSetupSchema>;
+export type PlaneUnimodalRoutingSetup = z.infer<
+    typeof PlaneUnimodalRoutingSetupSchema
+>;
+
+const PlaneTransitRoutingSetupSchema = z.object({
+    id: z.string().min(1),
+    type: z.literal('plane-transit'),
+    planeNetworkId: z.string().min(1),
+    scenarioId: z.uuid(),
+});
+
+export type PlaneTransitRoutingSetup = z.infer<
+    typeof PlaneTransitRoutingSetupSchema
+>;
+
+export type PlaneRoutingSetup =
+    PlaneUnimodalRoutingSetup | PlaneTransitRoutingSetup;
 
 const StationSchema = z.object({
     id: z.string().min(1),
@@ -112,7 +124,8 @@ export type KissAndRideRoutingSetup = z.infer<
 const RoutingSetupSchema = z.discriminatedUnion('type', [
     UnimodalRoutingSetupSchema,
     TransitRoutingSetupSchema,
-    PlaneRoutingSetupSchema,
+    PlaneUnimodalRoutingSetupSchema,
+    PlaneTransitRoutingSetupSchema,
     KissAndRideRoutingSetupSchema,
 ]);
 
@@ -147,7 +160,7 @@ export const RefinedPublicConfigSchema = PublicConfigSchema.refine(
     ({ routingSetups, planeNetworks }) =>
         routingSetups.every(
             (routingSetup) =>
-                routingSetup.type !== 'plane' ||
+                !('planeNetworkId' in routingSetup) ||
                 planeNetworks.some(
                     ({ id }) => id === routingSetup.planeNetworkId,
                 ),

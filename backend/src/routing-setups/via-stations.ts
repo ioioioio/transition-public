@@ -1,9 +1,5 @@
-import { type Api, type PublicConfig, Utils } from 'common';
-import {
-    fetchTransitRoute,
-    fetchUnimodalRoute,
-    type OdTrip,
-} from '../transition/route';
+import { type Api, Utils } from 'common';
+import type { OdTrip, TransitionRouteResponse } from '../transition/route';
 import { createRouteAlternatives } from '../transition/route-alternatives';
 import { calculateDistanceMeters } from '../utils/geo';
 
@@ -29,20 +25,20 @@ type OdTripViaStations = {
     // no way between them
     fetchMiddleSteps: (time: OdTrip['time']) => Promise<Api.RouteStep[] | null>;
     alightingStation: Station;
+    // To the boarding station, or from the alighting one
+    fetchAccessEgressRoute: (
+        odTrip: OdTrip,
+    ) => Promise<TransitionRouteResponse>;
     routingSetupId: string;
-    scenarioId: string;
-    accessMode: PublicConfig.AccessMode;
 };
 
-// Null when there's no route with that mode
-const fetchRouteWithMode = async (
-    { routingSetupId, scenarioId, accessMode }: OdTripViaStations,
+// Null when there's no route
+const fetchAccessOrEgress = async (
+    fetchAccessEgressRoute: OdTripViaStations['fetchAccessEgressRoute'],
+    routingSetupId: string,
     odTrip: OdTrip,
 ) => {
-    const transitionRoute =
-        accessMode === 'transit'
-            ? await fetchTransitRoute(odTrip, scenarioId)
-            : await fetchUnimodalRoute(odTrip, accessMode);
+    const transitionRoute = await fetchAccessEgressRoute(odTrip);
     return (
         createRouteAlternatives(transitionRoute, routingSetupId).at(0) ?? null
     );
@@ -52,13 +48,23 @@ const fetchRouteWithMode = async (
 const fetchStepsFromDeparture = async (
     odTripViaStations: OdTripViaStations,
 ): Promise<Api.RouteStep[] | null> => {
-    const { odTrip, boardingStation, fetchMiddleSteps, alightingStation } =
-        odTripViaStations;
-    const access = await fetchRouteWithMode(odTripViaStations, {
-        origin: odTrip.origin,
-        destination: boardingStation.position,
-        time: odTrip.time,
-    });
+    const {
+        odTrip,
+        boardingStation,
+        fetchMiddleSteps,
+        alightingStation,
+        fetchAccessEgressRoute,
+        routingSetupId,
+    } = odTripViaStations;
+    const access = await fetchAccessOrEgress(
+        fetchAccessEgressRoute,
+        routingSetupId,
+        {
+            origin: odTrip.origin,
+            destination: boardingStation.position,
+            time: odTrip.time,
+        },
+    );
     if (!access) {
         return null;
     }
@@ -75,14 +81,18 @@ const fetchStepsFromDeparture = async (
     const egressDepartureSeconds =
         middleDepartureSeconds +
         Utils.calculateTotalDurationSeconds(middleSteps);
-    const egress = await fetchRouteWithMode(odTripViaStations, {
-        origin: alightingStation.position,
-        destination: odTrip.destination,
-        time: {
-            type: 'departure',
-            secondsSinceMidnight: egressDepartureSeconds,
+    const egress = await fetchAccessOrEgress(
+        fetchAccessEgressRoute,
+        routingSetupId,
+        {
+            origin: alightingStation.position,
+            destination: odTrip.destination,
+            time: {
+                type: 'departure',
+                secondsSinceMidnight: egressDepartureSeconds,
+            },
         },
-    });
+    );
     if (!egress) {
         return null;
     }
@@ -93,13 +103,23 @@ const fetchStepsFromDeparture = async (
 const fetchStepsFromArrival = async (
     odTripViaStations: OdTripViaStations,
 ): Promise<Api.RouteStep[] | null> => {
-    const { odTrip, boardingStation, fetchMiddleSteps, alightingStation } =
-        odTripViaStations;
-    const egress = await fetchRouteWithMode(odTripViaStations, {
-        origin: alightingStation.position,
-        destination: odTrip.destination,
-        time: odTrip.time,
-    });
+    const {
+        odTrip,
+        boardingStation,
+        fetchMiddleSteps,
+        alightingStation,
+        fetchAccessEgressRoute,
+        routingSetupId,
+    } = odTripViaStations;
+    const egress = await fetchAccessOrEgress(
+        fetchAccessEgressRoute,
+        routingSetupId,
+        {
+            origin: alightingStation.position,
+            destination: odTrip.destination,
+            time: odTrip.time,
+        },
+    );
     if (!egress) {
         return null;
     }
@@ -115,11 +135,18 @@ const fetchStepsFromArrival = async (
     }
     const accessArrivalSeconds =
         middleArrivalSeconds - Utils.calculateTotalDurationSeconds(middleSteps);
-    const access = await fetchRouteWithMode(odTripViaStations, {
-        origin: odTrip.origin,
-        destination: boardingStation.position,
-        time: { type: 'arrival', secondsSinceMidnight: accessArrivalSeconds },
-    });
+    const access = await fetchAccessOrEgress(
+        fetchAccessEgressRoute,
+        routingSetupId,
+        {
+            origin: odTrip.origin,
+            destination: boardingStation.position,
+            time: {
+                type: 'arrival',
+                secondsSinceMidnight: accessArrivalSeconds,
+            },
+        },
+    );
     if (!access) {
         return null;
     }
