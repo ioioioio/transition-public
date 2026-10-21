@@ -52,7 +52,7 @@ export const useRouteQueries = (
             createRouteQueryOptions(id, origin, destination, time),
         ),
         combine: (results) => ({
-            routes: results.flatMap(({ data }) => data?.alternatives ?? []),
+            routes: results.flatMap(({ data }) => data?.route ?? []),
             isFetching: results.some(({ isFetching }) => isFetching),
         }),
     });

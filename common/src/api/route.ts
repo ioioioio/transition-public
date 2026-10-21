@@ -31,7 +31,8 @@ export const RouteSchema = z.object({
 export type Route = z.infer<typeof RouteSchema>;
 
 export const RouteResponseSchema = z.object({
-    alternatives: z.array(RouteSchema),
+    // Null when the routing setup has no route for the trip
+    route: RouteSchema.nullable(),
 });
 export type RouteResponse = z.infer<typeof RouteResponseSchema>;
 

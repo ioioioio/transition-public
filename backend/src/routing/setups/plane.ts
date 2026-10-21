@@ -67,7 +67,7 @@ const fetchPlaneSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
     fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>,
-): Promise<Api.Route[]> => {
+): Promise<Api.Route | null> => {
     const planeNetwork = config.planeNetworks.find(
         ({ id }) => id === routingSetup.planeNetworkId,
     );
@@ -81,7 +81,7 @@ const fetchPlaneSetupRoute = async (
     const destinationAirport = findClosestStation(airports, odTrip.destination);
     const flight = findFlight(planeNetwork, originAirport, destinationAirport);
     if (originAirport === destinationAirport || !flight) {
-        return [];
+        return null;
     }
     const securityAndBoardingSeconds =
         originAirport.securityAndBoardingMinutes * 60;
@@ -106,15 +106,15 @@ const fetchPlaneSetupRoute = async (
         fetchAccessEgressSteps,
     });
     if (!steps) {
-        return [];
+        return null;
     }
-    return [{ id: routingSetup.id, steps }];
+    return { id: routingSetup.id, steps };
 };
 
 export const fetchPlaneUnimodalSetupRoute = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
-): Promise<Api.Route[]> => {
+): Promise<Api.Route | null> => {
     return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
         fetchUnimodalRouteSteps(accessOrEgress, routingSetup.mode),
     );
@@ -123,7 +123,7 @@ export const fetchPlaneUnimodalSetupRoute = (
 export const fetchPlaneTransitSetupRoute = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
-): Promise<Api.Route[]> => {
+): Promise<Api.Route | null> => {
     return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
         fetchTransitRouteSteps(accessOrEgress, routingSetup.scenarioId),
     );

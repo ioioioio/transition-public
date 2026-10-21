@@ -63,7 +63,7 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
     checkTripHour(body.time.hour);
     res.json(
         Api.routeEndpoint.response.parse({
-            alternatives: await fetchSetupRoute(body, routingSetup),
+            route: await fetchSetupRoute(body, routingSetup),
         }),
     );
 };

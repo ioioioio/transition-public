@@ -153,7 +153,7 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
 export const fetchViaStationsSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
-): Promise<Api.Route[]> => {
+): Promise<Api.Route | null> => {
     const {
         id,
         accessEgressMode,
@@ -171,7 +171,7 @@ export const fetchViaStationsSetupRoute = async (
     const originStation = findClosestStation(stations, odTrip.origin);
     const destinationStation = findClosestStation(stations, odTrip.destination);
     if (originStation === destinationStation) {
-        return [];
+        return null;
     }
     const fetchMiddleSteps = async (time: OdTrip['time']) => {
         const transitionRoute = await fetchTransitRoute(
@@ -197,7 +197,7 @@ export const fetchViaStationsSetupRoute = async (
             fetchUnimodalRouteSteps(accessOrEgress, accessEgressMode),
     });
     if (!steps) {
-        return [];
+        return null;
     }
-    return [{ id, steps }];
+    return { id, steps };
 };
