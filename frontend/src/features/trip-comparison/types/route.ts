@@ -1,6 +1,6 @@
 import type { Api } from 'common';
 
-export type RouteAlternativeOrder = 'travelTime';
+export type RouteOrder = 'travelTime';
 
 export type RouteSummary = {
     // Main one first

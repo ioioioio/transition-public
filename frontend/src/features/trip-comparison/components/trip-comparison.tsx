@@ -7,9 +7,9 @@ import PlaceMarker from '@/components/map/place-marker';
 import RoutePathCards from '@/features/trip-comparison/components/route-path-cards';
 import RoutePathLayers from '@/features/trip-comparison/components/route-path-layers';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
-import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
+import type { RouteOrder } from '@/features/trip-comparison/types/route';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
-import { sortRouteAlternatives } from '@/features/trip-comparison/utils/route-alternative';
+import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import type { PlaceRef } from '@/types/place';
 
 type TripComparisonProps = {
@@ -54,8 +54,8 @@ function TripComparison({
         destinationPosition,
         time,
     );
-    const order: RouteAlternativeOrder = 'travelTime'; // Not configurable yet
-    const routes = sortRouteAlternatives(routeQueries.alternatives, order);
+    const order: RouteOrder = 'travelTime'; // Not configurable yet
+    const routes = sortRoutes(routeQueries.routes, order);
     // Not found when the URL is older than the routes
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
 

@@ -1,12 +1,12 @@
 import express from 'express';
 import { Api, type PublicConfig } from 'common';
 import {
-    fetchPlaneTransitRouteAlternatives,
-    fetchPlaneUnimodalRouteAlternatives,
+    fetchPlaneTransitSetupRoute,
+    fetchPlaneUnimodalSetupRoute,
 } from '../routing/setups/plane';
-import { fetchTransitRouteAlternatives } from '../routing/setups/transit';
-import { fetchUnimodalRouteAlternatives } from '../routing/setups/unimodal';
-import { fetchViaStationsRouteAlternatives } from '../routing/setups/via-stations';
+import { fetchTransitSetupRoute } from '../routing/setups/transit';
+import { fetchUnimodalSetupRoute } from '../routing/setups/unimodal';
+import { fetchViaStationsSetupRoute } from '../routing/setups/via-stations';
 import { config } from '../config';
 import { ApiError, parseRequest } from '../utils/http';
 
@@ -29,7 +29,7 @@ const checkTripHour = (hour: number) => {
 
 const secondsPerHour = 60 * 60;
 
-const fetchRouteAlternatives = (
+const fetchSetupRoute = (
     { origin, destination, time }: Api.RouteBody,
     routingSetup: PublicConfig.RoutingSetup,
 ) => {
@@ -43,15 +43,15 @@ const fetchRouteAlternatives = (
     };
     switch (routingSetup.type) {
         case 'unimodal':
-            return fetchUnimodalRouteAlternatives(odTrip, routingSetup);
+            return fetchUnimodalSetupRoute(odTrip, routingSetup);
         case 'transit':
-            return fetchTransitRouteAlternatives(odTrip, routingSetup);
+            return fetchTransitSetupRoute(odTrip, routingSetup);
         case 'plane-unimodal':
-            return fetchPlaneUnimodalRouteAlternatives(odTrip, routingSetup);
+            return fetchPlaneUnimodalSetupRoute(odTrip, routingSetup);
         case 'plane-transit':
-            return fetchPlaneTransitRouteAlternatives(odTrip, routingSetup);
+            return fetchPlaneTransitSetupRoute(odTrip, routingSetup);
         case 'via-stations':
-            return fetchViaStationsRouteAlternatives(odTrip, routingSetup);
+            return fetchViaStationsSetupRoute(odTrip, routingSetup);
         default:
             return routingSetup satisfies never;
     }
@@ -63,7 +63,7 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
     checkTripHour(body.time.hour);
     res.json(
         Api.routeEndpoint.response.parse({
-            alternatives: await fetchRouteAlternatives(body, routingSetup),
+            alternatives: await fetchSetupRoute(body, routingSetup),
         }),
     );
 };

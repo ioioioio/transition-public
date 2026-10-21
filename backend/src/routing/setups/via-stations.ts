@@ -150,10 +150,10 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
     return requiredModes.every((mode) => usedModes.has(mode));
 };
 
-export const fetchViaStationsRouteAlternatives = async (
+export const fetchViaStationsSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
-): Promise<Api.RouteAlternative[]> => {
+): Promise<Api.Route[]> => {
     const {
         id,
         accessEgressMode,

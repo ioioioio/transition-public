@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import * as Utils from '../utils';
-import { RouteAlternativeSchema } from './route-alternative';
+import { RouteStepSchema } from './route-steps';
 
 export const TripTimeTypeSchema = z.enum(['departure', 'arrival']);
 export type TripTimeType = z.infer<typeof TripTimeTypeSchema>;
@@ -22,8 +22,16 @@ export const RouteBodySchema = z.object({
 
 export type RouteBody = z.infer<typeof RouteBodySchema>;
 
+// A way to make the trip
+export const RouteSchema = z.object({
+    id: z.string(),
+    steps: z.array(RouteStepSchema),
+});
+
+export type Route = z.infer<typeof RouteSchema>;
+
 export const RouteResponseSchema = z.object({
-    alternatives: z.array(RouteAlternativeSchema),
+    alternatives: z.array(RouteSchema),
 });
 export type RouteResponse = z.infer<typeof RouteResponseSchema>;
 

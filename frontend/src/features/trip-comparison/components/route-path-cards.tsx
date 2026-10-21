@@ -13,19 +13,19 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
-import type { RouteAlternativeOrder } from '@/features/trip-comparison/types/route-alternative';
-import { createRouteSummary } from '@/features/trip-comparison/utils/route-alternative';
+import type { RouteOrder } from '@/features/trip-comparison/types/route';
+import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
 
 type BestRouteBadgeProps = {
-    order: RouteAlternativeOrder;
+    order: RouteOrder;
 };
 
 const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
     const { t } = useTranslation();
-    const labels: Record<RouteAlternativeOrder, string> = {
+    const labels: Record<RouteOrder, string> = {
         travelTime: t('bestRoute.travelTime'),
     };
     return (
@@ -176,9 +176,9 @@ const RoutePathCardSkeleton = () => (
 );
 
 type RoutePathCardsProps = {
-    routes: Api.RouteAlternative[];
+    routes: Api.Route[];
     isLoading: boolean;
-    order: RouteAlternativeOrder;
+    order: RouteOrder;
     selectedId: string | null;
     onSelect: (id: string | null) => void;
 };

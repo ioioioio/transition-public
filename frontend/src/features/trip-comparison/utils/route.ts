@@ -1,9 +1,9 @@
 import { type Api, Utils } from 'common';
 
 import type {
-    RouteAlternativeOrder,
+    RouteOrder,
     RouteSummary,
-} from '@/features/trip-comparison/types/route-alternative';
+} from '@/features/trip-comparison/types/route';
 
 const calculateDistanceMeters = (steps: Api.RouteStep[]) =>
     steps.reduce(
@@ -51,17 +51,16 @@ export const createRouteSummary = (steps: Api.RouteStep[]): RouteSummary => ({
     distanceMeters: calculateDistanceMeters(steps),
 });
 
-const compareRouteAlternatives: Record<
-    RouteAlternativeOrder,
-    (a: Api.RouteAlternative, b: Api.RouteAlternative) => number
+const compareRoutes: Record<
+    RouteOrder,
+    (a: Api.Route, b: Api.Route) => number
 > = {
     travelTime: (a, b) =>
         Utils.calculateTotalDurationSeconds(a.steps) -
         Utils.calculateTotalDurationSeconds(b.steps),
 };
 
-export const sortRouteAlternatives = (
-    alternatives: Api.RouteAlternative[],
-    order: RouteAlternativeOrder,
-): Api.RouteAlternative[] =>
-    alternatives.toSorted(compareRouteAlternatives[order]);
+export const sortRoutes = (
+    routes: Api.Route[],
+    order: RouteOrder,
+): Api.Route[] => routes.toSorted(compareRoutes[order]);

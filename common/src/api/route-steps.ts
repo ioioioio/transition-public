@@ -60,11 +60,3 @@ export const RouteStepSchema = z.discriminatedUnion('activity', [
 ]);
 
 export type RouteStep = z.infer<typeof RouteStepSchema>;
-
-// A way to make the trip
-export const RouteAlternativeSchema = z.object({
-    id: z.string(),
-    steps: z.array(RouteStepSchema),
-});
-
-export type RouteAlternative = z.infer<typeof RouteAlternativeSchema>;

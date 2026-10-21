@@ -1,4 +1,4 @@
 export * from './mode';
 export * from './place';
 export * from './route';
-export * from './route-alternative';
+export * from './route-steps';

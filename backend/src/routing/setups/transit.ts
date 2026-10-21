@@ -1,10 +1,10 @@
 import type { Api, PublicConfig } from 'common';
 import { fetchTransitRouteSteps, type OdTrip } from '../routes/fetch-routes';
 
-export const fetchTransitRouteAlternatives = async (
+export const fetchTransitSetupRoute = async (
     odTrip: OdTrip,
     { id, scenarioId }: PublicConfig.TransitRoutingSetup,
-): Promise<Api.RouteAlternative[]> => {
+): Promise<Api.Route[]> => {
     const steps = await fetchTransitRouteSteps(odTrip, scenarioId);
     if (!steps) {
         return [];

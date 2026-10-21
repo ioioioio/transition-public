@@ -63,11 +63,11 @@ const createFlightStep = (
     distanceMeters: calculateDistanceMeters(from.position, to.position),
 });
 
-const fetchPlaneRouteAlternatives = async (
+const fetchPlaneSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
     fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>,
-): Promise<Api.RouteAlternative[]> => {
+): Promise<Api.Route[]> => {
     const planeNetwork = config.planeNetworks.find(
         ({ id }) => id === routingSetup.planeNetworkId,
     );
@@ -111,20 +111,20 @@ const fetchPlaneRouteAlternatives = async (
     return [{ id: routingSetup.id, steps }];
 };
 
-export const fetchPlaneUnimodalRouteAlternatives = (
+export const fetchPlaneUnimodalSetupRoute = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
-): Promise<Api.RouteAlternative[]> => {
-    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
+): Promise<Api.Route[]> => {
+    return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
         fetchUnimodalRouteSteps(accessOrEgress, routingSetup.mode),
     );
 };
 
-export const fetchPlaneTransitRouteAlternatives = (
+export const fetchPlaneTransitSetupRoute = (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
-): Promise<Api.RouteAlternative[]> => {
-    return fetchPlaneRouteAlternatives(odTrip, routingSetup, (accessOrEgress) =>
+): Promise<Api.Route[]> => {
+    return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
         fetchTransitRouteSteps(accessOrEgress, routingSetup.scenarioId),
     );
 };
