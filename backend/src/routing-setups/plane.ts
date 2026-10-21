@@ -9,7 +9,7 @@ import {
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,
-} from '../transition/route-alternatives';
+} from '../transition/route-steps';
 import { calculateDistanceMeters } from '../utils/geo';
 
 type Airport = PublicConfig.PlaneNetwork['airports'][number];
