@@ -125,6 +125,6 @@ export const fetchPlaneTransitSetupRoute = (
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
 ): Promise<Api.Route | null> => {
     return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
-        fetchTransitRouteSteps(accessOrEgress, routingSetup.scenarioId),
+        fetchTransitRouteSteps(accessOrEgress, routingSetup.scenarioName),
     );
 };

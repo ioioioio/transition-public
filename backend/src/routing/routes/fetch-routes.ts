@@ -6,6 +6,7 @@ import {
     type TransitionRouteResponse,
 } from '../../transition/route';
 import { createPointFeature } from '../../utils/geo';
+import { getScenarioId } from './scenario-ids';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,
@@ -44,10 +45,10 @@ const createTransitTransitionRouteBody = (
 
 export const fetchTransitRoute = (
     odTrip: OdTrip,
-    scenarioId: string,
+    scenarioName: string,
 ): Promise<TransitionRouteResponse> => {
     return postTransitionRoute(
-        createTransitTransitionRouteBody(odTrip, scenarioId),
+        createTransitTransitionRouteBody(odTrip, getScenarioId(scenarioName)),
     );
 };
 
@@ -65,9 +66,9 @@ const fetchUnimodalRoute = (
 // Null when there's no route
 export const fetchTransitRouteSteps = async (
     odTrip: OdTrip,
-    scenarioId: string,
+    scenarioName: string,
 ): Promise<Api.RouteStep[] | null> => {
-    const transitionRoute = await fetchTransitRoute(odTrip, scenarioId);
+    const transitionRoute = await fetchTransitRoute(odTrip, scenarioName);
     return createTransitRouteSteps(transitionRoute);
 };
 

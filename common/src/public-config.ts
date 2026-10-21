@@ -19,6 +19,10 @@ const UnimodalModeSchema = z.enum(['driving', 'walking']);
 
 export type UnimodalMode = z.infer<typeof UnimodalModeSchema>;
 
+// The name of a Transition scenario. Transition allows several scenarios with
+// the same name, but the backend needs the ones used here to be unique
+const ScenarioNameSchema = z.string().min(1);
+
 const UnimodalRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('unimodal'),
@@ -30,7 +34,7 @@ export type UnimodalRoutingSetup = z.infer<typeof UnimodalRoutingSetupSchema>;
 const TransitRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('transit'),
-    scenarioId: z.uuid(),
+    scenarioName: ScenarioNameSchema,
 });
 
 export type TransitRoutingSetup = z.infer<typeof TransitRoutingSetupSchema>;
@@ -85,7 +89,7 @@ const PlaneTransitRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('plane-transit'),
     planeNetworkId: z.string().min(1),
-    scenarioId: z.uuid(),
+    scenarioName: ScenarioNameSchema,
 });
 
 export type PlaneTransitRoutingSetup = z.infer<
@@ -112,7 +116,7 @@ export type StationNetwork = z.infer<typeof StationNetworkSchema>;
 const ViaStationsRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('via-stations'),
-    scenarioId: z.uuid(),
+    scenarioName: ScenarioNameSchema,
     requiredModes: z.array(z.string().min(1)).min(1),
     stationNetworkId: z.string().min(1),
     accessEgressMode: UnimodalModeSchema,

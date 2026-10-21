@@ -157,7 +157,7 @@ export const fetchViaStationsSetupRoute = async (
     const {
         id,
         accessEgressMode,
-        scenarioId,
+        scenarioName,
         requiredModes,
         stationNetworkId,
     } = routingSetup;
@@ -180,7 +180,7 @@ export const fetchViaStationsSetupRoute = async (
                 destination: destinationStation.position,
                 time,
             },
-            scenarioId,
+            scenarioName,
         );
         const path = transitionRoute.result.transit?.paths.at(0);
         if (!path || !checkUsesRequiredModes(path, requiredModes)) {
