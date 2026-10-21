@@ -3,13 +3,10 @@ import { config } from '../../config';
 import type { TransitionRouteResponse } from '../../transition/route';
 import {
     fetchTransitRoute,
-    fetchUnimodalRoute,
+    fetchUnimodalRouteSteps,
     type OdTrip,
 } from '../routes/fetch-routes';
-import {
-    createTransitRouteSteps,
-    createUnimodalRouteSteps,
-} from '../routes/route-steps';
+import { createTransitRouteSteps } from '../routes/route-steps';
 import { calculateDistanceMeters } from '../../utils/geo';
 
 // For trips that go through stations, like airports or train stations
@@ -196,13 +193,8 @@ export const fetchViaStationsRouteAlternatives = async (
         boardingStation: originStation,
         fetchMiddleSteps,
         alightingStation: destinationStation,
-        fetchAccessEgressSteps: async (accessOrEgress) => {
-            const transitionRoute = await fetchUnimodalRoute(
-                accessOrEgress,
-                accessEgressMode,
-            );
-            return createUnimodalRouteSteps(transitionRoute, accessEgressMode);
-        },
+        fetchAccessEgressSteps: (accessOrEgress) =>
+            fetchUnimodalRouteSteps(accessOrEgress, accessEgressMode),
     });
     if (!steps) {
         return [];

@@ -6,6 +6,10 @@ import {
     type TransitionRouteResponse,
 } from '../../transition/route';
 import { createPointFeature } from '../../utils/geo';
+import {
+    createTransitRouteSteps,
+    createUnimodalRouteSteps,
+} from './route-steps';
 
 export type OdTrip = {
     origin: Utils.LngLat;
@@ -47,7 +51,7 @@ export const fetchTransitRoute = (
     );
 };
 
-export const fetchUnimodalRoute = (
+const fetchUnimodalRoute = (
     { origin, destination }: Pick<OdTrip, 'origin' | 'destination'>,
     mode: PublicConfig.UnimodalMode,
 ): Promise<TransitionRouteResponse> => {
@@ -56,4 +60,22 @@ export const fetchUnimodalRoute = (
         originGeojson: createPointFeature(origin),
         destinationGeojson: createPointFeature(destination),
     });
+};
+
+// Null when there's no route
+export const fetchTransitRouteSteps = async (
+    odTrip: OdTrip,
+    scenarioId: string,
+): Promise<Api.RouteStep[] | null> => {
+    const transitionRoute = await fetchTransitRoute(odTrip, scenarioId);
+    return createTransitRouteSteps(transitionRoute);
+};
+
+// Null when there's no route
+export const fetchUnimodalRouteSteps = async (
+    odTrip: Pick<OdTrip, 'origin' | 'destination'>,
+    mode: PublicConfig.UnimodalMode,
+): Promise<Api.RouteStep[] | null> => {
+    const transitionRoute = await fetchUnimodalRoute(odTrip, mode);
+    return createUnimodalRouteSteps(transitionRoute, mode);
 };
