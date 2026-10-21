@@ -186,7 +186,13 @@ export const fetchViaStationsRouteAlternatives = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
 ): Promise<Api.RouteAlternative[]> => {
-    const { id, scenarioId, requiredModes, stationNetworkId } = routingSetup;
+    const {
+        id,
+        accessEgressMode,
+        scenarioId,
+        requiredModes,
+        stationNetworkId,
+    } = routingSetup;
     const stationNetwork = config.stationNetworks.find(
         ({ id }) => id === stationNetworkId,
     );
@@ -222,7 +228,7 @@ export const fetchViaStationsRouteAlternatives = async (
         fetchMiddleSteps,
         alightingStation: destinationStation,
         fetchAccessEgressRoute: (accessOrEgress) =>
-            fetchUnimodalRoute(accessOrEgress, 'driving'),
+            fetchUnimodalRoute(accessOrEgress, accessEgressMode),
         routingSetupId: id,
     });
     if (!steps) {

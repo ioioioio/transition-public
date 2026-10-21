@@ -30,6 +30,7 @@ routingSetups:
     scenarioId: f337c7e7-b4d5-4de0-8e9e-bcc8ec95e217
     requiredModes: [highSpeedRail]
     stationNetworkId: train-mtl-qc-corridor
+    accessEgressMode: driving
 planeNetworks:
   - id: plane-mtl-qc-corridor
     airports:

@@ -107,14 +107,15 @@ const StationNetworkSchema = z.object({
 
 export type StationNetwork = z.infer<typeof StationNetworkSchema>;
 
-// Dropped off and picked up by car at the stations, and by the scenario's
-// transit between them
+// Unimodal to and from the closest stations, and by the scenario's transit
+// between them, like being dropped off and picked up by car
 const ViaStationsRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('via-stations'),
     scenarioId: z.uuid(),
     requiredModes: z.array(z.string().min(1)).min(1),
     stationNetworkId: z.string().min(1),
+    accessEgressMode: UnimodalModeSchema,
 });
 
 export type ViaStationsRoutingSetup = z.infer<
