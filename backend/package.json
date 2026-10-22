@@ -5,10 +5,14 @@
     "type": "module",
     "scripts": {
         "build": "tsc && node build.ts",
+        "check": "npm run check:format && npm run check:lint && npm run build",
+        "check:format": "npx prettier . --check",
+        "check:lint": "eslint .",
         "codegen": "npx orval",
         "dev": "tsx watch --env-file=../.env --include ../config.public.yaml src/index.ts",
-        "lint": "eslint .",
-        "format": "npx prettier . -w",
+        "fix": "npm run fix:lint && npm run fix:format",
+        "fix:format": "npx prettier . -w",
+        "fix:lint": "eslint . --fix",
         "start": "node --env-file=../.env dist/index.js"
     },
     "devDependencies": {

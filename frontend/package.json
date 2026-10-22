@@ -5,12 +5,15 @@
     "type": "module",
     "scripts": {
         "build": "tsc -b && vite build",
+        "check": "npm run check:format && npm run check:i18n && npm run check:lint && npm run build",
+        "check:format": "npx prettier . --check",
+        "check:i18n": "i18next-cli lint && i18next-cli extract --ci --dry-run && i18next-cli status",
+        "check:lint": "eslint .",
         "dev": "vite",
+        "fix": "npm run fix:i18n && npm run fix:lint && npm run fix:format",
+        "fix:format": "npx prettier . -w",
         "fix:i18n": "i18next-cli extract",
-        "format": "npx prettier . -w",
-        "i18n:lint": "i18next-cli lint",
-        "i18n:status": "i18next-cli status",
-        "lint": "eslint . && npm run i18n:lint",
+        "fix:lint": "eslint . --fix",
         "preview": "vite preview"
     },
     "dependencies": {
