@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "check": "npm run check --workspaces",
+    "check": "npm run check -w common && npm run check -w backend && npm run check -w frontend",
     "codegen": "npm run codegen --workspaces --if-present",
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "fix": "npm run fix --workspaces",
