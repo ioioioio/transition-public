@@ -1,12 +1,10 @@
 import { type Api, type PublicConfig, Utils } from 'common';
 import { config } from '../../config';
-import type { TransitionRouteResponse } from '../../transition/route';
 import {
-    fetchTransitRoute,
+    fetchTransitRouteSteps,
     fetchUnimodalRouteSteps,
     type OdTrip,
 } from '../routes/fetch-routes';
-import { createTransitRouteSteps } from '../routes/route-steps';
 import { calculateDistanceMeters } from '../../utils/geo';
 
 // For trips that go through stations, like airports or train stations
@@ -137,19 +135,6 @@ export const fetchStepsViaStations = (
         ? fetchStepsFromDeparture(odTripViaStations)
         : fetchStepsFromArrival(odTripViaStations);
 
-type TransitPath = NonNullable<
-    TransitionRouteResponse['result']['transit']
->['paths'][number];
-
-const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
-    const usedModes = new Set(
-        path.steps.flatMap((step) =>
-            step.action === 'boarding' ? [step.mode] : [],
-        ),
-    );
-    return requiredModes.every((mode) => usedModes.has(mode));
-};
-
 export const fetchViaStationsSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
@@ -173,20 +158,16 @@ export const fetchViaStationsSetupRoute = async (
     if (originStation === destinationStation) {
         return null;
     }
-    const fetchMiddleSteps = async (time: OdTrip['time']) => {
-        const transitionRoute = await fetchTransitRoute(
+    const fetchMiddleSteps = (time: OdTrip['time']) => {
+        return fetchTransitRouteSteps(
             {
                 origin: originStation.position,
                 destination: destinationStation.position,
                 time,
             },
             scenarioName,
+            requiredModes,
         );
-        const path = transitionRoute.result.transit?.paths.at(0);
-        if (!path || !checkUsesRequiredModes(path, requiredModes)) {
-            return null;
-        }
-        return createTransitRouteSteps(transitionRoute);
     };
     const steps = await fetchStepsViaStations({
         odTrip,

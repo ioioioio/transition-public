@@ -28,6 +28,7 @@ routingSetups:
   - id: highSpeedRail+transit
     type: transit
     scenarioName: reference+high-speed-rail
+    requiredModes: [highSpeedRail]
   - id: highSpeedRail+driving
     type: via-stations
     scenarioName: high-speed-rail-only

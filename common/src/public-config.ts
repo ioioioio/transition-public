@@ -23,6 +23,9 @@ export type UnimodalMode = z.infer<typeof UnimodalModeSchema>;
 // the same name, but the backend needs the ones used here to be unique
 const ScenarioNameSchema = z.string().min(1);
 
+// Modes the routing setup is meant to display.
+const RequiredModesSchema = z.array(z.string().min(1)).min(1);
+
 const UnimodalRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('unimodal'),
@@ -35,6 +38,7 @@ const TransitRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('transit'),
     scenarioName: ScenarioNameSchema,
+    requiredModes: RequiredModesSchema.optional(),
 });
 
 export type TransitRoutingSetup = z.infer<typeof TransitRoutingSetupSchema>;
@@ -117,7 +121,7 @@ const ViaStationsRoutingSetupSchema = z.object({
     id: z.string().min(1),
     type: z.literal('via-stations'),
     scenarioName: ScenarioNameSchema,
-    requiredModes: z.array(z.string().min(1)).min(1),
+    requiredModes: RequiredModesSchema,
     stationNetworkId: z.string().min(1),
     accessEgressMode: UnimodalModeSchema,
 });

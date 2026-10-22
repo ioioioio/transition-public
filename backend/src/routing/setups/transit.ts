@@ -3,9 +3,13 @@ import { fetchTransitRouteSteps, type OdTrip } from '../routes/fetch-routes';
 
 export const fetchTransitSetupRoute = async (
     odTrip: OdTrip,
-    { id, scenarioName }: PublicConfig.TransitRoutingSetup,
+    { id, scenarioName, requiredModes }: PublicConfig.TransitRoutingSetup,
 ): Promise<Api.Route | null> => {
-    const steps = await fetchTransitRouteSteps(odTrip, scenarioName);
+    const steps = await fetchTransitRouteSteps(
+        odTrip,
+        scenarioName,
+        requiredModes,
+    );
     if (!steps) {
         return null;
     }
