@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc -b && vite build",
         "dev": "vite",
+        "fix:i18n": "i18next-cli extract",
         "format": "npx prettier . -w",
         "i18n:lint": "i18next-cli lint",
         "i18n:status": "i18next-cli status",

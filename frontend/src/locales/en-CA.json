@@ -1,46 +1,46 @@
 {
-    "theme": {
-        "switchToLight": "Switch to light mode",
-        "switchToDark": "Switch to dark mode"
-    },
-    "tripComparison": {
-        "origin": "Origin",
-        "destination": "Destination",
-        "clearOrigin": "Clear origin",
-        "clearDestination": "Clear destination",
-        "distance": "Distance",
-        "time": "Time",
-        "timeType": "Leave or arrive",
-        "departAt": "Leave at",
-        "arriveAt": "Arrive by",
-        "loadingRoutes": "Calculating routes…"
-    },
-    "routeMode": {
-        "driving": "Driving",
-        "walking": "Walking",
-        "bus": "Bus",
-        "metro": "Metro",
-        "plane": "Plane",
-        "rail": "Train",
-        "highSpeedRail": "High-speed train",
-        "other": "Other"
-    },
     "bestRoute": {
         "travelTime": "Fastest"
     },
+    "routeMode": {
+        "bus": "Bus",
+        "driving": "Driving",
+        "highSpeedRail": "High-speed train",
+        "metro": "Metro",
+        "other": "Other",
+        "plane": "Plane",
+        "rail": "Train",
+        "walking": "Walking"
+    },
+    "theme": {
+        "switchToDark": "Switch to dark mode",
+        "switchToLight": "Switch to light mode"
+    },
     "transitStep": {
-        "walkingTo": {
-            "stop": "To the stop",
-            "station": "To the station",
-            "trainStation": "To the station"
-        },
+        "securityAndBoarding": "Security and boarding",
+        "unboardingAndLuggage": "Unboarding and luggage",
         "waitingAt": {
-            "stop": "Waiting at the stop",
             "station": "Waiting at the station",
+            "stop": "Waiting at the stop",
             "trainStation": "Waiting at the station"
         },
-        "walkingToDestination": "To your destination",
-        "securityAndBoarding": "Security and boarding",
-        "unboardingAndLuggage": "Unboarding and luggage"
+        "walkingTo": {
+            "station": "To the station",
+            "stop": "To the stop",
+            "trainStation": "To the station"
+        },
+        "walkingToDestination": "To your destination"
+    },
+    "tripComparison": {
+        "arriveAt": "Arrive by",
+        "clearDestination": "Clear destination",
+        "clearOrigin": "Clear origin",
+        "departAt": "Leave at",
+        "destination": "Destination",
+        "distance": "Distance",
+        "loadingRoutes": "Calculating routes…",
+        "origin": "Origin",
+        "time": "Time",
+        "timeType": "Leave or arrive"
     }
 }

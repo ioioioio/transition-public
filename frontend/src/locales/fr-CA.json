@@ -1,46 +1,46 @@
 {
-    "theme": {
-        "switchToLight": "Passer au mode clair",
-        "switchToDark": "Passer au mode sombre"
-    },
-    "tripComparison": {
-        "origin": "Origine",
-        "destination": "Destination",
-        "clearOrigin": "Effacer l’origine",
-        "clearDestination": "Effacer la destination",
-        "distance": "Distance",
-        "time": "Heure",
-        "timeType": "Départ ou arrivée",
-        "departAt": "Partir à",
-        "arriveAt": "Arriver à",
-        "loadingRoutes": "Calcul des trajets…"
-    },
-    "routeMode": {
-        "driving": "Auto",
-        "walking": "Marche",
-        "bus": "Autobus",
-        "metro": "Métro",
-        "plane": "Avion",
-        "rail": "Train",
-        "highSpeedRail": "TGV",
-        "other": "Autre"
-    },
     "bestRoute": {
         "travelTime": "Le plus rapide"
     },
+    "routeMode": {
+        "bus": "Autobus",
+        "driving": "Auto",
+        "highSpeedRail": "TGV",
+        "metro": "Métro",
+        "other": "Autre",
+        "plane": "Avion",
+        "rail": "Train",
+        "walking": "Marche"
+    },
+    "theme": {
+        "switchToDark": "Passer au mode sombre",
+        "switchToLight": "Passer au mode clair"
+    },
     "transitStep": {
-        "walkingTo": {
-            "stop": "Vers l’arrêt",
-            "station": "Vers la station",
-            "trainStation": "Vers la gare"
-        },
+        "securityAndBoarding": "Sécurité et embarquement",
+        "unboardingAndLuggage": "Débarquement et bagages",
         "waitingAt": {
-            "stop": "Attente à l’arrêt",
             "station": "Attente à la station",
+            "stop": "Attente à l’arrêt",
             "trainStation": "Attente à la gare"
         },
-        "walkingToDestination": "Vers votre destination",
-        "securityAndBoarding": "Sécurité et embarquement",
-        "unboardingAndLuggage": "Débarquement et bagages"
+        "walkingTo": {
+            "station": "Vers la station",
+            "stop": "Vers l’arrêt",
+            "trainStation": "Vers la gare"
+        },
+        "walkingToDestination": "Vers votre destination"
+    },
+    "tripComparison": {
+        "arriveAt": "Arriver à",
+        "clearDestination": "Effacer la destination",
+        "clearOrigin": "Effacer l’origine",
+        "departAt": "Partir à",
+        "destination": "Destination",
+        "distance": "Distance",
+        "loadingRoutes": "Calcul des trajets…",
+        "origin": "Origine",
+        "time": "Heure",
+        "timeType": "Départ ou arrivée"
     }
 }

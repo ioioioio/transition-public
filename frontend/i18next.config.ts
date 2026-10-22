@@ -6,5 +6,6 @@ export default defineConfig({
         input: ['src/**/*.{ts,tsx}'],
         output: 'src/locales/{{language}}.json',
         indentation: 4,
+        defaultNS: false,
     },
 });
