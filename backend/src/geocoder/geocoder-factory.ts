@@ -23,9 +23,7 @@ const getGeocoderProviderName = (): GeocoderProviderName => {
     return result.data;
 };
 
-const createGeocoder = (): Geocoder => {
+export const createGeocoder = (): Geocoder => {
     const GeocoderClass = geocoderClasses[getGeocoderProviderName()];
     return new GeocoderClass(getEnv('GEOCODER_ENDPOINT'));
 };
-
-export const geocoder = createGeocoder();

@@ -1,11 +1,13 @@
 import express from 'express';
 import { getEnv } from './utils/env';
 import { ApiError } from './utils/http';
-import { placeRouter } from './api/place';
+import { createPlaceRouter } from './api/place';
 import { routeRouter } from './api/route';
+import { createGeocoder } from './geocoder/geocoder-factory';
 
 const app = express();
 const port = getEnv('BACKEND_PORT');
+const geocoder = createGeocoder();
 
 app.use(express.json());
 
@@ -13,7 +15,7 @@ app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
 });
 
-app.use(placeRouter);
+app.use(createPlaceRouter(geocoder));
 app.use(routeRouter);
 
 app.use(((error, _req, res, _next) => {
