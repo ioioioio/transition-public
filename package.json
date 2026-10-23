@@ -12,7 +12,8 @@
     "codegen": "npm run codegen --workspaces --if-present",
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "fix": "npm run fix --workspaces",
-    "start": "npm start --workspaces --if-present"
+    "start": "npm start --workspaces --if-present",
+    "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {
     "concurrently": "^10.0.5",

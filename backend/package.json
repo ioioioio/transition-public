@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "build": "tsc && node build.ts",
-        "check": "npm run check:format && npm run check:lint && npm run build",
+        "check": "npm run check:format && npm run check:lint && npm test && npm run build",
         "check:format": "npx prettier . --check",
         "check:lint": "eslint .",
         "codegen": "npx orval",
@@ -13,7 +13,8 @@
         "fix": "npm run fix:lint && npm run fix:format",
         "fix:format": "npx prettier . -w",
         "fix:lint": "eslint . --fix",
-        "start": "node --env-file=../.env dist/index.js"
+        "start": "node --env-file=../.env dist/index.js",
+        "test": "vitest run"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -29,7 +30,8 @@
         "orval": "^8.37.0",
         "prettier": "3.9.9",
         "tsx": "^4.23.15",
-        "typescript-eslint": "^8.70.1"
+        "typescript-eslint": "^8.70.1",
+        "vitest": "^5.0.3"
     },
     "dependencies": {
         "@turf/turf": "^7.4.0",

@@ -10,12 +10,7 @@ const findScenarioId = (scenarios: TransitionScenario[], name: string) => {
     }
     const [scenario] = namedScenarios;
     if (!scenario) {
-        const names = scenarios
-            .map((scenario) => `"${scenario.name}"`)
-            .join(', ');
-        throw new Error(
-            `No Transition scenario is named "${name}", only ${names}`,
-        );
+        throw new Error(`No Transition scenario is named "${name}"`);
     }
     return scenario.id;
 };
