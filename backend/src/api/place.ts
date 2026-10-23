@@ -1,10 +1,7 @@
 import express from 'express';
 import { Api } from 'common';
-import { PeliasGeocoder } from '../geocoder/pelias';
-import { getEnv } from '../utils/env';
+import { geocoder } from '../geocoder/geocoder-factory';
 import { ApiError, parseRequest } from '../utils/http';
-
-const geocoder = new PeliasGeocoder(getEnv('GEOCODER_ENDPOINT'));
 
 const handlePlaceSearch = async (
     req: express.Request,

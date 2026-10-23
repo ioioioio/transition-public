@@ -1,6 +1,7 @@
 import type { Api } from 'common';
 import { z } from 'zod';
 import { ApiError, parseUpstreamResponse } from '../utils/http';
+import type { Geocoder } from './geocoder';
 
 // Pelias' answers, with only the fields we use
 // https://github.com/pelias/documentation/blob/master/autocomplete.md
@@ -43,7 +44,7 @@ const createPlace = (feature: Feature): Api.Place => {
     };
 };
 
-export class PeliasGeocoder {
+export class PeliasGeocoder implements Geocoder {
     constructor(private readonly endpoint: string) {}
 
     async searchPlaces(body: Api.PlaceSearchBody): Promise<Api.Place[]> {
