@@ -1,13 +1,12 @@
 import type { Api } from 'common';
 import { z } from 'zod';
-import { getEnv } from '../utils/env';
 import { ApiError, parseUpstreamResponse } from '../utils/http';
 
-// Only the fields we use are declared.
+// Pelias' answers, with only the fields we use
 // https://github.com/pelias/documentation/blob/master/autocomplete.md
 // https://github.com/pelias/documentation/blob/master/place.md
 
-export const FeatureSchema = z.object({
+const FeatureSchema = z.object({
     geometry: z.object({
         coordinates: z.tuple([z.number(), z.number()]),
     }),
@@ -17,34 +16,64 @@ export const FeatureSchema = z.object({
     }),
 });
 
-export type Feature = z.infer<typeof FeatureSchema>;
+type Feature = z.infer<typeof FeatureSchema>;
 
-export const FeatureCollectionSchema = z.object({
+const FeatureCollectionSchema = z.object({
     features: z.array(FeatureSchema),
 });
 
-const geocoderEndpoint = getEnv('GEOCODER_ENDPOINT');
-
-const fetchFeatures = async (path: string, params: URLSearchParams) => {
-    const response = await fetch(`${geocoderEndpoint}/${path}?${params}`);
-    if (!response.ok) {
-        throw new ApiError(response.status, await response.json());
-    }
-    const { features } = parseUpstreamResponse(
-        FeatureCollectionSchema,
-        await response.json(),
-    );
-    return features;
-};
-
-export const getAutocomplete = ({ text, focus }: Api.PlaceSearchBody) => {
+const createAutocompleteParams = ({ text, focus }: Api.PlaceSearchBody) => {
     const params = new URLSearchParams({ text });
     if (focus) {
         params.set('focus.point.lon', String(focus.lng));
         params.set('focus.point.lat', String(focus.lat));
     }
-    return fetchFeatures('autocomplete', params);
+    return params;
 };
 
-export const getPlace = (id: string) =>
-    fetchFeatures('place', new URLSearchParams({ ids: id }));
+const createPlace = (feature: Feature): Api.Place => {
+    const { geometry, properties } = feature;
+    return {
+        id: properties.gid,
+        label: properties.label,
+        position: {
+            lng: geometry.coordinates[0],
+            lat: geometry.coordinates[1],
+        },
+    };
+};
+
+export class PeliasGeocoder {
+    constructor(private readonly endpoint: string) {}
+
+    async searchPlaces(body: Api.PlaceSearchBody): Promise<Api.Place[]> {
+        const features = await this.fetchFeatures(
+            'autocomplete',
+            createAutocompleteParams(body),
+        );
+        return features.map(createPlace);
+    }
+
+    async lookUpPlace(id: string): Promise<Api.Place | null> {
+        const [feature] = await this.fetchFeatures(
+            'place',
+            new URLSearchParams({ ids: id }),
+        );
+        if (!feature) {
+            return null;
+        }
+        return createPlace(feature);
+    }
+
+    private async fetchFeatures(path: string, params: URLSearchParams) {
+        const response = await fetch(`${this.endpoint}/${path}?${params}`);
+        if (!response.ok) {
+            throw new ApiError(response.status, await response.json());
+        }
+        const { features } = parseUpstreamResponse(
+            FeatureCollectionSchema,
+            await response.json(),
+        );
+        return features;
+    }
+}

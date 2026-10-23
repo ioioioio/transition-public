@@ -1,22 +1,17 @@
 import express from 'express';
 import { Api } from 'common';
-import { getAutocomplete, getPlace } from '../geocoder/pelias';
-import type * as Pelias from '../geocoder/pelias';
+import { PeliasGeocoder } from '../geocoder/pelias';
+import { getEnv } from '../utils/env';
 import { ApiError, parseRequest } from '../utils/http';
 
-const createPlace = ({ geometry, properties }: Pelias.Feature): Api.Place => ({
-    id: properties.gid,
-    label: properties.label,
-    position: { lng: geometry.coordinates[0], lat: geometry.coordinates[1] },
-});
+const geocoder = new PeliasGeocoder(getEnv('GEOCODER_ENDPOINT'));
 
 const handlePlaceSearch = async (
     req: express.Request,
     res: express.Response,
 ) => {
     const body = parseRequest(Api.placeSearchEndpoint.body, req.body);
-    const features = await getAutocomplete(body);
-    res.json(features.map(createPlace));
+    res.json(await geocoder.searchPlaces(body));
 };
 
 const handlePlaceLookup = async (
@@ -24,11 +19,11 @@ const handlePlaceLookup = async (
     res: express.Response,
 ) => {
     const { id } = parseRequest(Api.placeLookupEndpoint.params, req.params);
-    const [feature] = await getPlace(id);
-    if (!feature) {
+    const place = await geocoder.lookUpPlace(id);
+    if (!place) {
         throw new ApiError(404, { error: `Place not found: ${id}` });
     }
-    res.json(createPlace(feature));
+    res.json(place);
 };
 
 export const placeRouter = express.Router();
