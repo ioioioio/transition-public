@@ -1,14 +1,5 @@
-import { config } from '../../config';
-import {
-    fetchTransitionScenarios,
-    type TransitionScenario,
-} from '../../transition/scenarios';
-
-const configScenarioNames = new Set(
-    config.public.routingSetups.flatMap((routingSetup) =>
-        'scenarioName' in routingSetup ? [routingSetup.scenarioName] : [],
-    ),
-);
+import type { PublicConfig } from 'common';
+import type { TransitionScenario } from '../../transition/scenarios';
 
 const findScenarioId = (scenarios: TransitionScenario[], name: string) => {
     const namedScenarios = scenarios.filter(
@@ -29,23 +20,32 @@ const findScenarioId = (scenarios: TransitionScenario[], name: string) => {
     return scenario.id;
 };
 
-const createScenarioIds = async () => {
-    const scenarios = await fetchTransitionScenarios();
-    return new Map(
-        [...configScenarioNames].map((name) => [
-            name,
-            findScenarioId(scenarios, name),
-        ]),
-    );
-};
+export class ScenarioIds {
+    private readonly idsByName: Map<string, string>;
 
-// Found at startup, so that a wrong name in the config stops the backend
-const scenarioIds = await createScenarioIds();
-
-export const getScenarioId = (scenarioName: string) => {
-    const scenarioId = scenarioIds.get(scenarioName);
-    if (scenarioId === undefined) {
-        throw new Error(`Unknown scenario: ${scenarioName}`);
+    // Throws when a routing setup's scenario is missing or ambiguous in
+    // Transition
+    constructor(
+        routingSetups: PublicConfig.RoutingSetup[],
+        scenarios: TransitionScenario[],
+    ) {
+        const names = new Set(
+            routingSetups.flatMap((routingSetup) =>
+                'scenarioName' in routingSetup
+                    ? [routingSetup.scenarioName]
+                    : [],
+            ),
+        );
+        this.idsByName = new Map(
+            [...names].map((name) => [name, findScenarioId(scenarios, name)]),
+        );
     }
-    return scenarioId;
-};
+
+    get(scenarioName: string): string {
+        const scenarioId = this.idsByName.get(scenarioName);
+        if (scenarioId === undefined) {
+            throw new Error(`Unknown scenario: ${scenarioName}`);
+        }
+        return scenarioId;
+    }
+}

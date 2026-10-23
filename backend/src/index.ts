@@ -5,10 +5,17 @@ import { createPlaceRouter } from './api/place';
 import { createRouteRouter } from './api/route';
 import { createGeocoder } from './geocoder/geocoder-factory';
 import { RouteFetcher } from './routing/routes/fetch-routes';
+import { ScenarioIds } from './routing/routes/scenario-ids';
+import { fetchTransitionScenarios } from './transition/scenarios';
 
 const app = express();
 const geocoder = createGeocoder(config.private.geocoder);
-const routeFetcher = new RouteFetcher();
+// Found at startup, so that a wrong name in the config stops the backend
+const scenarioIds = new ScenarioIds(
+    config.public.routingSetups,
+    await fetchTransitionScenarios(),
+);
+const routeFetcher = new RouteFetcher(scenarioIds);
 
 app.use(express.json());
 

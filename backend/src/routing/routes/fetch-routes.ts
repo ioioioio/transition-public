@@ -6,7 +6,7 @@ import {
     type TransitionRouteResponse,
 } from '../../transition/route';
 import { createPointFeature } from '../../utils/geo';
-import { getScenarioId } from './scenario-ids';
+import type { ScenarioIds } from './scenario-ids';
 import {
     createTransitRouteSteps,
     createUnimodalRouteSteps,
@@ -57,6 +57,8 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
 };
 
 export class RouteFetcher {
+    constructor(private readonly scenarioIds: ScenarioIds) {}
+
     // Null when there's no route, or when it doesn't use all the required
     // modes
     async fetchTransitRouteSteps(
@@ -91,7 +93,7 @@ export class RouteFetcher {
         return postTransitionRoute(
             createTransitTransitionRouteBody(
                 odTrip,
-                getScenarioId(scenarioName),
+                this.scenarioIds.get(scenarioName),
             ),
         );
     }
