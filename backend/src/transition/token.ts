@@ -1,3 +1,4 @@
+import { HttpUpstreamError } from '../utils/http';
 import { postToken } from './generated/transitionAPI';
 
 export type TransitionCredentials = {
@@ -13,9 +14,7 @@ export const fetchTransitionToken = async (
         password: credentials.password,
     });
     if (response.status !== 200) {
-        throw new Error(
-            `Authentication on Transition failed: ${response.status} ${response.data}`,
-        );
+        throw new HttpUpstreamError(response);
     }
     return response.data;
 };
