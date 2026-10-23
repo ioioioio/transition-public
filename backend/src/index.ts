@@ -1,13 +1,12 @@
 import express from 'express';
-import { getEnv } from './utils/env';
+import { config } from './config';
 import { ApiError } from './utils/http';
 import { createPlaceRouter } from './api/place';
 import { routeRouter } from './api/route';
 import { createGeocoder } from './geocoder/geocoder-factory';
 
 const app = express();
-const port = getEnv('BACKEND_PORT');
-const geocoder = createGeocoder();
+const geocoder = createGeocoder(config.private.geocoder);
 
 app.use(express.json());
 
@@ -28,4 +27,4 @@ app.use(((error, _req, res, _next) => {
     });
 }) satisfies express.ErrorRequestHandler);
 
-app.listen(port);
+app.listen(config.private.port);

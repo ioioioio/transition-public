@@ -1,10 +1,10 @@
-import { getEnv } from '../utils/env';
+import { config } from '../config';
 import { postToken } from './generated/transitionAPI';
 
 const getTransitionToken = async () => {
     const response = await postToken({
-        usernameOrEmail: getEnv('TRANSITION_USER_NAME'),
-        password: getEnv('TRANSITION_USER_PASSWORD'),
+        usernameOrEmail: config.private.transition.userName,
+        password: config.private.transition.password,
     });
     if (response.status !== 200) {
         throw new Error(
