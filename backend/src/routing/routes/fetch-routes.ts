@@ -40,7 +40,7 @@ const createTransitTransitionRouteBody = (
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
     maxTotalTravelTimeSeconds:
-        config.transitionRouting.maxTotalTravelTimeSeconds,
+        config.public.transitionRouting.maxTotalTravelTimeSeconds,
 });
 
 const fetchTransitRoute = (

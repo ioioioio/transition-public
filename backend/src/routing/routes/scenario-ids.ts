@@ -5,7 +5,7 @@ import {
 } from '../../transition/scenarios';
 
 const configScenarioNames = new Set(
-    config.routingSetups.flatMap((routingSetup) =>
+    config.public.routingSetups.flatMap((routingSetup) =>
         'scenarioName' in routingSetup ? [routingSetup.scenarioName] : [],
     ),
 );

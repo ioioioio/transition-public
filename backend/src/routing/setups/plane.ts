@@ -68,7 +68,7 @@ const fetchPlaneSetupRoute = async (
     routingSetup: PublicConfig.PlaneRoutingSetup,
     fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>,
 ): Promise<Api.Route | null> => {
-    const planeNetwork = config.planeNetworks.find(
+    const planeNetwork = config.public.planeNetworks.find(
         ({ id }) => id === routingSetup.planeNetworkId,
     );
     if (!planeNetwork) {

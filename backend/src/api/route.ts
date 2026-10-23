@@ -11,7 +11,7 @@ import { config } from '../config';
 import { ApiError, parseRequest } from '../utils/http';
 
 const getRoutingSetup = (id: string): PublicConfig.RoutingSetup => {
-    const routingSetup = config.routingSetups.find(
+    const routingSetup = config.public.routingSetups.find(
         (routingSetup) => routingSetup.id === id,
     );
     if (!routingSetup) {
@@ -21,7 +21,7 @@ const getRoutingSetup = (id: string): PublicConfig.RoutingSetup => {
 };
 
 const checkTripHour = (hour: number) => {
-    if (!config.tripHours.includes(hour)) {
+    if (!config.public.tripHours.includes(hour)) {
         // Prevent users from trying arbitrary hours
         throw new ApiError(400, { error: `Unsupported trip hour: ${hour}` });
     }

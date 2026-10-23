@@ -146,7 +146,7 @@ export const fetchViaStationsSetupRoute = async (
         requiredModes,
         stationNetworkId,
     } = routingSetup;
-    const stationNetwork = config.stationNetworks.find(
+    const stationNetwork = config.public.stationNetworks.find(
         ({ id }) => id === stationNetworkId,
     );
     if (!stationNetwork) {

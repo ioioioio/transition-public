@@ -2,18 +2,19 @@ import { existsSync, readFileSync } from 'node:fs';
 import { PublicConfig } from 'common';
 import * as YAML from 'yaml';
 
-const configFileName = 'config.public.yaml';
+const publicConfigFileName = 'config.public.yaml';
 
-const configPath = `../${configFileName}`;
+const publicConfigPath = `../${publicConfigFileName}`;
 
-const readConfig = (): unknown => {
-    if (!existsSync(configPath)) {
+const readPublicConfig = (): unknown => {
+    if (!existsSync(publicConfigPath)) {
         throw new Error(
-            `Missing ${configFileName} at the root: copy and edit config.public.example.yaml to start`,
+            `Missing ${publicConfigFileName} at the root: copy and edit config.public.example.yaml to start`,
         );
     }
-    return YAML.parse(readFileSync(configPath, 'utf8'));
+    return YAML.parse(readFileSync(publicConfigPath, 'utf8'));
 };
 
-export const config =
-    PublicConfig.RefinedPublicConfigSchema.parse(readConfig());
+export const config = {
+    public: PublicConfig.RefinedPublicConfigSchema.parse(readPublicConfig()),
+};
