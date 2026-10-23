@@ -68,5 +68,8 @@ const handleRoute = async (req: express.Request, res: express.Response) => {
     );
 };
 
-export const routeRouter = express.Router();
-routeRouter[Api.routeEndpoint.method](Api.routeEndpoint.path, handleRoute);
+export const createRouteRouter = () => {
+    const routeRouter = express.Router();
+    routeRouter[Api.routeEndpoint.method](Api.routeEndpoint.path, handleRoute);
+    return routeRouter;
+};

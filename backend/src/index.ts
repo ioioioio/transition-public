@@ -2,7 +2,7 @@ import express from 'express';
 import { config } from './config';
 import { ApiError } from './utils/http';
 import { createPlaceRouter } from './api/place';
-import { routeRouter } from './api/route';
+import { createRouteRouter } from './api/route';
 import { createGeocoder } from './geocoder/geocoder-factory';
 
 const app = express();
@@ -15,7 +15,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use(createPlaceRouter(geocoder));
-app.use(routeRouter);
+app.use(createRouteRouter());
 
 app.use(((error, _req, res, _next) => {
     if (error instanceof ApiError) {
