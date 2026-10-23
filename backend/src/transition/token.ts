@@ -1,10 +1,16 @@
-import { config } from '../config';
 import { postToken } from './generated/transitionAPI';
 
-const getTransitionToken = async () => {
+type TransitionCredentials = {
+    userName: string;
+    password: string;
+};
+
+export const fetchTransitionToken = async (
+    credentials: TransitionCredentials,
+): Promise<string> => {
     const response = await postToken({
-        usernameOrEmail: config.private.transition.userName,
-        password: config.private.transition.password,
+        usernameOrEmail: credentials.userName,
+        password: credentials.password,
     });
     if (response.status !== 200) {
         throw new Error(
@@ -13,5 +19,3 @@ const getTransitionToken = async () => {
     }
     return response.data;
 };
-
-export const transitionToken = await getTransitionToken();

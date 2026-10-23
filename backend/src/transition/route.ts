@@ -3,7 +3,6 @@ import { ApiError, parseUpstreamResponse } from '../utils/http';
 import { postApiV1Route } from './generated/transitionAPI';
 import * as TransitionSchema from './generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from './generated/model';
-import { transitionToken } from './token';
 
 export type TransitionRouteBody = PostApiV1RouteBody;
 
@@ -12,10 +11,11 @@ export type TransitionRouteResponse = z.infer<
 >;
 
 export const postTransitionRoute = async (
+    token: string,
     body: TransitionRouteBody,
 ): Promise<TransitionRouteResponse> => {
     const response = await postApiV1Route(body, undefined, {
-        headers: { Authorization: `Bearer ${transitionToken}` },
+        headers: { Authorization: `Bearer ${token}` },
     });
     if (response.status !== 200) {
         throw new ApiError(response.status, response.data);

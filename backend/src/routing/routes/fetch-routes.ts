@@ -57,7 +57,10 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
 };
 
 export class RouteFetcher {
-    constructor(private readonly scenarioIds: ScenarioIds) {}
+    constructor(
+        private readonly scenarioIds: ScenarioIds,
+        private readonly transitionToken: string,
+    ) {}
 
     // Null when there's no route, or when it doesn't use all the required
     // modes
@@ -91,6 +94,7 @@ export class RouteFetcher {
         scenarioName: string,
     ): Promise<TransitionRouteResponse> {
         return postTransitionRoute(
+            this.transitionToken,
             createTransitTransitionRouteBody(
                 odTrip,
                 this.scenarioIds.get(scenarioName),
@@ -102,7 +106,7 @@ export class RouteFetcher {
         odTrip: Pick<OdTrip, 'origin' | 'destination'>,
         mode: PublicConfig.UnimodalMode,
     ): Promise<TransitionRouteResponse> {
-        return postTransitionRoute({
+        return postTransitionRoute(this.transitionToken, {
             routingModes: [mode],
             originGeojson: createPointFeature(odTrip.origin),
             destinationGeojson: createPointFeature(odTrip.destination),

@@ -7,15 +7,17 @@ import { createGeocoder } from './geocoder/geocoder-factory';
 import { RouteFetcher } from './routing/routes/fetch-routes';
 import { ScenarioIds } from './routing/routes/scenario-ids';
 import { fetchTransitionScenarios } from './transition/scenarios';
+import { fetchTransitionToken } from './transition/token';
 
 const app = express();
 const geocoder = createGeocoder(config.private.geocoder);
+const transitionToken = await fetchTransitionToken(config.private.transition);
 // Found at startup, so that a wrong name in the config stops the backend
 const scenarioIds = new ScenarioIds(
     config.public.routingSetups,
-    await fetchTransitionScenarios(),
+    await fetchTransitionScenarios(transitionToken),
 );
-const routeFetcher = new RouteFetcher(scenarioIds);
+const routeFetcher = new RouteFetcher(scenarioIds, transitionToken);
 
 app.use(express.json());
 

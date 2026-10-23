@@ -2,17 +2,16 @@ import type { z } from 'zod';
 import { parseUpstreamResponse } from '../utils/http';
 import { getApiV1Scenarios } from './generated/transitionAPI';
 import * as TransitionSchema from './generated/transitionAPI.zod';
-import { transitionToken } from './token';
 
 export type TransitionScenario = z.infer<
     typeof TransitionSchema.GetApiV1ScenariosResponseItem
 >;
 
-export const fetchTransitionScenarios = async (): Promise<
-    TransitionScenario[]
-> => {
+export const fetchTransitionScenarios = async (
+    token: string,
+): Promise<TransitionScenario[]> => {
     const response = await getApiV1Scenarios({
-        headers: { Authorization: `Bearer ${transitionToken}` },
+        headers: { Authorization: `Bearer ${token}` },
     });
     if (response.status !== 200) {
         throw new Error(
