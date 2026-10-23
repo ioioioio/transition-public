@@ -64,6 +64,12 @@ export default defineConfig({
             baseUrl: {
                 runtime: 'process.env["TRANSITION_ENDPOINT"]',
             },
+            override: {
+                mutator: {
+                    path: './src/transition/fetch-transition.ts',
+                    name: 'fetchTransition',
+                },
+            },
         },
     },
     transitionZod: {

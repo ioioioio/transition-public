@@ -23,6 +23,7 @@ import type {
   PostTokenBody
 } from './model';
 
+import { fetchTransition } from '../fetch-transition';
 export type postTokenResponse200 = {
   data: string
   status: 200
@@ -59,7 +60,7 @@ export const getPostTokenUrl = () => {
  * Returns an authentication token. This token is required in the Authentication header of requests to other endpoints.
  * @summary Retrieve authentication token for specified user
  */
-export const postToken = async (postTokenBody: PostTokenBody, options?: RequestInit): Promise<postTokenResponse> => {
+export const postToken = async (postTokenBody: PostTokenBody, options?: Parameters<typeof fetchTransition>[1]): Promise<postTokenResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -75,21 +76,14 @@ export const postToken = async (postTokenBody: PostTokenBody, options?: RequestI
     }
     return headers;
   };
-const res = await fetch(getPostTokenUrl(),
+return fetchTransition<postTokenResponse>(getPostTokenUrl(),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(postTokenBody)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: postTokenResponse['data'] = body !== null ? body : ''
-  return { data, status: res.status, headers: res.headers } as postTokenResponse
-}
+);}
 
 
 
@@ -117,23 +111,16 @@ export const getGetApiVersionsUrl = () => {
  * Get the latest version of the API supported by this version of Transition
  * @summary Get the versions supported by this API
  */
-export const getApiVersions = async ( options?: RequestInit): Promise<getApiVersionsResponse> => {
+export const getApiVersions = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiVersionsResponse> => {
 
-  const res = await fetch(getGetApiVersionsUrl(),
+  return fetchTransition<getApiVersionsResponse>(getGetApiVersionsUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiVersionsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiVersionsResponse
-}
+);}
 
 
 
@@ -161,23 +148,16 @@ export const getGetApiV1PathsUrl = () => {
  * Get all paths which are currently loaded in Transition
  * @summary Get all paths
  */
-export const getApiV1Paths = async ( options?: RequestInit): Promise<getApiV1PathsResponse> => {
+export const getApiV1Paths = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1PathsResponse> => {
 
-  const res = await fetch(getGetApiV1PathsUrl(),
+  return fetchTransition<getApiV1PathsResponse>(getGetApiV1PathsUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1PathsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1PathsResponse
-}
+);}
 
 
 
@@ -205,23 +185,16 @@ export const getGetApiV1NodesUrl = () => {
  * Get all nodes which are currently loaded in Transition
  * @summary Get all nodes
  */
-export const getApiV1Nodes = async ( options?: RequestInit): Promise<getApiV1NodesResponse> => {
+export const getApiV1Nodes = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1NodesResponse> => {
 
-  const res = await fetch(getGetApiV1NodesUrl(),
+  return fetchTransition<getApiV1NodesResponse>(getGetApiV1NodesUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1NodesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1NodesResponse
-}
+);}
 
 
 
@@ -249,23 +222,16 @@ export const getGetApiV1ScenariosUrl = () => {
  * Get all scenarios which are currently loaded in Transition
  * @summary Get all scenarios
  */
-export const getApiV1Scenarios = async ( options?: RequestInit): Promise<getApiV1ScenariosResponse> => {
+export const getApiV1Scenarios = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1ScenariosResponse> => {
 
-  const res = await fetch(getGetApiV1ScenariosUrl(),
+  return fetchTransition<getApiV1ScenariosResponse>(getGetApiV1ScenariosUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1ScenariosResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1ScenariosResponse
-}
+);}
 
 
 
@@ -293,23 +259,16 @@ export const getGetApiV1AgenciesUrl = () => {
  * Get all agencies which are currently available in Transition
  * @summary Get all agencies
  */
-export const getApiV1Agencies = async ( options?: RequestInit): Promise<getApiV1AgenciesResponse> => {
+export const getApiV1Agencies = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1AgenciesResponse> => {
 
-  const res = await fetch(getGetApiV1AgenciesUrl(),
+  return fetchTransition<getApiV1AgenciesResponse>(getGetApiV1AgenciesUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1AgenciesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1AgenciesResponse
-}
+);}
 
 
 
@@ -337,23 +296,16 @@ export const getGetApiV1ServicesUrl = () => {
  * Get all services which are currently available in Transition
  * @summary Get all services
  */
-export const getApiV1Services = async ( options?: RequestInit): Promise<getApiV1ServicesResponse> => {
+export const getApiV1Services = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1ServicesResponse> => {
 
-  const res = await fetch(getGetApiV1ServicesUrl(),
+  return fetchTransition<getApiV1ServicesResponse>(getGetApiV1ServicesUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1ServicesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1ServicesResponse
-}
+);}
 
 
 
@@ -381,23 +333,16 @@ export const getGetApiV1LinesUrl = () => {
  * Get all lines which are currently available in Transition
  * @summary Get all lines
  */
-export const getApiV1Lines = async ( options?: RequestInit): Promise<getApiV1LinesResponse> => {
+export const getApiV1Lines = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1LinesResponse> => {
 
-  const res = await fetch(getGetApiV1LinesUrl(),
+  return fetchTransition<getApiV1LinesResponse>(getGetApiV1LinesUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1LinesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1LinesResponse
-}
+);}
 
 
 
@@ -425,23 +370,16 @@ export const getGetApiV1RoutingModesUrl = () => {
  * Get all routing modes which are currently availible in Transition
  * @summary Get all routing modes
  */
-export const getApiV1RoutingModes = async ( options?: RequestInit): Promise<getApiV1RoutingModesResponse> => {
+export const getApiV1RoutingModes = async ( options?: Parameters<typeof fetchTransition>[1]): Promise<getApiV1RoutingModesResponse> => {
 
-  const res = await fetch(getGetApiV1RoutingModesUrl(),
+  return fetchTransition<getApiV1RoutingModesResponse>(getGetApiV1RoutingModesUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getApiV1RoutingModesResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getApiV1RoutingModesResponse
-}
+);}
 
 
 
@@ -483,23 +421,16 @@ export const getPostApiV1SummaryUrl = (params: PostApiV1SummaryParams,) => {
  * Return a summary of each transit object of a certain type used by the route calculation result
  * @summary Get summary of route calculation result
  */
-export const postApiV1Summary = async (params: PostApiV1SummaryParams, options?: RequestInit): Promise<postApiV1SummaryResponse> => {
+export const postApiV1Summary = async (params: PostApiV1SummaryParams, options?: Parameters<typeof fetchTransition>[1]): Promise<postApiV1SummaryResponse> => {
 
-  const res = await fetch(getPostApiV1SummaryUrl(params),
+  return fetchTransition<postApiV1SummaryResponse>(getPostApiV1SummaryUrl(params),
   {
     ...options,
     method: 'POST'
 
 
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: postApiV1SummaryResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiV1SummaryResponse
-}
+);}
 
 
 
@@ -542,7 +473,7 @@ export const getPostApiV1RouteUrl = (params?: PostApiV1RouteParams,) => {
  * @summary Calculate route between two locations
  */
 export const postApiV1Route = async (postApiV1RouteBody: PostApiV1RouteBody,
-    params?: PostApiV1RouteParams, options?: RequestInit): Promise<postApiV1RouteResponse> => {
+    params?: PostApiV1RouteParams, options?: Parameters<typeof fetchTransition>[1]): Promise<postApiV1RouteResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -558,21 +489,14 @@ export const postApiV1Route = async (postApiV1RouteBody: PostApiV1RouteBody,
     }
     return headers;
   };
-const res = await fetch(getPostApiV1RouteUrl(params),
+return fetchTransition<postApiV1RouteResponse>(getPostApiV1RouteUrl(params),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(postApiV1RouteBody)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: postApiV1RouteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiV1RouteResponse
-}
+);}
 
 
 
@@ -615,7 +539,7 @@ export const getPostApiV1AccessibilityUrl = (params?: PostApiV1AccessibilityPara
  * @summary Calculate accessibility map
  */
 export const postApiV1Accessibility = async (postApiV1AccessibilityBody: PostApiV1AccessibilityBody,
-    params?: PostApiV1AccessibilityParams, options?: RequestInit): Promise<postApiV1AccessibilityResponse> => {
+    params?: PostApiV1AccessibilityParams, options?: Parameters<typeof fetchTransition>[1]): Promise<postApiV1AccessibilityResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -631,18 +555,11 @@ export const postApiV1Accessibility = async (postApiV1AccessibilityBody: PostApi
     }
     return headers;
   };
-const res = await fetch(getPostApiV1AccessibilityUrl(params),
+return fetchTransition<postApiV1AccessibilityResponse>(getPostApiV1AccessibilityUrl(params),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
     body: JSON.stringify(postApiV1AccessibilityBody)
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: postApiV1AccessibilityResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postApiV1AccessibilityResponse
-}
+);}
