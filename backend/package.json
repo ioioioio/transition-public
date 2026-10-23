@@ -14,7 +14,8 @@
         "fix:format": "npx prettier . -w",
         "fix:lint": "eslint . --fix",
         "start": "node --env-file=../.env dist/index.js",
-        "test": "vitest run"
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -23,6 +24,7 @@
         "@tsconfig/strictest": "2.0.8",
         "@types/express": "^5.0.6",
         "@types/node": "26.6.2",
+        "@vitest/coverage-v8": "^5.0.3",
         "esbuild": "^0.28.2",
         "eslint": "^10.11.0",
         "globals": "^17.12.0",

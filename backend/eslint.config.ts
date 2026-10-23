@@ -5,7 +5,7 @@ import markdown from '@eslint/markdown';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-    globalIgnores(['dist']),
+    globalIgnores(['coverage', 'dist']),
     {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
         plugins: { js },

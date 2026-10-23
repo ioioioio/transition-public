@@ -2,3 +2,4 @@
 config.public.yaml
 .DS_Store
 node_modules
+coverage
