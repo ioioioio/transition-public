@@ -43,26 +43,6 @@ const createTransitTransitionRouteBody = (
         config.public.transitionRouting.maxTotalTravelTimeSeconds,
 });
 
-const fetchTransitRoute = (
-    odTrip: OdTrip,
-    scenarioName: string,
-): Promise<TransitionRouteResponse> => {
-    return postTransitionRoute(
-        createTransitTransitionRouteBody(odTrip, getScenarioId(scenarioName)),
-    );
-};
-
-const fetchUnimodalRoute = (
-    { origin, destination }: Pick<OdTrip, 'origin' | 'destination'>,
-    mode: PublicConfig.UnimodalMode,
-): Promise<TransitionRouteResponse> => {
-    return postTransitionRoute({
-        routingModes: [mode],
-        originGeojson: createPointFeature(origin),
-        destinationGeojson: createPointFeature(destination),
-    });
-};
-
 type TransitPath = NonNullable<
     TransitionRouteResponse['result']['transit']
 >['paths'][number];
@@ -76,25 +56,54 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
     return requiredModes.every((mode) => usedModes.has(mode));
 };
 
-// Null when there's no route, or when it doesn't use all the required modes
-export const fetchTransitRouteSteps = async (
-    odTrip: OdTrip,
-    scenarioName: string,
-    requiredModes: string[] = [],
-): Promise<Api.RouteStep[] | null> => {
-    const transitionRoute = await fetchTransitRoute(odTrip, scenarioName);
-    const path = transitionRoute.result.transit?.paths.at(0);
-    if (path && !checkUsesRequiredModes(path, requiredModes)) {
-        return null;
+export class RouteFetcher {
+    // Null when there's no route, or when it doesn't use all the required
+    // modes
+    async fetchTransitRouteSteps(
+        odTrip: OdTrip,
+        scenarioName: string,
+        requiredModes: string[] = [],
+    ): Promise<Api.RouteStep[] | null> {
+        const transitionRoute = await this.fetchTransitRoute(
+            odTrip,
+            scenarioName,
+        );
+        const path = transitionRoute.result.transit?.paths.at(0);
+        if (path && !checkUsesRequiredModes(path, requiredModes)) {
+            return null;
+        }
+        return createTransitRouteSteps(transitionRoute);
     }
-    return createTransitRouteSteps(transitionRoute);
-};
 
-// Null when there's no route
-export const fetchUnimodalRouteSteps = async (
-    odTrip: Pick<OdTrip, 'origin' | 'destination'>,
-    mode: PublicConfig.UnimodalMode,
-): Promise<Api.RouteStep[] | null> => {
-    const transitionRoute = await fetchUnimodalRoute(odTrip, mode);
-    return createUnimodalRouteSteps(transitionRoute, mode);
-};
+    // Null when there's no route
+    async fetchUnimodalRouteSteps(
+        odTrip: Pick<OdTrip, 'origin' | 'destination'>,
+        mode: PublicConfig.UnimodalMode,
+    ): Promise<Api.RouteStep[] | null> {
+        const transitionRoute = await this.fetchUnimodalRoute(odTrip, mode);
+        return createUnimodalRouteSteps(transitionRoute, mode);
+    }
+
+    private fetchTransitRoute(
+        odTrip: OdTrip,
+        scenarioName: string,
+    ): Promise<TransitionRouteResponse> {
+        return postTransitionRoute(
+            createTransitTransitionRouteBody(
+                odTrip,
+                getScenarioId(scenarioName),
+            ),
+        );
+    }
+
+    private fetchUnimodalRoute(
+        odTrip: Pick<OdTrip, 'origin' | 'destination'>,
+        mode: PublicConfig.UnimodalMode,
+    ): Promise<TransitionRouteResponse> {
+        return postTransitionRoute({
+            routingModes: [mode],
+            originGeojson: createPointFeature(odTrip.origin),
+            destinationGeojson: createPointFeature(odTrip.destination),
+        });
+    }
+}

@@ -1,11 +1,7 @@
 import type { Api, PublicConfig } from 'common';
 import { config } from '../../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
-import {
-    fetchTransitRouteSteps,
-    fetchUnimodalRouteSteps,
-    type OdTrip,
-} from '../routes/fetch-routes';
+import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 import { calculateDistanceMeters } from '../../utils/geo';
 
 type Airport = PublicConfig.PlaneNetwork['airports'][number];
@@ -112,19 +108,24 @@ const fetchPlaneSetupRoute = async (
 };
 
 export const fetchPlaneUnimodalSetupRoute = (
+    routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
 ): Promise<Api.Route | null> => {
     return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
-        fetchUnimodalRouteSteps(accessOrEgress, routingSetup.mode),
+        routeFetcher.fetchUnimodalRouteSteps(accessOrEgress, routingSetup.mode),
     );
 };
 
 export const fetchPlaneTransitSetupRoute = (
+    routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
 ): Promise<Api.Route | null> => {
     return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
-        fetchTransitRouteSteps(accessOrEgress, routingSetup.scenarioName),
+        routeFetcher.fetchTransitRouteSteps(
+            accessOrEgress,
+            routingSetup.scenarioName,
+        ),
     );
 };

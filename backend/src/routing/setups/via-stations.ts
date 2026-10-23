@@ -1,10 +1,6 @@
 import { type Api, type PublicConfig, Utils } from 'common';
 import { config } from '../../config';
-import {
-    fetchTransitRouteSteps,
-    fetchUnimodalRouteSteps,
-    type OdTrip,
-} from '../routes/fetch-routes';
+import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 import { calculateDistanceMeters } from '../../utils/geo';
 
 // For trips that go through stations, like airports or train stations
@@ -136,6 +132,7 @@ export const fetchStepsViaStations = (
         : fetchStepsFromArrival(odTripViaStations);
 
 export const fetchViaStationsSetupRoute = async (
+    routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
 ): Promise<Api.Route | null> => {
@@ -159,7 +156,7 @@ export const fetchViaStationsSetupRoute = async (
         return null;
     }
     const fetchMiddleSteps = (time: OdTrip['time']) => {
-        return fetchTransitRouteSteps(
+        return routeFetcher.fetchTransitRouteSteps(
             {
                 origin: originStation.position,
                 destination: destinationStation.position,
@@ -175,7 +172,10 @@ export const fetchViaStationsSetupRoute = async (
         fetchMiddleSteps,
         alightingStation: destinationStation,
         fetchAccessEgressSteps: (accessOrEgress) =>
-            fetchUnimodalRouteSteps(accessOrEgress, accessEgressMode),
+            routeFetcher.fetchUnimodalRouteSteps(
+                accessOrEgress,
+                accessEgressMode,
+            ),
     });
     if (!steps) {
         return null;

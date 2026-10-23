@@ -1,11 +1,12 @@
 import type { Api, PublicConfig } from 'common';
-import { fetchUnimodalRouteSteps, type OdTrip } from '../routes/fetch-routes';
+import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 
 export const fetchUnimodalSetupRoute = async (
+    routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     { id, mode }: PublicConfig.UnimodalRoutingSetup,
 ): Promise<Api.Route | null> => {
-    const steps = await fetchUnimodalRouteSteps(odTrip, mode);
+    const steps = await routeFetcher.fetchUnimodalRouteSteps(odTrip, mode);
     if (!steps) {
         return null;
     }
