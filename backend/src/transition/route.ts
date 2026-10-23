@@ -1,5 +1,9 @@
 import type { z } from 'zod';
-import { ApiError, parseUpstreamResponse } from '../utils/http';
+import {
+    fetchUpstream,
+    HttpUpstreamError,
+    parseUpstreamResponse,
+} from '../utils/http';
 import { postApiV1Route } from './generated/transitionAPI';
 import * as TransitionSchema from './generated/transitionAPI.zod';
 import type { PostApiV1RouteBody } from './generated/model';
@@ -14,11 +18,13 @@ export const postTransitionRoute = async (
     token: string,
     body: TransitionRouteBody,
 ): Promise<TransitionRouteResponse> => {
-    const response = await postApiV1Route(body, undefined, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetchUpstream(() =>
+        postApiV1Route(body, undefined, {
+            headers: { Authorization: `Bearer ${token}` },
+        }),
+    );
     if (response.status !== 200) {
-        throw new ApiError(response.status, response.data);
+        throw new HttpUpstreamError(response);
     }
     return parseUpstreamResponse(
         TransitionSchema.PostApiV1RouteResponse,

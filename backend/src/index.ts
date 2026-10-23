@@ -1,6 +1,6 @@
 import express from 'express';
 import { config } from './config';
-import { ApiError } from './utils/http';
+import { ApiError, UpstreamError } from './utils/http';
 import { createPlaceRouter } from './api/place';
 import { createRouteRouter } from './api/route';
 import { createGeocoder } from './geocoder/geocoder-factory';
@@ -28,14 +28,15 @@ app.get('/api/health', (_req, res) => {
 app.use(createPlaceRouter(geocoder));
 app.use(createRouteRouter(routeFetcher));
 
+// Only ApiErrors are meant for the client: the details of the others stay in
+// the logs
 app.use(((error, _req, res, _next) => {
     if (error instanceof ApiError) {
         res.status(error.status).json(error.body);
         return;
     }
-    res.status(502).json({
-        error: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error(error);
+    res.sendStatus(error instanceof UpstreamError ? 502 : 500);
 }) satisfies express.ErrorRequestHandler);
 
 app.listen(config.private.port);

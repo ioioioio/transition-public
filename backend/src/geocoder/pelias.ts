@@ -1,6 +1,10 @@
 import type { Api } from 'common';
 import { z } from 'zod';
-import { ApiError, parseUpstreamResponse } from '../utils/http';
+import {
+    fetchUpstream,
+    HttpUpstreamError,
+    parseUpstreamResponse,
+} from '../utils/http';
 import type { Geocoder } from './geocoder';
 
 // Pelias' answers, with only the fields we use
@@ -67,9 +71,14 @@ export class PeliasGeocoder implements Geocoder {
     }
 
     private async fetchFeatures(path: string, params: URLSearchParams) {
-        const response = await fetch(`${this.endpoint}/${path}?${params}`);
+        const response = await fetchUpstream(() =>
+            fetch(`${this.endpoint}/${path}?${params}`),
+        );
         if (!response.ok) {
-            throw new ApiError(response.status, await response.json());
+            throw new HttpUpstreamError({
+                status: response.status,
+                data: await response.text(),
+            });
         }
         const { features } = parseUpstreamResponse(
             FeatureCollectionSchema,
