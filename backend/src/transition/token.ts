@@ -1,6 +1,6 @@
 import { postToken } from './generated/transitionAPI';
 
-type TransitionCredentials = {
+export type TransitionCredentials = {
     userName: string;
     password: string;
 };

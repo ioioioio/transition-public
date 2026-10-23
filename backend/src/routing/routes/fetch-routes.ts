@@ -1,10 +1,10 @@
 import type { Api, PublicConfig, Utils } from 'common';
 import { config } from '../../config';
-import {
-    postTransitionRoute,
-    type TransitionRouteBody,
-    type TransitionRouteResponse,
+import type {
+    TransitionRouteBody,
+    TransitionRouteResponse,
 } from '../../transition/route';
+import type { TransitionClient } from '../../transition/transition-client';
 import { createPointFeature } from '../../utils/geo';
 import type { ScenarioIds } from './scenario-ids';
 import {
@@ -59,7 +59,7 @@ const checkUsesRequiredModes = (path: TransitPath, requiredModes: string[]) => {
 export class RouteFetcher {
     constructor(
         private readonly scenarioIds: ScenarioIds,
-        private readonly transitionToken: string,
+        private readonly transition: TransitionClient,
     ) {}
 
     // Null when there's no route, or when it doesn't use all the required
@@ -93,8 +93,7 @@ export class RouteFetcher {
         odTrip: OdTrip,
         scenarioName: string,
     ): Promise<TransitionRouteResponse> {
-        return postTransitionRoute(
-            this.transitionToken,
+        return this.transition.postRoute(
             createTransitTransitionRouteBody(
                 odTrip,
                 this.scenarioIds.get(scenarioName),
@@ -106,7 +105,7 @@ export class RouteFetcher {
         odTrip: Pick<OdTrip, 'origin' | 'destination'>,
         mode: PublicConfig.UnimodalMode,
     ): Promise<TransitionRouteResponse> {
-        return postTransitionRoute(this.transitionToken, {
+        return this.transition.postRoute({
             routingModes: [mode],
             originGeojson: createPointFeature(odTrip.origin),
             destinationGeojson: createPointFeature(odTrip.destination),
