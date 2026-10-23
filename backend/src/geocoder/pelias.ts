@@ -1,7 +1,7 @@
 import type { Api } from 'common';
 import { z } from 'zod';
-import { getEnv } from './utils/env';
-import { ApiError, parseUpstreamResponse } from './utils/http';
+import { getEnv } from '../utils/env';
+import { ApiError, parseUpstreamResponse } from '../utils/http';
 
 // Only the fields we use are declared.
 // https://github.com/pelias/documentation/blob/master/autocomplete.md

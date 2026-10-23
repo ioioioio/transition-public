@@ -1,7 +1,7 @@
 import express from 'express';
 import { Api } from 'common';
-import { getAutocomplete, getPlace } from '../pelias';
-import type * as Pelias from '../pelias';
+import { getAutocomplete, getPlace } from '../geocoder/pelias';
+import type * as Pelias from '../geocoder/pelias';
 import { ApiError, parseRequest } from '../utils/http';
 
 const createPlace = ({ geometry, properties }: Pelias.Feature): Api.Place => ({
