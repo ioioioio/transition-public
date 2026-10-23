@@ -1,7 +1,27 @@
 import type { Api } from 'common';
-import { getEnv } from '../utils/env';
-import { ApiError, parseUpstreamResponse } from '../utils/http';
-import * as Pelias from './schema';
+import { z } from 'zod';
+import { getEnv } from './utils/env';
+import { ApiError, parseUpstreamResponse } from './utils/http';
+
+// Only the fields we use are declared.
+// https://github.com/pelias/documentation/blob/master/autocomplete.md
+// https://github.com/pelias/documentation/blob/master/place.md
+
+export const FeatureSchema = z.object({
+    geometry: z.object({
+        coordinates: z.tuple([z.number(), z.number()]),
+    }),
+    properties: z.object({
+        gid: z.string(),
+        label: z.string(),
+    }),
+});
+
+export type Feature = z.infer<typeof FeatureSchema>;
+
+export const FeatureCollectionSchema = z.object({
+    features: z.array(FeatureSchema),
+});
 
 const geocoderEndpoint = getEnv('GEOCODER_ENDPOINT');
 
@@ -11,7 +31,7 @@ const fetchFeatures = async (path: string, params: URLSearchParams) => {
         throw new ApiError(response.status, await response.json());
     }
     const { features } = parseUpstreamResponse(
-        Pelias.FeatureCollectionSchema,
+        FeatureCollectionSchema,
         await response.json(),
     );
     return features;
