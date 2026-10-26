@@ -1,5 +1,4 @@
 import type { Api, PublicConfig, Utils } from 'common';
-import { config } from '../../config';
 import type {
     TransitionRouteBody,
     TransitionRouteResponse,
@@ -30,17 +29,19 @@ const createTransitionTime = ({
         : { arrivalTimeSecondsSinceMidnight: wholeSeconds };
 };
 
+type TransitionRouting = PublicConfig.PublicConfig['transitionRouting'];
+
 const createTransitTransitionRouteBody = (
     { origin, destination, time }: OdTrip,
     scenarioId: string,
+    transitionRouting: TransitionRouting,
 ): TransitionRouteBody => ({
     scenarioId,
     ...createTransitionTime(time),
     routingModes: ['transit'],
     originGeojson: createPointFeature(origin),
     destinationGeojson: createPointFeature(destination),
-    maxTotalTravelTimeSeconds:
-        config.public.transitionRouting.maxTotalTravelTimeSeconds,
+    ...transitionRouting,
 });
 
 type TransitPath = NonNullable<
@@ -60,6 +61,7 @@ export class RouteFetcher {
     constructor(
         private readonly scenarioIds: ScenarioIds,
         private readonly transition: TransitionClient,
+        private readonly transitionRouting: TransitionRouting,
     ) {}
 
     // Null when there's no route, or when it doesn't use all the required
@@ -97,6 +99,7 @@ export class RouteFetcher {
             createTransitTransitionRouteBody(
                 odTrip,
                 this.scenarioIds.get(scenarioName),
+                this.transitionRouting,
             ),
         );
     }

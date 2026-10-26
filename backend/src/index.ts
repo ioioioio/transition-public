@@ -16,7 +16,11 @@ const scenarioIds = new ScenarioIds(
     config.public.routingSetups,
     await transition.fetchScenarios(),
 );
-const routeFetcher = new RouteFetcher(scenarioIds, transition);
+const routeFetcher = new RouteFetcher(
+    scenarioIds,
+    transition,
+    config.public.transitionRouting,
+);
 
 app.use(express.json());
 
