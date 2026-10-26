@@ -1,5 +1,5 @@
 import express from 'express';
-import { config } from './config';
+import { readConfig } from './config';
 import { ApiError, UpstreamError } from './utils/http';
 import { createPlaceRouter } from './api/place';
 import { createRouteRouter } from './api/route';
@@ -8,6 +8,7 @@ import { RouteFetcher } from './routing/routes/fetch-routes';
 import { ScenarioIds } from './routing/routes/scenario-ids';
 import { TransitionClient } from './transition/transition-client';
 
+const config = readConfig();
 const app = express();
 const geocoder = createGeocoder(config.private.geocoder);
 const transition = await TransitionClient.create(config.private.transition);

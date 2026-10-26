@@ -54,7 +54,11 @@ const parsePrivateConfig = () => {
     return result.data;
 };
 
-export const config = {
-    public: PublicConfig.RefinedPublicConfigSchema.parse(readPublicConfig()),
-    private: parsePrivateConfig(),
+export const readConfig = () => {
+    return {
+        public: PublicConfig.RefinedPublicConfigSchema.parse(
+            readPublicConfig(),
+        ),
+        private: parsePrivateConfig(),
+    };
 };
