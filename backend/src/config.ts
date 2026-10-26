@@ -2,7 +2,6 @@ import { existsSync, readFileSync } from 'node:fs';
 import { PublicConfig } from 'common';
 import * as YAML from 'yaml';
 import { z } from 'zod';
-import { GeocoderProviderNameSchema } from './geocoder/geocoder';
 
 const publicConfigFileName = 'config.public.yaml';
 
@@ -16,6 +15,8 @@ const readPublicConfig = (): unknown => {
     }
     return YAML.parse(readFileSync(publicConfigPath, 'utf8'));
 };
+
+const GeocoderProviderNameSchema = z.enum(['pelias']);
 
 // From .env, under the names of its variables
 const PrivateConfigSchema = z
@@ -40,6 +41,8 @@ const PrivateConfigSchema = z
             password: env.TRANSITION_USER_PASSWORD,
         },
     }));
+
+export type PrivateConfig = z.output<typeof PrivateConfigSchema>;
 
 const parsePrivateConfig = () => {
     const result = PrivateConfigSchema.safeParse(process.env);
