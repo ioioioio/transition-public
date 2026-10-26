@@ -1,5 +1,4 @@
 import { type Api, type PublicConfig, Utils } from 'common';
-import { config } from '../../config';
 import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 import { calculateDistanceMeters } from '../../utils/geo';
 
@@ -135,20 +134,9 @@ export const fetchViaStationsSetupRoute = async (
     routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.ViaStationsRoutingSetup,
+    stationNetwork: PublicConfig.StationNetwork,
 ): Promise<Api.Route | null> => {
-    const {
-        id,
-        accessEgressMode,
-        scenarioName,
-        requiredModes,
-        stationNetworkId,
-    } = routingSetup;
-    const stationNetwork = config.public.stationNetworks.find(
-        ({ id }) => id === stationNetworkId,
-    );
-    if (!stationNetwork) {
-        throw new Error(`Unknown station network: ${stationNetworkId}`);
-    }
+    const { id, accessEgressMode, scenarioName, requiredModes } = routingSetup;
     const { stations } = stationNetwork;
     const originStation = findClosestStation(stations, odTrip.origin);
     const destinationStation = findClosestStation(stations, odTrip.destination);

@@ -29,7 +29,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use(createPlaceRouter(geocoder));
-app.use(createRouteRouter(routeFetcher));
+app.use(createRouteRouter(routeFetcher, config.public));
 
 // Only ApiErrors are meant for the client: the details of the others stay in
 // the logs

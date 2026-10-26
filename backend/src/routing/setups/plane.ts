@@ -1,5 +1,4 @@
 import type { Api, PublicConfig } from 'common';
-import { config } from '../../config';
 import { fetchStepsViaStations, findClosestStation } from './via-stations';
 import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 import { calculateDistanceMeters } from '../../utils/geo';
@@ -62,16 +61,9 @@ const createFlightStep = (
 const fetchPlaneSetupRoute = async (
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneRoutingSetup,
+    planeNetwork: PublicConfig.PlaneNetwork,
     fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>,
 ): Promise<Api.Route | null> => {
-    const planeNetwork = config.public.planeNetworks.find(
-        ({ id }) => id === routingSetup.planeNetworkId,
-    );
-    if (!planeNetwork) {
-        throw new Error(
-            `Unknown plane network: ${routingSetup.planeNetworkId}`,
-        );
-    }
     const { airports } = planeNetwork;
     const originAirport = findClosestStation(airports, odTrip.origin);
     const destinationAirport = findClosestStation(airports, odTrip.destination);
@@ -111,9 +103,17 @@ export const fetchPlaneUnimodalSetupRoute = (
     routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneUnimodalRoutingSetup,
+    planeNetwork: PublicConfig.PlaneNetwork,
 ): Promise<Api.Route | null> => {
-    return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
-        routeFetcher.fetchUnimodalRouteSteps(accessOrEgress, routingSetup.mode),
+    return fetchPlaneSetupRoute(
+        odTrip,
+        routingSetup,
+        planeNetwork,
+        (accessOrEgress) =>
+            routeFetcher.fetchUnimodalRouteSteps(
+                accessOrEgress,
+                routingSetup.mode,
+            ),
     );
 };
 
@@ -121,11 +121,16 @@ export const fetchPlaneTransitSetupRoute = (
     routeFetcher: RouteFetcher,
     odTrip: OdTrip,
     routingSetup: PublicConfig.PlaneTransitRoutingSetup,
+    planeNetwork: PublicConfig.PlaneNetwork,
 ): Promise<Api.Route | null> => {
-    return fetchPlaneSetupRoute(odTrip, routingSetup, (accessOrEgress) =>
-        routeFetcher.fetchTransitRouteSteps(
-            accessOrEgress,
-            routingSetup.scenarioName,
-        ),
+    return fetchPlaneSetupRoute(
+        odTrip,
+        routingSetup,
+        planeNetwork,
+        (accessOrEgress) =>
+            routeFetcher.fetchTransitRouteSteps(
+                accessOrEgress,
+                routingSetup.scenarioName,
+            ),
     );
 };
