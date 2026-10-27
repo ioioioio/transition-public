@@ -16,7 +16,7 @@ const readPublicConfig = (): unknown => {
     return YAML.parse(readFileSync(publicConfigPath, 'utf8'));
 };
 
-const GeocoderProviderNameSchema = z.enum(['pelias']);
+const GeocoderProviderNameSchema = z.enum(['pelias', 'photon']);
 
 // From .env, under the names of its variables
 const PrivateConfigSchema = z
