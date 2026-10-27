@@ -49,7 +49,7 @@ const createPlace = (feature: Feature): Api.Place => {
 };
 
 export class PeliasGeocoder implements Geocoder {
-    constructor(private readonly endpoint: string) {}
+    constructor(private readonly url: string) {}
 
     async searchPlaces(body: Api.PlaceSearchBody): Promise<Api.Place[]> {
         const features = await this.fetchFeatures(
@@ -72,7 +72,7 @@ export class PeliasGeocoder implements Geocoder {
 
     private async fetchFeatures(path: string, params: URLSearchParams) {
         const response = await fetchUpstream(() =>
-            fetch(`${this.endpoint}/${path}?${params}`),
+            fetch(`${this.url}/${path}?${params}`),
         );
         if (!response.ok) {
             throw new HttpUpstreamError({

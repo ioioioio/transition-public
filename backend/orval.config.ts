@@ -62,7 +62,7 @@ export default defineConfig({
             target: './src/transition/generated',
             schemas: './src/transition/generated/model',
             baseUrl: {
-                runtime: 'process.env["TRANSITION_ENDPOINT"]',
+                runtime: 'process.env["TRANSITION_URL"]',
             },
             override: {
                 mutator: {
