@@ -14,15 +14,33 @@ type TransitRouteResult = NonNullable<TransitionRouteResult['transit']>;
 const getKnownMode = (mode: string): Api.Mode =>
     Api.ModeSchema.catch('other').parse(mode);
 
+type UnimodalPath = UnimodalRouteResult['paths'][number];
+
+// Transition's path starts and ends on the nearest road, which can be off the
+// origin and destination, leaving gaps with the steps before and after
+const joinPathToOriginAndDestination = (
+    path: UnimodalPath,
+    origin: Utils.Position,
+    destination: Utils.Position,
+) => {
+    return {
+        type: 'LineString' as const,
+        coordinates: [origin, ...path.geometry.coordinates, destination],
+    };
+};
+
 const createUnimodalStep = (
     routingMode: PublicConfig.UnimodalMode,
-    path: UnimodalRouteResult['paths'][number],
+    path: UnimodalPath,
+    origin: Utils.Position,
+    destination: Utils.Position,
 ): Api.RouteStep => {
+    const geometry = joinPathToOriginAndDestination(path, origin, destination);
     switch (routingMode) {
         case 'walking':
             return {
                 activity: 'walkingToDestination',
-                geometry: path.geometry,
+                geometry,
                 durationSeconds: path.travelTimeSeconds,
                 distanceMeters: path.distanceMeters,
             };
@@ -30,7 +48,7 @@ const createUnimodalStep = (
             return {
                 activity: 'inVehicle',
                 mode: routingMode,
-                geometry: path.geometry,
+                geometry,
                 durationSeconds: path.travelTimeSeconds,
                 distanceMeters: path.distanceMeters,
             };
@@ -135,13 +153,20 @@ export const createUnimodalRouteSteps = (
     transitionRoute: TransitionRouteResponse,
     routingMode: PublicConfig.UnimodalMode,
 ): Api.RouteStep[] | null => {
-    const { result } = transitionRoute;
+    const { query, result } = transitionRoute;
     warnOfUnexpectedResults(result, routingMode);
     const path = result[routingMode]?.paths.at(0);
     if (!path) {
         return null;
     }
-    return [createUnimodalStep(routingMode, path)];
+    return [
+        createUnimodalStep(
+            routingMode,
+            path,
+            query.originGeojson.geometry.coordinates,
+            query.destinationGeojson.geometry.coordinates,
+        ),
+    ];
 };
 
 // Null when no path was found
