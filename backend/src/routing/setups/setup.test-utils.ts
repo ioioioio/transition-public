@@ -7,10 +7,9 @@ import type {
     TransitionRouteResponse,
 } from '../../transition/route';
 import { TransitionClient } from '../../transition/transition-client';
+import { fakeTransitionUrl } from '../../transition/transition.test-utils';
 import { RouteFetcher } from '../routes/fetch-routes';
 import { ScenarioIds } from '../routes/scenario-ids';
-
-const transitionUrl = process.env['TRANSITION_URL'];
 
 export const fakeScenarioName = 'scenario';
 
@@ -141,10 +140,10 @@ const createTransitPathWithOffsetStops = (
 // for, so the tests show the steps get connected despite these gaps
 export const setUpFakeTransitionWithGaps = () => {
     const server = setupServer(
-        http.post(`${transitionUrl}/token`, () => {
+        http.post(`${fakeTransitionUrl}/token`, () => {
             return HttpResponse.text('token');
         }),
-        http.post(`${transitionUrl}/api/v1/route`, async ({ request }) => {
+        http.post(`${fakeTransitionUrl}/api/v1/route`, async ({ request }) => {
             const body = (await request.json()) as TransitionRouteBody;
             // Never empty: RouteFetcher always asks for one mode
             const [routingMode = ''] = body.routingModes;

@@ -11,8 +11,7 @@ import {
 } from 'vitest';
 import { HttpUpstreamError } from '../utils/http';
 import { TransitionClient } from './transition-client';
-
-const transitionUrl = process.env['TRANSITION_URL'];
+import { fakeTransitionUrl } from './transition.test-utils';
 
 const credentials = { userName: 'user', password: 'password' };
 
@@ -62,13 +61,13 @@ const setUpFakeTransition = (options: FakeTransitionOptions) => {
     }
     const scenariosEndpoint = vi.fn<() => void>();
     server.use(
-        http.post(`${transitionUrl}/token`, () => {
+        http.post(`${fakeTransitionUrl}/token`, () => {
             const token = tokenEndpoint();
             return token
                 ? HttpResponse.text(token)
                 : HttpResponse.text('Service Unavailable', { status: 503 });
         }),
-        http.get(`${transitionUrl}/api/v1/scenarios`, ({ request }) => {
+        http.get(`${fakeTransitionUrl}/api/v1/scenarios`, ({ request }) => {
             scenariosEndpoint();
             if (options.scenariosStatus) {
                 return new HttpResponse(null, {
@@ -153,7 +152,7 @@ describe('authentication', () => {
         const heldRefusal = Promise.withResolvers<undefined>();
         server.use(
             http.get(
-                `${transitionUrl}/api/v1/scenarios`,
+                `${fakeTransitionUrl}/api/v1/scenarios`,
                 async () => {
                     await heldRefusal.promise;
                     return HttpResponse.text('Unauthorized', { status: 401 });
