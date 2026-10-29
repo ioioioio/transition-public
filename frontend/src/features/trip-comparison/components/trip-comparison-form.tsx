@@ -19,7 +19,7 @@ const formatHour = (hour: number, language: string) =>
         new Date(2000, 0, 1, hour),
     );
 
-type TripComparisonFormProps = {
+interface TripComparisonFormProps {
     origin: PlaceRef | null;
     destination: PlaceRef | null;
     onOriginChange: (origin: PlaceRef | null) => void;
@@ -27,7 +27,7 @@ type TripComparisonFormProps = {
     time: Api.TripTime;
     onTimeChange: (time: Api.TripTime) => void;
     searchFocus: Utils.LngLat;
-};
+}
 
 const TripComparisonForm = ({
     origin,

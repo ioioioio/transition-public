@@ -11,12 +11,12 @@ import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-trans
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { modeIcons } from '@/utils/mode';
 
-type RouteStepIconProps = {
+interface RouteStepIconProps {
     step: Api.RouteStep;
     // Hidden from screen readers, when the text next to it already says it
     decorative?: boolean;
     className?: string;
-};
+}
 
 const RouteStepIcon = ({
     step,

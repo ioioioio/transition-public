@@ -19,9 +19,9 @@ import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDistance, formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
 
-type BestRouteBadgeProps = {
+interface BestRouteBadgeProps {
     order: RouteOrder;
-};
+}
 
 const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
     const { t } = useTranslation();
@@ -35,11 +35,11 @@ const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
     );
 };
 
-type TimeRowProps = {
+interface TimeRowProps {
     icon: ReactNode;
     label: string;
     seconds: number;
-};
+}
 
 const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     const { i18n } = useTranslation();
@@ -56,11 +56,11 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     );
 };
 
-type RoutePathCardProps = {
+interface RoutePathCardProps {
     id: string;
     steps: Api.RouteStep[];
     badge?: ReactNode;
-};
+}
 
 // An accordion item, styled as a card
 const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
@@ -175,13 +175,13 @@ const RoutePathCardSkeleton = () => (
     </div>
 );
 
-type RoutePathCardsProps = {
+interface RoutePathCardsProps {
     routes: Api.Route[];
     isLoading: boolean;
     order: RouteOrder;
     selectedId: string | null;
     onSelect: (id: string | null) => void;
-};
+}
 
 const RoutePathCards = ({
     routes,

@@ -11,11 +11,11 @@ import {
     createUnimodalRouteSteps,
 } from './route-steps';
 
-export type OdTrip = {
+export interface OdTrip {
     origin: Utils.LngLat;
     destination: Utils.LngLat;
     time: { type: Api.TripTimeType; secondsSinceMidnight: number };
-};
+}
 
 const createTransitionTime = ({
     type,

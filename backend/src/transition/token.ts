@@ -1,10 +1,10 @@
 import { HttpUpstreamError } from '../utils/http';
 import { postToken } from './generated/transitionAPI';
 
-export type TransitionCredentials = {
+export interface TransitionCredentials {
     userName: string;
     password: string;
-};
+}
 
 export const fetchTransitionToken = async (
     credentials: TransitionCredentials,

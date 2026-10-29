@@ -6,9 +6,9 @@ import '@/lib/i18n'; // Sets up i18next
 
 const queryClient = new QueryClient();
 
-type AppProviderProps = {
+interface AppProviderProps {
     children: ReactNode;
-};
+}
 
 export const AppProvider = ({ children }: AppProviderProps) => {
     return (

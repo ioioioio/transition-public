@@ -1,11 +1,11 @@
 import { Marker } from '@vis.gl/react-maplibre';
 import type { Utils } from 'common';
 
-type PlaceMarkerProps = {
+interface PlaceMarkerProps {
     label: string;
     position: Utils.LngLat;
     onMove: (position: Utils.LngLat) => void;
-};
+}
 
 const PlaceMarker = ({ label, position, onMove }: PlaceMarkerProps) => {
     return (

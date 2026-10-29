@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { ThemeProviderContext, type Theme } from '@/hooks/use-theme';
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
     children: React.ReactNode;
     storageKey?: string;
-};
+}
 
 const getSystemTheme = (): Theme =>
     window.matchMedia('(prefers-color-scheme: dark)').matches

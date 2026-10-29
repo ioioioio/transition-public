@@ -12,7 +12,7 @@ import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import type { PlaceRef } from '@/types/place';
 
-type TripComparisonProps = {
+interface TripComparisonProps {
     places: TripPlaces;
     onPlacesChange: (places: TripPlaces) => void;
     time: Api.TripTime;
@@ -21,7 +21,7 @@ type TripComparisonProps = {
     onMapCameraChange?: (camera: Utils.MapCamera) => void;
     selectedRouteId: string | null;
     onSelectedRouteIdChange: (id: string | null) => void;
-};
+}
 
 function TripComparison({
     places,

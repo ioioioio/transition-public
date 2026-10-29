@@ -32,16 +32,15 @@ const createPlaceLabel = (
         return '';
     }
     if (
-        lookedUpPlace &&
-        value.position.lng === lookedUpPlace.position.lng &&
-        value.position.lat === lookedUpPlace.position.lat
+        value.position.lng === lookedUpPlace?.position.lng &&
+        value.position.lat === lookedUpPlace?.position.lat
     ) {
         return lookedUpPlace.label;
     }
     return formatPosition(value.position);
 };
 
-type PlaceInputProps = {
+interface PlaceInputProps {
     icon: ReactNode;
     placeholder: string;
     clearLabel: string;
@@ -49,7 +48,7 @@ type PlaceInputProps = {
     onValueChange: (value: PlaceRef | null) => void;
     // Results near it are ranked first
     focus: Utils.LngLat;
-};
+}
 
 const PlaceInput = ({
     icon,

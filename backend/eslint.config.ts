@@ -13,6 +13,7 @@ export default defineConfig([
             'js/recommended',
             tseslint.configs.strict,
             tseslint.configs.recommendedTypeChecked,
+            tseslint.configs.stylisticTypeChecked,
         ],
         languageOptions: {
             globals: globals.node,

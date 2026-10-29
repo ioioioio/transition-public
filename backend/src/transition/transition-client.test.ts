@@ -44,14 +44,14 @@ afterAll(() => {
     server.close();
 });
 
-type FakeTransitionOptions = {
+interface FakeTransitionOptions {
     // Handed out by the successive logins. Null when Transition is unavailable
     loginTokens: (string | null)[];
     // The only token the scenarios request accepts
     validToken: string;
     // Instead of the scenarios, every time
     scenariosStatus?: number;
-};
+}
 
 // Returns a spy per endpoint, called by each of its requests
 const setUpFakeTransition = (options: FakeTransitionOptions) => {

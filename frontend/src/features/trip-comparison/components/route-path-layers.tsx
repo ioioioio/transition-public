@@ -24,9 +24,9 @@ const createRoutePathStyles = (
     };
 };
 
-type RouteStepLabelProps = {
+interface RouteStepLabelProps {
     step: Api.RouteStep;
-};
+}
 
 const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
     const { i18n } = useTranslation();
@@ -38,11 +38,11 @@ const RouteStepLabel = ({ step }: RouteStepLabelProps) => {
     );
 };
 
-type RoutePathLayersProps = {
+interface RoutePathLayersProps {
     routes: Api.Route[];
     selectedId: string | null;
     onSelect: (id: string | null) => void;
-};
+}
 
 const RoutePathLayers = ({
     routes,

@@ -1,6 +1,6 @@
 import { defineConfig, defineTransformer } from 'orval';
 
-type RouteResponseSpec = {
+interface RouteResponseSpec {
     content?: {
         'application/json'?: {
             schema?: {
@@ -13,7 +13,7 @@ type RouteResponseSpec = {
             };
         };
     };
-};
+}
 
 // Orval's zod client ignores `additionalProperties` when an object also has `properties` (a bug).
 // The route result lists `transit`, and the other modes as additional properties, so Orval ignores them.

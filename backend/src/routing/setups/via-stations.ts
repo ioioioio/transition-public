@@ -3,7 +3,10 @@ import type { OdTrip, RouteFetcher } from '../routes/fetch-routes';
 import { calculateDistanceMeters } from '../../utils/geo';
 
 // For trips that go through stations, like airports or train stations
-type Station = { id: string; position: Utils.LngLat };
+interface Station {
+    id: string;
+    position: Utils.LngLat;
+}
 
 export const findClosestStation = <S extends Station>(
     stations: S[],
@@ -16,7 +19,7 @@ export const findClosestStation = <S extends Station>(
             : closest,
     );
 
-type OdTripViaStations = {
+interface OdTripViaStations {
     odTrip: OdTrip;
     boardingStation: Station;
     // Between the boarding and the alighting stations, starting at the given
@@ -27,7 +30,7 @@ type OdTripViaStations = {
     // To the boarding station, or from the alighting one. Null when there's no
     // route
     fetchAccessEgressSteps: (odTrip: OdTrip) => Promise<Api.RouteStep[] | null>;
-};
+}
 
 // Each part starts at the departure time or when the previous one ends
 const fetchStepsFromDeparture = async (

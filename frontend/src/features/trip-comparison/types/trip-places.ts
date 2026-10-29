@@ -1,6 +1,6 @@
 import type { PlaceRef } from '@/types/place';
 
-export type TripPlaces = {
+export interface TripPlaces {
     origin: PlaceRef | null;
     destination: PlaceRef | null;
-};
+}

@@ -7,20 +7,20 @@ import {
 } from '@/components/map/labeled-line-layer';
 import { createCurve } from '@/utils/geo';
 
-export type RouteStepLayerStyles = {
+export interface RouteStepLayerStyles {
     line: LabeledLineLayerStyles;
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
-};
+}
 
-export type RouteStepLayerProps = {
+export interface RouteStepLayerProps {
     id: string;
     step: Api.RouteStep;
     label?: ReactNode;
     styles: RouteStepLayerStyles;
     selected?: boolean;
     onClick?: () => void;
-};
+}
 
 export const RouteStepLayer = ({
     id,

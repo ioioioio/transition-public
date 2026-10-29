@@ -3,9 +3,9 @@ import type { ReactNode } from 'react';
 import LanguageToggle from '@/components/language/language-toggle';
 import ThemeToggle from '@/components/theme/theme-toggle';
 
-type SidePanelProps = {
+interface SidePanelProps {
     children?: ReactNode;
-};
+}
 
 const SidePanel = ({ children }: SidePanelProps) => {
     return (

@@ -15,12 +15,12 @@ import { useTheme } from '@/hooks/use-theme';
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);
 
-type MapViewProps = {
+interface MapViewProps {
     camera: Utils.MapCamera;
     onCameraChange?: (camera: Utils.MapCamera) => void;
     onMapClick: (position: LngLat) => void;
     children?: ReactNode;
-};
+}
 
 const MapView = ({
     camera,

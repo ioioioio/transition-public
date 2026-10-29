@@ -6,7 +6,7 @@ import {
     type RouteStepLayerStyles,
 } from '@/components/map/route-step-layer';
 
-export type RoutePathLayerProps = {
+export interface RoutePathLayerProps {
     id: string;
     // Drawn in order, e.g. a single one for a path with one mode
     steps: Api.RouteStep[];
@@ -15,7 +15,7 @@ export type RoutePathLayerProps = {
     styles: RouteStepLayerStyles;
     selected?: boolean;
     onClick?: () => void;
-};
+}
 
 export const RoutePathLayer = ({
     id,

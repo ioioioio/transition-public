@@ -8,14 +8,14 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { cn } from '@/lib/utils';
 import { getPointAlong } from '@/utils/geo';
 
-export type LabeledLineLayerStyles = {
+export interface LabeledLineLayerStyles {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
     dashArray?: [number, number];
     /** Where the label sits along the line, from `0` (start) to `1` (end). */
     labelPosition?: number;
-};
+}
 
-export type LabeledLineLayerProps = {
+export interface LabeledLineLayerProps {
     id: string;
     geometry: LineString;
     styles: LabeledLineLayerStyles;
@@ -23,7 +23,7 @@ export type LabeledLineLayerProps = {
     /** Shown in a pill on the line. */
     label?: ReactNode;
     onClick?: () => void;
-};
+}
 
 // A line, with an optional label on it
 export const LabeledLineLayer = ({
@@ -96,13 +96,13 @@ const stopGesturesReachingMap = (button: HTMLButtonElement | null) => {
     button?.addEventListener('touchstart', stopPropagation);
 };
 
-type LineLabelProps = {
+interface LineLabelProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
     onClick?: () => void;
     children: ReactNode;
-};
+}
 
 const LineLabel = ({
     position,
