@@ -24,7 +24,8 @@ i18n.on('languageChanged', (lng) => {
     document.documentElement.lang = lng;
 });
 
-i18n.use(LanguageDetector)
+void i18n
+    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,

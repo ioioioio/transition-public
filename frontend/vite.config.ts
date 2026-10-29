@@ -7,6 +7,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import * as YAML from 'yaml';
+import { z } from 'zod';
 
 const envDir = '..';
 
@@ -16,7 +17,7 @@ const configPath = fileURLToPath(
     new URL(`../${configFileName}`, import.meta.url),
 );
 
-const readConfig = (): Record<string, unknown> => {
+const readConfig = (): unknown => {
     if (!existsSync(configPath)) {
         throw new Error(
             `Missing ${configFileName} at the root: copy and edit config.public.example.yaml to start`,
@@ -28,10 +29,14 @@ const readConfig = (): Record<string, unknown> => {
 // Only what the browser uses, so that the rest never reaches the bundle. It
 // makes the bundle lighter and avoids exposing unneeded information: even if
 // none of it is secret, we'd rather not expose the stations' exact coordinates.
-const readBrowserConfig = () => {
-    const { map, routingSetups, tripHours } = readConfig();
-    return { map, routingSetups, tripHours };
-};
+// Their values are checked in the browser
+const BrowserConfigSchema = z.object({
+    map: z.unknown(),
+    routingSetups: z.unknown(),
+    tripHours: z.unknown(),
+});
+
+const readBrowserConfig = () => BrowserConfigSchema.parse(readConfig());
 
 const restartOnConfigChange = (): Plugin => ({
     name: 'restart-on-config-change',

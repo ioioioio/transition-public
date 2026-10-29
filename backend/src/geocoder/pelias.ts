@@ -72,7 +72,7 @@ export class PeliasGeocoder implements Geocoder {
 
     private async fetchFeatures(path: string, params: URLSearchParams) {
         const response = await fetchUpstream(() =>
-            fetch(`${this.url}/${path}?${params}`),
+            fetch(`${this.url}/${path}?${params.toString()}`),
         );
         if (!response.ok) {
             throw new HttpUpstreamError({

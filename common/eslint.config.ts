@@ -8,15 +8,19 @@ export default defineConfig([
     {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
         plugins: { js },
-        extends: ['js/recommended'],
+        extends: [
+            'js/recommended',
+            tseslint.configs.strict,
+            tseslint.configs.recommendedTypeChecked,
+        ],
         languageOptions: {
             globals: { ...globals.browser, ...globals.node },
             parserOptions: {
+                projectService: true,
                 tsconfigRootDir: new URL('.', import.meta.url).pathname,
             },
         },
     },
-    tseslint.configs.strict,
     {
         files: ['**/*.md'],
         plugins: { markdown },

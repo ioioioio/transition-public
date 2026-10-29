@@ -19,7 +19,9 @@ const LanguageToggle = () => {
             size="icon-lg"
             lang={target.lng}
             aria-label={target.label}
-            onClick={() => i18n.changeLanguage(target.lng)}
+            onClick={() => {
+                void i18n.changeLanguage(target.lng);
+            }}
             className="text-muted-foreground"
         >
             {target.code}

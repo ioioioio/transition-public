@@ -123,7 +123,7 @@ export class PhotonGeocoder implements Geocoder {
 
     private async fetchPlaces(path: string, params: URLSearchParams) {
         const response = await fetchUpstream(() =>
-            fetch(`${this.url}/${path}?${params}`),
+            fetch(`${this.url}/${path}?${params.toString()}`),
         );
         if (!response.ok) {
             throw new HttpUpstreamError({

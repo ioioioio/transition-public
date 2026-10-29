@@ -5,20 +5,22 @@ import markdown from '@eslint/markdown';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-    globalIgnores(['coverage', 'dist']),
+    globalIgnores(['coverage', 'dist', 'src/transition/generated']),
     {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
         plugins: { js },
-        extends: ['js/recommended'],
+        extends: [
+            'js/recommended',
+            tseslint.configs.strict,
+            tseslint.configs.recommendedTypeChecked,
+        ],
         languageOptions: {
             globals: globals.node,
             parserOptions: {
+                projectService: true,
                 tsconfigRootDir: new URL('.', import.meta.url).pathname,
             },
         },
-    },
-    tseslint.configs.strict,
-    {
         rules: {
             '@typescript-eslint/no-unused-vars': [
                 'error',
