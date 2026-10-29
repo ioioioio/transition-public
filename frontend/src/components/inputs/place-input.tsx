@@ -33,7 +33,7 @@ const createPlaceLabel = (
     }
     if (
         value.position.lng === lookedUpPlace?.position.lng &&
-        value.position.lat === lookedUpPlace?.position.lat
+        value.position.lat === lookedUpPlace.position.lat
     ) {
         return lookedUpPlace.label;
     }

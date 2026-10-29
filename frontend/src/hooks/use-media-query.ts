@@ -8,7 +8,9 @@ export const useMediaQuery = (query: string): boolean =>
         (onChange) => {
             const list = window.matchMedia(query);
             list.addEventListener('change', onChange);
-            return () => list.removeEventListener('change', onChange);
+            return () => {
+                list.removeEventListener('change', onChange);
+            };
         },
         () => window.matchMedia(query).matches,
     );

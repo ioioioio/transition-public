@@ -10,8 +10,7 @@ export default defineConfig([
         plugins: { js },
         extends: [
             'js/recommended',
-            tseslint.configs.strict,
-            tseslint.configs.recommendedTypeChecked,
+            tseslint.configs.strictTypeChecked,
             tseslint.configs.stylisticTypeChecked,
         ],
         languageOptions: {
@@ -20,6 +19,19 @@ export default defineConfig([
                 projectService: true,
                 tsconfigRootDir: new URL('.', import.meta.url).pathname,
             },
+        },
+        rules: {
+            '@typescript-eslint/restrict-template-expressions': [
+                'error',
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNever: false,
+                    allowNullish: false,
+                    allowNumber: true,
+                    allowRegExp: false,
+                },
+            ],
         },
     },
     {

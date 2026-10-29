@@ -15,8 +15,7 @@ export default defineConfig([
         files: ['**/*.{js,ts,tsx}'],
         extends: [
             js.configs.recommended,
-            tseslint.configs.strict,
-            tseslint.configs.recommendedTypeChecked,
+            tseslint.configs.strictTypeChecked,
             tseslint.configs.stylisticTypeChecked,
             reactHooks.configs.flat.recommended,
             reactRefresh.configs.vite,
@@ -39,6 +38,17 @@ export default defineConfig([
             ],
         },
         rules: {
+            '@typescript-eslint/restrict-template-expressions': [
+                'error',
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNever: false,
+                    allowNullish: false,
+                    allowNumber: true,
+                    allowRegExp: false,
+                },
+            ],
             'import-x/order': [
                 'error',
                 {

@@ -34,10 +34,12 @@ function TripComparison({
     onSelectedRouteIdChange,
 }: TripComparisonProps) {
     const { origin, destination } = places;
-    const setOrigin = (place: PlaceRef | null) =>
+    const setOrigin = (place: PlaceRef | null) => {
         onPlacesChange({ origin: place, destination });
-    const setDestination = (place: PlaceRef | null) =>
+    };
+    const setDestination = (place: PlaceRef | null) => {
         onPlacesChange({ origin, destination: place });
+    };
 
     const setOriginOrDestination = (position: Utils.LngLat) => {
         if (origin === null) {
@@ -101,14 +103,18 @@ function TripComparison({
                         <PlaceMarker
                             label="A"
                             position={originPosition}
-                            onMove={(position) => setOrigin({ position })}
+                            onMove={(position) => {
+                                setOrigin({ position });
+                            }}
                         />
                     )}
                     {destinationPosition && (
                         <PlaceMarker
                             label="B"
                             position={destinationPosition}
-                            onMove={(position) => setDestination({ position })}
+                            onMove={(position) => {
+                                setDestination({ position });
+                            }}
                         />
                     )}
                 </MapView>

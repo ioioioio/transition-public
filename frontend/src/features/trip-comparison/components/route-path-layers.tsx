@@ -49,7 +49,9 @@ const RoutePathLayers = ({
     selectedId,
     onSelect,
 }: RoutePathLayersProps) => {
-    const toggle = (id: string) => onSelect(selectedId === id ? null : id);
+    const toggle = (id: string) => {
+        onSelect(selectedId === id ? null : id);
+    };
 
     const drawnRoutes = sortRoutes(
         routes.filter(({ steps }) => steps.length > 0),
@@ -69,7 +71,9 @@ const RoutePathLayers = ({
             }
             styles={createRoutePathStyles(rank, drawnRoutes.length)}
             selected={selectedId === id}
-            onClick={() => toggle(id)}
+            onClick={() => {
+                toggle(id);
+            }}
         />
     ));
 };

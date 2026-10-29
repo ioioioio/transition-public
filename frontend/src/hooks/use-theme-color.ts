@@ -14,7 +14,9 @@ const subscribeToThemeClass = (onChange: () => void) => {
         attributes: true,
         attributeFilter: ['class'],
     });
-    return () => observer.disconnect();
+    return () => {
+        observer.disconnect();
+    };
 };
 
 /**

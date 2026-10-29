@@ -87,7 +87,9 @@ export const LabeledLineLayer = ({
     );
 };
 
-const stopPropagation = (event: Event) => event.stopPropagation();
+const stopPropagation = (event: Event) => {
+    event.stopPropagation();
+};
 
 // So clicking a label twice doesn't zoom. Layers need to be handled
 // differently, see MapView.

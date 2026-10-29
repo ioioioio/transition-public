@@ -42,10 +42,9 @@ const MapView = ({
     const pauseDoubleClickZoom = ({ target }: MapLayerMouseEvent) => {
         target.doubleClickZoom.disable();
         clearTimeout(zoomPause.current);
-        zoomPause.current = setTimeout(
-            () => target.doubleClickZoom.enable(),
-            500,
-        );
+        zoomPause.current = setTimeout(() => {
+            target.doubleClickZoom.enable();
+        }, 500);
     };
     return (
         <Map

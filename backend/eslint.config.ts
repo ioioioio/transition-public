@@ -11,8 +11,7 @@ export default defineConfig([
         plugins: { js },
         extends: [
             'js/recommended',
-            tseslint.configs.strict,
-            tseslint.configs.recommendedTypeChecked,
+            tseslint.configs.strictTypeChecked,
             tseslint.configs.stylisticTypeChecked,
         ],
         languageOptions: {
@@ -26,6 +25,17 @@ export default defineConfig([
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 { argsIgnorePattern: '^_' },
+            ],
+            '@typescript-eslint/restrict-template-expressions': [
+                'error',
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNever: false,
+                    allowNullish: false,
+                    allowNumber: true,
+                    allowRegExp: false,
+                },
             ],
         },
     },

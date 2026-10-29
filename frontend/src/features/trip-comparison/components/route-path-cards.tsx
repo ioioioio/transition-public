@@ -196,9 +196,9 @@ const RoutePathCards = ({
             <Accordion
                 className="gap-2"
                 value={selectedId ? [selectedId] : []}
-                onValueChange={(value: string[]) =>
-                    onSelect(value.at(0) ?? null)
-                }
+                onValueChange={(value: string[]) => {
+                    onSelect(value.at(0) ?? null);
+                }}
             >
                 {routes.map(({ id, steps }, index) => (
                     <RoutePathCard

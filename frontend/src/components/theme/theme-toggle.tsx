@@ -16,7 +16,9 @@ const ThemeToggle = () => {
             aria-label={
                 isDark ? t('theme.switchToLight') : t('theme.switchToDark')
             }
-            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            onClick={() => {
+                setTheme(isDark ? 'light' : 'dark');
+            }}
             className="text-muted-foreground"
         >
             {isDark ? <SunIcon aria-hidden /> : <MoonIcon aria-hidden />}
