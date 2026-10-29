@@ -20,7 +20,8 @@ import type {
   PostApiV1Summary200,
   PostApiV1Summary400,
   PostApiV1SummaryParams,
-  PostTokenBody
+  PostTokenBody,
+  UnauthorizedResponse
 } from './model';
 
 import { fetchTransition } from '../fetch-transition';
@@ -57,7 +58,7 @@ export const getPostTokenUrl = () => {
 }
 
 /**
- * Returns an authentication token. This token is required in the Authentication header of requests to other endpoints.
+ * Returns an authentication token. Send it as a bearer token in the Authorization header of requests to other endpoints.
  * @summary Retrieve authentication token for specified user
  */
 export const postToken = async (postTokenBody: PostTokenBody, options?: Parameters<typeof fetchTransition>[1]): Promise<postTokenResponse> => {
@@ -129,12 +130,19 @@ export type getApiV1PathsResponse200 = {
   status: 200
 }
 
+export type getApiV1PathsResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1PathsResponseSuccess = (getApiV1PathsResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1PathsResponseError = (getApiV1PathsResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1PathsResponse = (getApiV1PathsResponseSuccess)
+export type getApiV1PathsResponse = (getApiV1PathsResponseSuccess | getApiV1PathsResponseError)
 
 export const getGetApiV1PathsUrl = () => {
 
@@ -166,12 +174,19 @@ export type getApiV1NodesResponse200 = {
   status: 200
 }
 
+export type getApiV1NodesResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1NodesResponseSuccess = (getApiV1NodesResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1NodesResponseError = (getApiV1NodesResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1NodesResponse = (getApiV1NodesResponseSuccess)
+export type getApiV1NodesResponse = (getApiV1NodesResponseSuccess | getApiV1NodesResponseError)
 
 export const getGetApiV1NodesUrl = () => {
 
@@ -203,12 +218,19 @@ export type getApiV1ScenariosResponse200 = {
   status: 200
 }
 
+export type getApiV1ScenariosResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1ScenariosResponseSuccess = (getApiV1ScenariosResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1ScenariosResponseError = (getApiV1ScenariosResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1ScenariosResponse = (getApiV1ScenariosResponseSuccess)
+export type getApiV1ScenariosResponse = (getApiV1ScenariosResponseSuccess | getApiV1ScenariosResponseError)
 
 export const getGetApiV1ScenariosUrl = () => {
 
@@ -240,12 +262,19 @@ export type getApiV1AgenciesResponse200 = {
   status: 200
 }
 
+export type getApiV1AgenciesResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1AgenciesResponseSuccess = (getApiV1AgenciesResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1AgenciesResponseError = (getApiV1AgenciesResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1AgenciesResponse = (getApiV1AgenciesResponseSuccess)
+export type getApiV1AgenciesResponse = (getApiV1AgenciesResponseSuccess | getApiV1AgenciesResponseError)
 
 export const getGetApiV1AgenciesUrl = () => {
 
@@ -277,12 +306,19 @@ export type getApiV1ServicesResponse200 = {
   status: 200
 }
 
+export type getApiV1ServicesResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1ServicesResponseSuccess = (getApiV1ServicesResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1ServicesResponseError = (getApiV1ServicesResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1ServicesResponse = (getApiV1ServicesResponseSuccess)
+export type getApiV1ServicesResponse = (getApiV1ServicesResponseSuccess | getApiV1ServicesResponseError)
 
 export const getGetApiV1ServicesUrl = () => {
 
@@ -314,12 +350,19 @@ export type getApiV1LinesResponse200 = {
   status: 200
 }
 
+export type getApiV1LinesResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1LinesResponseSuccess = (getApiV1LinesResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1LinesResponseError = (getApiV1LinesResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1LinesResponse = (getApiV1LinesResponseSuccess)
+export type getApiV1LinesResponse = (getApiV1LinesResponseSuccess | getApiV1LinesResponseError)
 
 export const getGetApiV1LinesUrl = () => {
 
@@ -351,12 +394,19 @@ export type getApiV1RoutingModesResponse200 = {
   status: 200
 }
 
+export type getApiV1RoutingModesResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type getApiV1RoutingModesResponseSuccess = (getApiV1RoutingModesResponse200) & {
   headers: Headers;
 };
-;
+export type getApiV1RoutingModesResponseError = (getApiV1RoutingModesResponse401) & {
+  headers: Headers;
+};
 
-export type getApiV1RoutingModesResponse = (getApiV1RoutingModesResponseSuccess)
+export type getApiV1RoutingModesResponse = (getApiV1RoutingModesResponseSuccess | getApiV1RoutingModesResponseError)
 
 export const getGetApiV1RoutingModesUrl = () => {
 
@@ -393,10 +443,15 @@ export type postApiV1SummaryResponse400 = {
   status: 400
 }
 
+export type postApiV1SummaryResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type postApiV1SummaryResponseSuccess = (postApiV1SummaryResponse200) & {
   headers: Headers;
 };
-export type postApiV1SummaryResponseError = (postApiV1SummaryResponse400) & {
+export type postApiV1SummaryResponseError = (postApiV1SummaryResponse400 | postApiV1SummaryResponse401) & {
   headers: Headers;
 };
 
@@ -444,10 +499,15 @@ export type postApiV1RouteResponse400 = {
   status: 400
 }
 
+export type postApiV1RouteResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type postApiV1RouteResponseSuccess = (postApiV1RouteResponse200) & {
   headers: Headers;
 };
-export type postApiV1RouteResponseError = (postApiV1RouteResponse400) & {
+export type postApiV1RouteResponseError = (postApiV1RouteResponse400 | postApiV1RouteResponse401) & {
   headers: Headers;
 };
 
@@ -510,10 +570,15 @@ export type postApiV1AccessibilityResponse400 = {
   status: 400
 }
 
+export type postApiV1AccessibilityResponse401 = {
+  data: UnauthorizedResponse
+  status: 401
+}
+
 export type postApiV1AccessibilityResponseSuccess = (postApiV1AccessibilityResponse200) & {
   headers: Headers;
 };
-export type postApiV1AccessibilityResponseError = (postApiV1AccessibilityResponse400) & {
+export type postApiV1AccessibilityResponseError = (postApiV1AccessibilityResponse400 | postApiV1AccessibilityResponse401) & {
   headers: Headers;
 };
 

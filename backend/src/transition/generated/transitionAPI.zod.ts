@@ -7,7 +7,7 @@
 import * as zod from 'zod/mini';
 
 /**
- * Returns an authentication token. This token is required in the Authentication header of requests to other endpoints.
+ * Returns an authentication token. Send it as a bearer token in the Authorization header of requests to other endpoints.
  * @summary Retrieve authentication token for specified user
  */
 export const PostTokenBody = /*#__PURE__*/ zod.object({

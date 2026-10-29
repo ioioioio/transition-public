@@ -81,3 +81,4 @@ export * from './postApiV1SummaryOriginGeojsonType';
 export * from './postApiV1SummaryParams';
 export * from './postApiV1SummaryType';
 export * from './postTokenBody';
+export * from './unauthorizedResponse';
