@@ -1,6 +1,5 @@
 import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
-import type { ReactNode } from 'react';
 
 import type { LineEmphasis } from '@/components/map/labeled-line-layer';
 import {
@@ -12,7 +11,6 @@ export interface RoutePathLayerProps {
     id: string;
     // Drawn in order, e.g. a single one for a path with one mode
     steps: Api.RouteStep[];
-    renderStepLabel?: (step: Api.RouteStep) => ReactNode;
     getStepIcon: (step: Api.RouteStep) => Icon;
     // The same for all the steps of the path
     styles: RouteStepLayerStyles;
@@ -23,7 +21,6 @@ export interface RoutePathLayerProps {
 export const RoutePathLayer = ({
     id,
     steps,
-    renderStepLabel,
     getStepIcon,
     styles,
     emphasis,
@@ -34,7 +31,6 @@ export const RoutePathLayer = ({
             key={index}
             id={`${id}-${index}`}
             step={step}
-            label={renderStepLabel?.(step)}
             icon={getStepIcon(step)}
             styles={styles}
             emphasis={emphasis}

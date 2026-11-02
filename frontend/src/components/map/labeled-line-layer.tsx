@@ -9,13 +9,10 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
-import { getPointAlong } from '@/utils/geo';
 
 export interface LabeledLineLayerStyles {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
     dashArray?: [number, number];
-    /** Where the label sits along the line, from `0` (start) to `1` (end). */
-    labelPosition?: number;
 }
 
 export type LineEmphasis = 'default' | 'selected' | 'muted';
@@ -28,8 +25,6 @@ export interface LabeledLineLayerProps {
     color: `--${string}`;
     /** How much the line stands out from the others. */
     emphasis: LineEmphasis;
-    /** Shown in a pill on the line. */
-    label?: ReactNode;
     /** Repeated along the line, drawn by the map. */
     icon: Icon;
     onClick?: () => void;
@@ -46,21 +41,17 @@ const iconSpacingPixels = 75;
 const arrowSizePixels = 12;
 const arrowSpacingPixels = 15;
 
-// A line, with an optional label on it
 export const LabeledLineLayer = ({
     id,
     geometry,
     styles,
     color: colorVariable,
     emphasis,
-    label,
     icon,
     onClick,
 }: LabeledLineLayerProps) => {
-    const { dashArray, labelPosition = 0.5 } = styles;
+    const { dashArray } = styles;
     const selected = emphasis === 'selected';
-    // Out of the way of the selected line's labels
-    const shownLabel = emphasis === 'muted' ? undefined : label;
     const color = useThemeColor(
         emphasis === 'muted' ? '--foreground' : colorVariable,
     );
@@ -158,15 +149,6 @@ export const LabeledLineLayer = ({
                 haloColor={haloColor}
                 size={arrowSizePixels}
             />
-            {shownLabel && (
-                <LineLabel
-                    position={getPointAlong(geometry, labelPosition)}
-                    selected={selected}
-                    onClick={onClick}
-                >
-                    {shownLabel}
-                </LineLabel>
-            )}
         </>
     );
 };
@@ -182,7 +164,7 @@ const stopGesturesReachingMap = (button: HTMLButtonElement | null) => {
     button?.addEventListener('touchstart', stopPropagation);
 };
 
-interface LineLabelProps {
+export interface LineLabelProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
@@ -190,7 +172,7 @@ interface LineLabelProps {
     children: ReactNode;
 }
 
-const LineLabel = ({
+export const LineLabel = ({
     position,
     selected,
     onClick,
@@ -214,7 +196,7 @@ const LineLabel = ({
                 type="button"
                 aria-pressed={selected}
                 className={cn(
-                    'flex cursor-pointer items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-xs font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-3.5',
+                    'flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
                     selected
                         ? 'border-primary text-primary'
                         : 'border-foreground/20 text-foreground/80',

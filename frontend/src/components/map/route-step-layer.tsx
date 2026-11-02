@@ -1,6 +1,5 @@
 import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
-import type { ReactNode } from 'react';
 
 import {
     LabeledLineLayer,
@@ -23,7 +22,6 @@ export interface RouteStepLayerStyles {
 export interface RouteStepLayerProps {
     id: string;
     step: Api.RouteStep;
-    label?: ReactNode;
     icon: Icon;
     styles: RouteStepLayerStyles;
     emphasis: LineEmphasis;
@@ -33,7 +31,6 @@ export interface RouteStepLayerProps {
 export const RouteStepLayer = ({
     id,
     step,
-    label,
     icon,
     styles,
     emphasis,
@@ -52,7 +49,6 @@ export const RouteStepLayer = ({
             styles={styles.line}
             color={modeColors[getRouteStepMode(step)]}
             emphasis={emphasis}
-            label={label}
             icon={icon}
             onClick={onClick}
         />
