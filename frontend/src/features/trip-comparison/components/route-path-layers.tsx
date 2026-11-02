@@ -4,7 +4,7 @@ import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
-import { getPointAlong } from '@/utils/geo';
+import { useLabelPlacement } from '@/hooks/use-label-placement';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
 /**
@@ -49,6 +49,16 @@ const RoutePathLayers = ({
     // When a route is selected, the others' label is hidden
     const isShown = (id: string) => selectedId === null || selectedId === id;
 
+    // Fastest first, so its label gets the best spot
+    const { positions, registerLabel } = useLabelPlacement(
+        drawnRoutes
+            .filter(({ route }) => isShown(route.id))
+            .map(({ route, styles }) => ({
+                id: route.id,
+                line: createRoutePathGeometry(route.steps, styles.bend),
+            })),
+    );
+
     return (
         <>
             {drawnRoutes.map(({ route, styles }) => (
@@ -70,23 +80,24 @@ const RoutePathLayers = ({
                     }}
                 />
             ))}
-            {drawnRoutes
-                .filter(({ route }) => isShown(route.id))
-                .map(({ route, styles }) => (
+            {drawnRoutes.map(({ route }) => {
+                const position = positions.get(route.id);
+                if (!position) {
+                    return null;
+                }
+                return (
                     <RoutePathLabel
                         key={route.id}
-                        // Halfway along the whole path
-                        position={getPointAlong(
-                            createRoutePathGeometry(route.steps, styles.bend),
-                            0.5,
-                        )}
+                        ref={registerLabel(route.id)}
+                        position={position}
                         steps={route.steps}
                         selected={selectedId === route.id}
                         onClick={() => {
                             toggle(route.id);
                         }}
                     />
-                ))}
+                );
+            })}
         </>
     );
 };

@@ -1,7 +1,7 @@
 import { CaretRightIcon, type Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefCallback } from 'react';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
 import { useLayerClick } from '@/hooks/use-layer-click';
@@ -169,6 +169,7 @@ export interface LineLabelProps {
     position: Position;
     selected: boolean;
     onClick?: () => void;
+    ref?: RefCallback<HTMLButtonElement>;
     children: ReactNode;
 }
 
@@ -176,6 +177,7 @@ export const LineLabel = ({
     position,
     selected,
     onClick,
+    ref,
     children,
 }: LineLabelProps) => {
     const [longitude, latitude] = position;
@@ -192,7 +194,10 @@ export const LineLabel = ({
             }}
         >
             <button
-                ref={stopGesturesReachingMap}
+                ref={(button) => {
+                    stopGesturesReachingMap(button);
+                    return ref?.(button);
+                }}
                 type="button"
                 aria-pressed={selected}
                 className={cn(
