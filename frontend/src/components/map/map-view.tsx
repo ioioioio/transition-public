@@ -7,6 +7,7 @@ import {
     type Map as MaplibreMap,
 } from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import { domMax, LazyMotion, MotionConfig } from 'motion/react';
 import { useRef, useState, type ReactNode } from 'react';
 
 import { config } from '@/config/config';
@@ -112,7 +113,13 @@ const MapView = ({
         >
             <LayerClickHandlersContext value={handlers}>
                 <MapImageCreatorsContext value={imageCreators}>
-                    {children}
+                    {/* Only loads the animation features the map's labels
+                        use, and calms them when the system asks to */}
+                    <LazyMotion features={domMax} strict>
+                        <MotionConfig reducedMotion="user">
+                            {children}
+                        </MotionConfig>
+                    </LazyMotion>
                 </MapImageCreatorsContext>
             </LayerClickHandlersContext>
         </Map>

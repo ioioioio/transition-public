@@ -3,10 +3,11 @@ import { useMemo } from 'react';
 
 import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
+import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-card';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
+import { useIsPhone } from '@/hooks/use-is-phone';
 import { useLabelPlacement } from '@/hooks/use-label-placement';
-import { useMediaQuery } from '@/hooks/use-media-query';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
 /**
@@ -53,7 +54,7 @@ const RoutePathLayers = ({
         [routes],
     );
     // On a phone, the selected route's steps take its label's place
-    const isPhone = !useMediaQuery('(min-width: 48rem)');
+    const isPhone = useIsPhone();
 
     // Fastest first, so its label gets the best spot. Built again only when
     // the routes or what's shown change, as labels are placed again from them.
@@ -96,7 +97,7 @@ const RoutePathLayers = ({
                     }}
                 />
             ))}
-            {drawnRoutes.map(({ route }) => {
+            {drawnRoutes.map(({ route }, rank) => {
                 const placement = placements.get(route.id);
                 if (!placement) {
                     return null;
@@ -104,14 +105,24 @@ const RoutePathLayers = ({
                 return (
                     <RoutePathLabel
                         key={route.id}
+                        id={route.id}
                         ref={registerLabel(route.id)}
                         position={placement.anchor}
                         offset={placement.offset}
+                        offsetEdge={placement.edge}
                         onDrag={(movement) => {
                             moveLabel(route.id, movement);
                         }}
                         steps={route.steps}
+                        badge={
+                            // Only stands out when there's more than one
+                            rank === 0 && drawnRoutes.length > 1 ? (
+                                <BestRouteBadge order="travelTime" />
+                            ) : null
+                        }
                         selected={selectedId === route.id}
+                        // On a phone, it's hidden once selected instead
+                        expanded={selectedId === route.id && !isPhone}
                         onClick={() => {
                             toggle(route.id);
                         }}

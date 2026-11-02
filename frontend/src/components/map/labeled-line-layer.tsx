@@ -1,6 +1,7 @@
 import { CaretRightIcon, type Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
+import * as m from 'motion/react-m';
 import { useRef, type ReactNode, type RefCallback } from 'react';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
@@ -9,6 +10,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
+import { resizeTransition } from '@/utils/label-animation';
 import { markerLayers } from '@/utils/marker-layers';
 
 export interface LabeledLineLayerStyles {
@@ -162,15 +164,24 @@ const stopPropagation = (event: Event) => {
 // element itself, as React's handlers run after the map's. Layers need to be
 // handled differently, see MapView.
 const stopGesturesReachingMap = (
-    button: HTMLButtonElement | null,
+    element: HTMLElement | null,
     isDraggable: boolean,
 ) => {
-    button?.addEventListener('dblclick', stopPropagation);
-    button?.addEventListener('touchstart', stopPropagation);
+    element?.addEventListener('dblclick', stopPropagation);
+    element?.addEventListener('touchstart', stopPropagation);
     if (isDraggable) {
-        button?.addEventListener('mousedown', stopPropagation);
+        element?.addEventListener('mousedown', stopPropagation);
     }
 };
+
+// Puts the label's point at its edge, or its centre, where it's moved from
+const edgeTranslations = {
+    center: '-translate-1/2',
+    left: '-translate-y-1/2',
+    right: '-translate-x-full -translate-y-1/2',
+    top: '-translate-x-1/2',
+    bottom: '-translate-x-1/2 -translate-y-full',
+} as const;
 
 // Below this, in pixels, a press is still a click
 const dragThreshold = 4;
@@ -186,14 +197,26 @@ export interface LineLabelProps {
     selected: boolean;
     onClick?: () => void;
     /**
-     * From `position` to the label's centre, in pixels. The label is then linked to `position` by a
-     * leader. On `position` when omitted.
+     * From `position` to the label's `offsetEdge`, in pixels. The label is then linked to
+     * `position` by a leader. On `position` when omitted.
      */
     offset?: { x: number; y: number };
+    /**
+     * Which point of the label `offset` leads to: the middle of an edge, so it grows and shrinks
+     * away from it, or its centre. Its centre by default.
+     */
+    offsetEdge?: 'center' | 'left' | 'right' | 'top' | 'bottom';
     /** Makes the label draggable, with how far it moved since the last call, in pixels. */
     onDrag?: (movement: { x: number; y: number }) => void;
-    ref?: RefCallback<HTMLButtonElement>;
+    /** Overrides the look of its box. */
+    className?: string;
+    /** Overrides the look of its button, which fills its box unless it has details. */
+    buttonClassName?: string;
+    ref?: RefCallback<HTMLDivElement>;
+    /** In its button. */
     children: ReactNode;
+    /** Below its button, in its box, like a card's content. Clicking them doesn't call `onClick`. */
+    details?: ReactNode;
 }
 
 export const LineLabel = ({
@@ -201,23 +224,39 @@ export const LineLabel = ({
     selected,
     onClick,
     offset,
+    offsetEdge = 'center',
     onDrag,
+    className,
+    buttonClassName,
     ref,
     children,
+    details,
 }: LineLabelProps) => {
     const [longitude, latitude] = position;
     const drag = useRef<Drag | null>(null);
     // The click that ends a drag doesn't count
     const wasDragged = useRef(false);
-    const button = (
-        <button
+    // Where the click started, as a drag captures the pointer, so its click is
+    // on the label's box wherever it started
+    const wasPressOnButton = useRef(false);
+
+    // Opening or closing its details resizes the label smoothly. Only then, so
+    // it follows the map at once as it moves.
+    const hasDetails = details !== undefined;
+    const box = (
+        <m.div
+            layout
+            layoutDependency={hasDetails}
+            transition={{ layout: resizeTransition }}
+            style={offset}
             ref={(element) => {
                 stopGesturesReachingMap(element, onDrag !== undefined);
                 return ref?.(element);
             }}
-            type="button"
-            aria-pressed={selected}
             onPointerDown={(event) => {
+                wasPressOnButton.current =
+                    event.target instanceof Element &&
+                    event.target.closest('button') !== null;
                 if (!onDrag) {
                     return;
                 }
@@ -256,23 +295,50 @@ export const LineLabel = ({
             onPointerCancel={() => {
                 drag.current = null;
             }}
-            style={
-                offset && {
-                    transform: `translate(${String(offset.x)}px, ${String(offset.y)}px) translate(-50%, -50%)`,
-                }
-            }
             className={cn(
-                'flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
+                'cursor-pointer rounded-md border bg-background text-sm font-medium shadow-[0_4px_14px_rgba(0,0,0,0.45)] has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50',
                 selected
                     ? 'border-primary text-primary'
                     : 'border-foreground/20 text-foreground/80',
-                offset && 'absolute top-0 left-0',
+                // Moved by `offset`, from the point of it at `offsetEdge`
+                offset && [
+                    'absolute top-0 left-0',
+                    edgeTranslations[offsetEdge],
+                ],
                 // So touches drag the label rather than scroll the page
                 onDrag && 'cursor-grab touch-none active:cursor-grabbing',
+                className,
             )}
         >
-            {children}
-        </button>
+            {/* So it isn't stretched while the label is resized */}
+            <m.button
+                layout
+                layoutDependency={hasDetails}
+                transition={{ layout: resizeTransition }}
+                type="button"
+                aria-pressed={selected}
+                className={cn(
+                    'flex cursor-[inherit] items-center gap-2 px-3 py-2 whitespace-nowrap tabular-nums outline-none [&_svg]:size-4',
+                    buttonClassName,
+                )}
+            >
+                {children}
+            </m.button>
+            {details && (
+                <m.div
+                    layout
+                    layoutDependency={hasDetails}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                        layout: resizeTransition,
+                        ...resizeTransition,
+                    }}
+                >
+                    {details}
+                </m.div>
+            )}
+        </m.div>
     );
 
     const label = (
@@ -288,14 +354,18 @@ export const LineLabel = ({
                     wasDragged.current = false;
                     return;
                 }
+                // Not its details, like a card's content
+                if (!wasPressOnButton.current) {
+                    return;
+                }
                 onClick?.();
             }}
         >
             {offset ? (
                 // No size of its own, so the marker is centred on `position`
-                <div className="relative size-0">{button}</div>
+                <div className="relative size-0">{box}</div>
             ) : (
-                button
+                box
             )}
         </Marker>
     );

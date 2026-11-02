@@ -14,11 +14,15 @@ export interface LabelOffset {
     y: number;
 }
 
+/** The point of the label that `offset` leads to: one of its edges' middle, or its centre. */
+export type LabelEdge = 'center' | 'left' | 'right' | 'top' | 'bottom';
+
 export interface LabelPlacement {
     /** Where the label's leader meets its path, as `[longitude, latitude]`. */
     anchor: Position;
-    /** From the anchor to the label's centre, in pixels. */
+    /** From the anchor to the label's `edge`, in pixels. */
     offset: LabelOffset;
+    edge: LabelEdge;
 }
 
 // Where along its path a label's anchor may go, from the middle outwards
@@ -76,16 +80,35 @@ const createSpots = (line: LineString): Spot[] => {
     );
 };
 
-// From the anchor to the label's centre, so its nearest edge, not its centre,
-// is at the gap
-const calculateLeaderLength = (
-    direction: LabelOffset,
-    gap: number,
+// The label's edge that faces its path, on the side `normal` points to. So it
+// grows and shrinks away from its path without moving.
+const findFacingEdge = (normal: LabelOffset): LabelEdge => {
+    if (Math.abs(normal.x) >= Math.abs(normal.y)) {
+        return normal.x > 0 ? 'left' : 'right';
+    }
+    return normal.y > 0 ? 'top' : 'bottom';
+};
+
+const findCenter = (
+    point: { x: number; y: number },
+    edge: LabelEdge,
     size: Size,
-) =>
-    gap +
-    (Math.abs(direction.x) * size.width) / 2 +
-    (Math.abs(direction.y) * size.height) / 2;
+) => {
+    switch (edge) {
+        case 'center':
+            return point;
+        case 'left':
+            return { x: point.x + size.width / 2, y: point.y };
+        case 'right':
+            return { x: point.x - size.width / 2, y: point.y };
+        case 'top':
+            return { x: point.x, y: point.y + size.height / 2 };
+        case 'bottom':
+            return { x: point.x, y: point.y - size.height / 2 };
+        default:
+            return edge satisfies never;
+    }
+};
 
 const createBox = (center: { x: number; y: number }, size: Size): Box => ({
     left: center.x - size.width / 2 - labelMargin,
@@ -141,7 +164,10 @@ const isSamePlacement = (
     a.size === b.size &&
     [...a].every(([id, placed]) => {
         const other = b.get(id);
-        if (other?.spotIndex !== placed.spotIndex) {
+        if (
+            other?.spotIndex !== placed.spotIndex ||
+            other.placement.edge !== placed.placement.edge
+        ) {
             return false;
         }
         return (
@@ -164,7 +190,21 @@ const isSamePlacement = (
 export const useLabelPlacement = (paths: LabeledPath[]) => {
     const { current: map } = useMap();
     const [elements] = useState(() => new Map<string, HTMLElement>());
-    const [drawnLabelCount, setDrawnLabelCount] = useState(0);
+    // Counts the labels' size changes, to place them again with their sizes,
+    // like when one is first drawn or expands
+    const [labelSizesVersion, setLabelSizesVersion] = useState(0);
+    const [sizeObserver] = useState(
+        () =>
+            new ResizeObserver(() => {
+                setLabelSizesVersion((version) => version + 1);
+            }),
+    );
+    useEffect(
+        () => () => {
+            sizeObserver.disconnect();
+        },
+        [sizeObserver],
+    );
     const [placedLabels, setPlacedLabels] = useState<
         ReadonlyMap<string, PlacedLabel>
     >(() => new Map());
@@ -221,7 +261,12 @@ export const useLabelPlacement = (paths: LabeledPath[]) => {
                     );
                     next.set(id, {
                         spotIndex: null,
-                        placement: { anchor: pin.anchor, offset },
+                        // Grows and shrinks around where it was dropped
+                        placement: {
+                            anchor: pin.anchor,
+                            offset,
+                            edge: 'center',
+                        },
                     });
                 }
                 for (const [id, spots] of spotsByPath) {
@@ -246,24 +291,31 @@ export const useLabelPlacement = (paths: LabeledPath[]) => {
                             x: (-(ahead.y - anchor.y) / length) * spot.side,
                             y: ((ahead.x - anchor.x) / length) * spot.side,
                         };
-                        const distance = calculateLeaderLength(
-                            normal,
-                            spot.gap,
-                            size,
-                        );
                         const offset = {
-                            x: normal.x * distance,
-                            y: normal.y * distance,
+                            x: normal.x * spot.gap,
+                            y: normal.y * spot.gap,
                         };
+                        const edge = findFacingEdge(normal);
                         const box = createBox(
-                            { x: anchor.x + offset.x, y: anchor.y + offset.y },
+                            findCenter(
+                                {
+                                    x: anchor.x + offset.x,
+                                    y: anchor.y + offset.y,
+                                },
+                                edge,
+                                size,
+                            ),
                             size,
                         );
                         return {
                             box,
                             placed: {
                                 spotIndex,
-                                placement: { anchor: spot.anchor, offset },
+                                placement: {
+                                    anchor: spot.anchor,
+                                    offset,
+                                    edge,
+                                },
                             },
                         };
                     };
@@ -308,16 +360,20 @@ export const useLabelPlacement = (paths: LabeledPath[]) => {
         return () => {
             map.off('move', place);
         };
-    }, [map, spotsByPath, elements, drawnLabelCount, validPins]);
+    }, [map, spotsByPath, elements, labelSizesVersion, validPins]);
 
     const registerLabel = (id: string) => (element: HTMLElement | null) => {
         // Called again on every render, so only a new label counts
-        if (!element || elements.get(id) === element) {
+        const previousElement = elements.get(id);
+        if (!element || previousElement === element) {
             return;
         }
+        if (previousElement) {
+            sizeObserver.unobserve(previousElement);
+        }
         elements.set(id, element);
-        // Placed again with its real size
-        setDrawnLabelCount((count) => count + 1);
+        // Also reports its first size, once it's drawn
+        sizeObserver.observe(element);
     };
 
     const placements = new Map(
@@ -333,6 +389,7 @@ export const useLabelPlacement = (paths: LabeledPath[]) => {
             return;
         }
         const lineKey = createLineKey(line);
+        const size = measure(elements.get(id));
         // From the latest pin, as moves can come faster than the label is
         // placed again
         setPins((previous) => {
@@ -341,10 +398,14 @@ export const useLabelPlacement = (paths: LabeledPath[]) => {
             const previousCenter =
                 pin?.lineKey === lineKey
                     ? project(map, pin.center)
-                    : {
-                          x: anchor.x + placement.offset.x,
-                          y: anchor.y + placement.offset.y,
-                      };
+                    : findCenter(
+                          {
+                              x: anchor.x + placement.offset.x,
+                              y: anchor.y + placement.offset.y,
+                          },
+                          placement.edge,
+                          size,
+                      );
             const { lng, lat } = map.unproject([
                 previousCenter.x + movement.x,
                 previousCenter.y + movement.y,
