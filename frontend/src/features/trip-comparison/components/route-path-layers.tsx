@@ -6,6 +6,7 @@ import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { useLabelPlacement } from '@/hooks/use-label-placement';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
 /**
@@ -51,6 +52,8 @@ const RoutePathLayers = ({
             })),
         [routes],
     );
+    // On a phone, the selected route's steps take its label's place
+    const isPhone = !useMediaQuery('(min-width: 48rem)');
 
     // Fastest first, so its label gets the best spot. Built again only when
     // the routes or what's shown change, as labels are placed again from them.
@@ -60,13 +63,14 @@ const RoutePathLayers = ({
                 // When a route is selected, the others' label is hidden
                 .filter(
                     ({ route }) =>
-                        selectedId === null || selectedId === route.id,
+                        (selectedId === null || selectedId === route.id) &&
+                        !(isPhone && selectedId === route.id),
                 )
                 .map(({ route, styles }) => ({
                     id: route.id,
                     line: createRoutePathGeometry(route.steps, styles.bend),
                 })),
-        [drawnRoutes, selectedId],
+        [drawnRoutes, selectedId, isPhone],
     );
     const { placements, registerLabel, moveLabel } =
         useLabelPlacement(labeledPaths);
