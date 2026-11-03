@@ -1,15 +1,9 @@
-import {
-    ClockIcon,
-    IdentificationCardIcon,
-    SuitcaseRollingIcon,
-    type Icon,
-} from '@phosphor-icons/react';
 import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
 import { useModeLabels } from '@/hooks/use-mode-labels';
-import { modeIcons } from '@/utils/mode';
+import { getRouteStepIcon } from '@/utils/route-step';
 
 interface RouteStepIconProps {
     step: Api.RouteStep;
@@ -26,43 +20,32 @@ const RouteStepIcon = ({
     const { t } = useTranslation();
     const modeLabels = useModeLabels();
     const { getWaitingAtLabel } = useTransitStepLabels();
-    const describeIcon = (): { icon: Icon; label: string } => {
+    const describeIcon = (): string => {
         switch (step.activity) {
             case 'walkingToStop':
             case 'walkingToDestination':
-                return { icon: modeIcons.walking, label: modeLabels.walking };
+                return modeLabels.walking;
             case 'waitingAtStop':
-                return {
-                    icon: ClockIcon,
-                    label: getWaitingAtLabel(step.boardingMode),
-                };
+                return getWaitingAtLabel(step.boardingMode);
             case 'boarding':
-                return {
-                    icon: IdentificationCardIcon,
-                    label: t('transitStep.securityAndBoarding'),
-                };
+                return t('transitStep.securityAndBoarding');
             case 'unboarding':
-                return {
-                    icon: SuitcaseRollingIcon,
-                    label: t('transitStep.unboardingAndLuggage'),
-                };
+                return t('transitStep.unboardingAndLuggage');
             case 'inVehicle':
-                return {
-                    icon: modeIcons[step.mode],
-                    label: modeLabels[step.mode],
-                };
+                return modeLabels[step.mode];
             default:
                 return step satisfies never;
         }
     };
-    const { icon: StepIcon, label } = describeIcon();
+    const StepIcon = getRouteStepIcon(step);
 
     return (
+        // eslint-disable-next-line react-hooks/static-components -- returns a module-level component
         <StepIcon
             className={className}
             {...(decorative
                 ? { 'aria-hidden': true }
-                : { role: 'img', 'aria-label': label })}
+                : { role: 'img', 'aria-label': describeIcon() })}
         />
     );
 };
