@@ -44,18 +44,16 @@ export const LabeledLineLayer = ({
     return (
         <>
             <Source id={id} type="geojson" data={geometry}>
-                {selected && (
-                    <Layer
-                        id={`${id}-glow`}
-                        type="line"
-                        layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-                        paint={{
-                            'line-color': color,
-                            'line-width': 12,
-                            'line-opacity': 0.22,
-                        }}
-                    />
-                )}
+                <Layer
+                    id={`${id}-glow`}
+                    type="line"
+                    layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+                    paint={{
+                        'line-color': color,
+                        'line-width': 12,
+                        'line-opacity': selected ? 0.22 : 0,
+                    }}
+                />
                 <Layer
                     id={`${id}-line`}
                     type="line"
