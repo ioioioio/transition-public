@@ -24,6 +24,8 @@ export interface LabeledLineLayerProps {
     id: string;
     geometry: LineString;
     styles: LabeledLineLayerStyles;
+    /** The theme variable of the line's own color. */
+    color: `--${string}`;
     /** How much the line stands out from the others. */
     emphasis: LineEmphasis;
     /** Shown in a pill on the line. */
@@ -33,6 +35,11 @@ export interface LabeledLineLayerProps {
     onClick?: () => void;
 }
 
+const lineOpacities: Record<LineEmphasis, number> = {
+    default: 0.65,
+    selected: 1,
+    muted: 0.5,
+};
 // Between repeated icons, in pixels
 const iconSpacing = 75;
 
@@ -41,6 +48,7 @@ export const LabeledLineLayer = ({
     id,
     geometry,
     styles,
+    color: colorVariable,
     emphasis,
     label,
     icon,
@@ -50,7 +58,9 @@ export const LabeledLineLayer = ({
     const selected = emphasis === 'selected';
     // Out of the way of the selected line's labels
     const shownLabel = emphasis === 'muted' ? undefined : label;
-    const color = useThemeColor(selected ? '--primary' : '--foreground');
+    const color = useThemeColor(
+        emphasis === 'muted' ? '--foreground' : colorVariable,
+    );
     const hitLayerId = `${id}-hit`;
     useLayerClick(hitLayerId, onClick);
     // A finger needs a wider target than a mouse
@@ -79,7 +89,7 @@ export const LabeledLineLayer = ({
                     paint={{
                         'line-color': color,
                         'line-width': selected ? 4 : 2.5,
-                        'line-opacity': selected ? 1 : 0.5,
+                        'line-opacity': lineOpacities[emphasis],
                         ...(dashArray && { 'line-dasharray': dashArray }),
                     }}
                 />

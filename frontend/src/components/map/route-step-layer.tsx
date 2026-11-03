@@ -8,6 +8,8 @@ import {
     type LineEmphasis,
 } from '@/components/map/labeled-line-layer';
 import { createCurve } from '@/utils/geo';
+import { modeColors } from '@/utils/mode';
+import { getRouteStepMode } from '@/utils/route-step';
 
 export interface RouteStepLayerStyles {
     line: LabeledLineLayerStyles;
@@ -56,6 +58,7 @@ export const RouteStepLayer = ({
             id={id}
             geometry={geometry}
             styles={styles.line}
+            color={modeColors[getRouteStepMode(step)]}
             emphasis={emphasis}
             label={label}
             icon={icon}

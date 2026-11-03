@@ -87,6 +87,16 @@
     --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
     --sidebar-border: oklch(0.92 0.004 286.32);
     --sidebar-ring: oklch(0.705 0.015 286.067);
+    /* Each mode's line on the map. Driving and plane are each clearly apart
+       from every other mode. The trains are two shades of one hue, and so are
+       bus and metro. */
+    --mode-driving: #e87ba4;
+    --mode-plane: #2a78d6;
+    --mode-high-speed-rail: #eda100;
+    --mode-rail: #b97d00;
+    --mode-bus: #006b00;
+    --mode-metro: #62b33f;
+    --mode-walking: oklch(0.552 0.016 285.938);
 }
 
 .dark {
@@ -124,6 +134,14 @@
     --sidebar-accent-foreground: #e9e9ed;
     --sidebar-border: color-mix(in srgb, #e9e9ed 16%, transparent);
     --sidebar-ring: #9184d9;
+
+    --mode-driving: #d55181;
+    --mode-plane: #3987e5;
+    --mode-high-speed-rail: #c98500;
+    --mode-rail: #e8b13a;
+    --mode-bus: #007000;
+    --mode-metro: #62cf6b;
+    --mode-walking: oklch(0.705 0.015 286.067);
 }
 
 @layer base {
