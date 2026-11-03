@@ -1,7 +1,7 @@
 import { CaretRightIcon, type Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
-import type { ReactNode, RefCallback } from 'react';
+import { useRef, type ReactNode, type RefCallback } from 'react';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
 import { useLayerClick } from '@/hooks/use-layer-click';
@@ -158,12 +158,27 @@ const stopPropagation = (event: Event) => {
     event.stopPropagation();
 };
 
-// So clicking a label twice doesn't zoom. Layers need to be handled
-// differently, see MapView.
-const stopGesturesReachingMap = (button: HTMLButtonElement | null) => {
+// So clicking a label twice doesn't zoom, and dragging one doesn't pan. On the
+// element itself, as React's handlers run after the map's. Layers need to be
+// handled differently, see MapView.
+const stopGesturesReachingMap = (
+    button: HTMLButtonElement | null,
+    isDraggable: boolean,
+) => {
     button?.addEventListener('dblclick', stopPropagation);
     button?.addEventListener('touchstart', stopPropagation);
+    if (isDraggable) {
+        button?.addEventListener('mousedown', stopPropagation);
+    }
 };
+
+// Below this, in pixels, a press is still a click
+const dragThreshold = 4;
+
+interface Drag {
+    lastPointer: { x: number; y: number };
+    hasMoved: boolean;
+}
 
 export interface LineLabelProps {
     /** As `[longitude, latitude]`. */
@@ -175,6 +190,8 @@ export interface LineLabelProps {
      * leader. On `position` when omitted.
      */
     offset?: { x: number; y: number };
+    /** Makes the label draggable, with how far it moved since the last call, in pixels. */
+    onDrag?: (movement: { x: number; y: number }) => void;
     ref?: RefCallback<HTMLButtonElement>;
     children: ReactNode;
 }
@@ -184,18 +201,61 @@ export const LineLabel = ({
     selected,
     onClick,
     offset,
+    onDrag,
     ref,
     children,
 }: LineLabelProps) => {
     const [longitude, latitude] = position;
+    const drag = useRef<Drag | null>(null);
+    // The click that ends a drag doesn't count
+    const wasDragged = useRef(false);
     const button = (
         <button
             ref={(element) => {
-                stopGesturesReachingMap(element);
+                stopGesturesReachingMap(element, onDrag !== undefined);
                 return ref?.(element);
             }}
             type="button"
             aria-pressed={selected}
+            onPointerDown={(event) => {
+                if (!onDrag) {
+                    return;
+                }
+                // Keeps following the pointer when it leaves the label
+                event.currentTarget.setPointerCapture(event.pointerId);
+                drag.current = {
+                    lastPointer: { x: event.clientX, y: event.clientY },
+                    hasMoved: false,
+                };
+            }}
+            onPointerMove={(event) => {
+                const current = drag.current;
+                if (!current || !onDrag) {
+                    return;
+                }
+                const movement = {
+                    x: event.clientX - current.lastPointer.x,
+                    y: event.clientY - current.lastPointer.y,
+                };
+                if (
+                    !current.hasMoved &&
+                    Math.hypot(movement.x, movement.y) < dragThreshold
+                ) {
+                    return;
+                }
+                drag.current = {
+                    lastPointer: { x: event.clientX, y: event.clientY },
+                    hasMoved: true,
+                };
+                onDrag(movement);
+            }}
+            onPointerUp={() => {
+                wasDragged.current = drag.current?.hasMoved ?? false;
+                drag.current = null;
+            }}
+            onPointerCancel={() => {
+                drag.current = null;
+            }}
             style={
                 offset && {
                     transform: `translate(${String(offset.x)}px, ${String(offset.y)}px) translate(-50%, -50%)`,
@@ -207,6 +267,8 @@ export const LineLabel = ({
                     ? 'border-primary text-primary'
                     : 'border-foreground/20 text-foreground/80',
                 offset && 'absolute top-0 left-0',
+                // So touches drag the label rather than scroll the page
+                onDrag && 'cursor-grab touch-none active:cursor-grabbing',
             )}
         >
             {children}
@@ -222,6 +284,10 @@ export const LineLabel = ({
                 // Keeps the click off the map, but also from reaching the
                 // button's `onClick`, so it's handled here instead.
                 event.originalEvent.stopPropagation();
+                if (wasDragged.current) {
+                    wasDragged.current = false;
+                    return;
+                }
                 onClick?.();
             }}
         >

@@ -17,6 +17,7 @@ interface RoutePathLabelProps {
     steps: Api.RouteStep[];
     selected: boolean;
     onClick: () => void;
+    onDrag: (movement: LabelOffset) => void;
     ref?: RefCallback<HTMLButtonElement>;
 }
 
@@ -27,6 +28,7 @@ const RoutePathLabel = ({
     steps,
     selected,
     onClick,
+    onDrag,
     ref,
 }: RoutePathLabelProps) => {
     const { i18n } = useTranslation();
@@ -41,6 +43,7 @@ const RoutePathLabel = ({
             offset={offset}
             selected={selected}
             onClick={onClick}
+            onDrag={onDrag}
             ref={ref}
         >
             <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />

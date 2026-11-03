@@ -68,7 +68,8 @@ const RoutePathLayers = ({
                 })),
         [drawnRoutes, selectedId],
     );
-    const { placements, registerLabel } = useLabelPlacement(labeledPaths);
+    const { placements, registerLabel, moveLabel } =
+        useLabelPlacement(labeledPaths);
 
     return (
         <>
@@ -102,6 +103,9 @@ const RoutePathLayers = ({
                         ref={registerLabel(route.id)}
                         position={placement.anchor}
                         offset={placement.offset}
+                        onDrag={(movement) => {
+                            moveLabel(route.id, movement);
+                        }}
                         steps={route.steps}
                         selected={selectedId === route.id}
                         onClick={() => {

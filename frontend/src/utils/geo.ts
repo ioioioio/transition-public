@@ -8,6 +8,7 @@ import {
     length,
     lineString,
     midpoint,
+    nearestPointOnLine,
 } from '@turf/turf';
 import type { LineString, Position } from 'geojson';
 
@@ -34,6 +35,19 @@ export const createCurve = (
     return bezierSpline(lineString([start, offset.geometry.coordinates, end]))
         .geometry;
 };
+
+/**
+ * Finds the point of a line closest to a position. A line from the position to it meets the line
+ * at a right angle, except at its ends and corners.
+ *
+ * @param line - The line to search along.
+ * @param position - As `[longitude, latitude]`.
+ * @returns The closest point, as `[longitude, latitude]`.
+ */
+export const findNearestPointOnLine = (
+    line: LineString,
+    position: Position,
+): Position => nearestPointOnLine(line, position).geometry.coordinates;
 
 /**
  * Gets the point at a fraction of a line's length.
