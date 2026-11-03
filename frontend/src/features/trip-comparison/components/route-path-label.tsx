@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LineLabel } from '@/components/map/labeled-line-layer';
 import { createRouteSummary } from '@/features/trip-comparison/utils/route';
+import type { LabelOffset } from '@/hooks/use-label-placement';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
@@ -12,6 +13,7 @@ import { modeIcons } from '@/utils/mode';
 interface RoutePathLabelProps {
     /** As `[longitude, latitude]`. */
     position: Position;
+    offset: LabelOffset;
     steps: Api.RouteStep[];
     selected: boolean;
     onClick: () => void;
@@ -21,6 +23,7 @@ interface RoutePathLabelProps {
 // Sums up a route on the map
 const RoutePathLabel = ({
     position,
+    offset,
     steps,
     selected,
     onClick,
@@ -35,6 +38,7 @@ const RoutePathLabel = ({
     return (
         <LineLabel
             position={position}
+            offset={offset}
             selected={selected}
             onClick={onClick}
             ref={ref}

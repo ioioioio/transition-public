@@ -47,3 +47,54 @@ export const getPointAlong = (line: LineString, fraction: number): Position => {
     const clamped = Math.min(Math.max(fraction, 0), 1);
     return along(line, length(feature(line)) * clamped).geometry.coordinates;
 };
+
+/**
+ * Gets the points at several fractions of a line's length, walking it only once. Faster than
+ * `getPointAlong` for each, on long lines.
+ *
+ * @param line - The line to walk along.
+ * @param fractions - Where to stop, each from `0` (its first point) to `1` (its last point).
+ *   Clamped to that range.
+ * @returns The points, in the order of `fractions`, as `[longitude, latitude]`.
+ */
+export const getPointsAlong = (
+    line: LineString,
+    fractions: number[],
+): Position[] => {
+    const { coordinates } = line;
+    // From the start to each point
+    const distances = [0];
+    coordinates.forEach((point, index) => {
+        const previous = coordinates.at(index - 1);
+        if (index === 0 || !previous) {
+            return;
+        }
+        distances.push((distances.at(-1) ?? 0) + distance(previous, point));
+    });
+    const totalDistance = distances.at(-1) ?? 0;
+    return fractions.map((fraction) => {
+        const target = totalDistance * Math.min(Math.max(fraction, 0), 1);
+        const endIndex = Math.max(
+            distances.findIndex((pointDistance) => pointDistance >= target),
+            1,
+        );
+        const start = coordinates.at(endIndex - 1);
+        const end = coordinates.at(endIndex);
+        if (!start || !end) {
+            return coordinates.at(0) ?? [0, 0];
+        }
+        const startDistance = distances.at(endIndex - 1) ?? 0;
+        const segmentDistance = (distances.at(endIndex) ?? 0) - startDistance;
+        // Within a segment, the line is short enough to be straight
+        const ratio =
+            segmentDistance > 0
+                ? (target - startDistance) / segmentDistance
+                : 0;
+        const [startLongitude = 0, startLatitude = 0] = start;
+        const [endLongitude = 0, endLatitude = 0] = end;
+        return [
+            startLongitude + (endLongitude - startLongitude) * ratio,
+            startLatitude + (endLatitude - startLatitude) * ratio,
+        ];
+    });
+};

@@ -9,6 +9,7 @@ import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
+import { markerLayers } from '@/utils/marker-layers';
 
 export interface LabeledLineLayerStyles {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
@@ -169,6 +170,11 @@ export interface LineLabelProps {
     position: Position;
     selected: boolean;
     onClick?: () => void;
+    /**
+     * From `position` to the label's centre, in pixels. The label is then linked to `position` by a
+     * leader. On `position` when omitted.
+     */
+    offset?: { x: number; y: number };
     ref?: RefCallback<HTMLButtonElement>;
     children: ReactNode;
 }
@@ -177,15 +183,41 @@ export const LineLabel = ({
     position,
     selected,
     onClick,
+    offset,
     ref,
     children,
 }: LineLabelProps) => {
     const [longitude, latitude] = position;
+    const button = (
+        <button
+            ref={(element) => {
+                stopGesturesReachingMap(element);
+                return ref?.(element);
+            }}
+            type="button"
+            aria-pressed={selected}
+            style={
+                offset && {
+                    transform: `translate(${String(offset.x)}px, ${String(offset.y)}px) translate(-50%, -50%)`,
+                }
+            }
+            className={cn(
+                'flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
+                selected
+                    ? 'border-primary text-primary'
+                    : 'border-foreground/20 text-foreground/80',
+                offset && 'absolute top-0 left-0',
+            )}
+        >
+            {children}
+        </button>
+    );
 
-    return (
+    const label = (
         <Marker
             longitude={longitude}
             latitude={latitude}
+            style={{ zIndex: markerLayers.label }}
             onClick={(event) => {
                 // Keeps the click off the map, but also from reaching the
                 // button's `onClick`, so it's handled here instead.
@@ -193,22 +225,49 @@ export const LineLabel = ({
                 onClick?.();
             }}
         >
-            <button
-                ref={(button) => {
-                    stopGesturesReachingMap(button);
-                    return ref?.(button);
-                }}
-                type="button"
-                aria-pressed={selected}
-                className={cn(
-                    'flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
-                    selected
-                        ? 'border-primary text-primary'
-                        : 'border-foreground/20 text-foreground/80',
-                )}
-            >
-                {children}
-            </button>
+            {offset ? (
+                // No size of its own, so the marker is centred on `position`
+                <div className="relative size-0">{button}</div>
+            ) : (
+                button
+            )}
         </Marker>
+    );
+    if (!offset) {
+        return label;
+    }
+
+    return (
+        <>
+            {/* A marker of its own, so it can be below every label */}
+            <Marker
+                longitude={longitude}
+                latitude={latitude}
+                style={{ zIndex: markerLayers.leader }}
+            >
+                <div className="relative size-0">
+                    <svg
+                        aria-hidden
+                        width={1}
+                        height={1}
+                        className={cn(
+                            'pointer-events-none absolute top-0 left-0 overflow-visible',
+                            selected ? 'text-primary' : 'text-foreground/50',
+                        )}
+                    >
+                        <line
+                            x1={0}
+                            y1={0}
+                            x2={offset.x}
+                            y2={offset.y}
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                        />
+                        <circle r={3} fill="currentColor" />
+                    </svg>
+                </div>
+            </Marker>
+            {label}
+        </>
     );
 };

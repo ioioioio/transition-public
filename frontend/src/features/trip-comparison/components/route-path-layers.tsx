@@ -1,4 +1,5 @@
 import type { Api } from 'common';
+import { useMemo } from 'react';
 
 import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
@@ -39,25 +40,35 @@ const RoutePathLayers = ({
         onSelect(selectedId === id ? null : id);
     };
 
-    const drawnRoutes = sortRoutes(
-        routes.filter(({ steps }) => steps.length > 0),
-        'travelTime',
-    ).map((route, rank, sortedRoutes) => ({
-        route,
-        styles: createRoutePathStyles(rank, sortedRoutes.length),
-    }));
-    // When a route is selected, the others' label is hidden
-    const isShown = (id: string) => selectedId === null || selectedId === id;
-
-    // Fastest first, so its label gets the best spot
-    const { positions, registerLabel } = useLabelPlacement(
-        drawnRoutes
-            .filter(({ route }) => isShown(route.id))
-            .map(({ route, styles }) => ({
-                id: route.id,
-                line: createRoutePathGeometry(route.steps, styles.bend),
+    const drawnRoutes = useMemo(
+        () =>
+            sortRoutes(
+                routes.filter(({ steps }) => steps.length > 0),
+                'travelTime',
+            ).map((route, rank, sortedRoutes) => ({
+                route,
+                styles: createRoutePathStyles(rank, sortedRoutes.length),
             })),
+        [routes],
     );
+
+    // Fastest first, so its label gets the best spot. Built again only when
+    // the routes or what's shown change, as labels are placed again from them.
+    const labeledPaths = useMemo(
+        () =>
+            drawnRoutes
+                // When a route is selected, the others' label is hidden
+                .filter(
+                    ({ route }) =>
+                        selectedId === null || selectedId === route.id,
+                )
+                .map(({ route, styles }) => ({
+                    id: route.id,
+                    line: createRoutePathGeometry(route.steps, styles.bend),
+                })),
+        [drawnRoutes, selectedId],
+    );
+    const { placements, registerLabel } = useLabelPlacement(labeledPaths);
 
     return (
         <>
@@ -81,15 +92,16 @@ const RoutePathLayers = ({
                 />
             ))}
             {drawnRoutes.map(({ route }) => {
-                const position = positions.get(route.id);
-                if (!position) {
+                const placement = placements.get(route.id);
+                if (!placement) {
                     return null;
                 }
                 return (
                     <RoutePathLabel
                         key={route.id}
                         ref={registerLabel(route.id)}
-                        position={position}
+                        position={placement.anchor}
+                        offset={placement.offset}
                         steps={route.steps}
                         selected={selectedId === route.id}
                         onClick={() => {

@@ -1,6 +1,8 @@
 import { Marker } from '@vis.gl/react-maplibre';
 import type { Utils } from 'common';
 
+import { markerLayers } from '@/utils/marker-layers';
+
 interface PlaceMarkerProps {
     label: string;
     position: Utils.LngLat;
@@ -13,6 +15,7 @@ const PlaceMarker = ({ label, position, onMove }: PlaceMarkerProps) => {
             longitude={position.lng}
             latitude={position.lat}
             draggable
+            style={{ zIndex: markerLayers.place }}
             onClick={(event) => {
                 event.originalEvent.stopPropagation();
             }}
