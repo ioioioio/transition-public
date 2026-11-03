@@ -1,4 +1,4 @@
-import type { Icon } from '@phosphor-icons/react';
+import { CaretRightIcon, type Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
@@ -40,8 +40,11 @@ const lineOpacities: Record<LineEmphasis, number> = {
     selected: 1,
     muted: 0.5,
 };
-// Between repeated icons, in pixels
-const iconSpacing = 75;
+
+const iconSizePixels = 16;
+const iconSpacingPixels = 75;
+const arrowSizePixels = 12;
+const arrowSpacingPixels = 15;
 
 // A line, with an optional label on it
 export const LabeledLineLayer = ({
@@ -67,7 +70,15 @@ export const LabeledLineLayer = ({
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
     const haloColor = useThemeColor('--background');
     const iconImageId = `${id}-icon-${color}-${haloColor}`;
-    const iconRepeatZoom = useZoomForLength(geometry, iconSpacing * 2);
+    const iconRepeatZoom = useZoomForLength(geometry, iconSpacingPixels * 2);
+    const arrowImageId = `line-arrow-${color}-${haloColor}`;
+    const iconLayout = {
+        // Hidden rather than removed, so it keeps its place under other layers
+        visibility: emphasis === 'muted' ? 'none' : 'visible',
+        'icon-image': iconImageId,
+        'icon-allow-overlap': true,
+        'icon-keep-upright': true,
+    } as const;
 
     return (
         <>
@@ -99,6 +110,18 @@ export const LabeledLineLayer = ({
                     type="line"
                     paint={{ 'line-width': hitWidth, 'line-opacity': 0 }}
                 />
+                {/* Which way the line goes */}
+                <Layer
+                    id={`${id}-arrows`}
+                    type="symbol"
+                    layout={{
+                        'symbol-placement': 'line',
+                        'symbol-spacing': arrowSpacingPixels,
+                        'icon-image': arrowImageId,
+                        'icon-keep-upright': false,
+                    }}
+                    paint={{ 'icon-opacity': selected ? 1 : 0.5 }}
+                />
                 {/* Repeated icons start near the line's start, so they'd
                     crowd its start while the line is short on screen */}
                 <Layer
@@ -106,11 +129,8 @@ export const LabeledLineLayer = ({
                     type="symbol"
                     maxzoom={iconRepeatZoom}
                     layout={{
-                        visibility: emphasis === 'muted' ? 'none' : 'visible',
                         'symbol-placement': 'line-center',
-                        'icon-image': iconImageId,
-                        'icon-allow-overlap': true,
-                        'icon-keep-upright': true,
+                        ...iconLayout,
                     }}
                 />
                 <Layer
@@ -118,12 +138,9 @@ export const LabeledLineLayer = ({
                     type="symbol"
                     minzoom={iconRepeatZoom}
                     layout={{
-                        visibility: emphasis === 'muted' ? 'none' : 'visible',
                         'symbol-placement': 'line',
-                        'symbol-spacing': iconSpacing,
-                        'icon-image': iconImageId,
-                        'icon-allow-overlap': true,
-                        'icon-keep-upright': true,
+                        'symbol-spacing': iconSpacingPixels,
+                        ...iconLayout,
                     }}
                 />
             </Source>
@@ -132,7 +149,14 @@ export const LabeledLineLayer = ({
                 icon={icon}
                 color={color}
                 haloColor={haloColor}
-                size={16}
+                size={iconSizePixels}
+            />
+            <MapIconImage
+                id={arrowImageId}
+                icon={CaretRightIcon}
+                color={color}
+                haloColor={haloColor}
+                size={arrowSizePixels}
             />
             {shownLabel && (
                 <LineLabel
