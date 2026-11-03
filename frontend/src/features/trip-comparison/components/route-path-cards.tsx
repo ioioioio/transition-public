@@ -9,13 +9,19 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
     BestRouteBadge,
+    BestRouteIconBadge,
     RoutePathCardDetails,
     RoutePathCardHeader,
 } from '@/features/trip-comparison/components/route-path-card';
 import type { RouteOrder } from '@/features/trip-comparison/types/route';
+import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useIsPhone } from '@/hooks/use-is-phone';
+import { useModeLabels } from '@/hooks/use-mode-labels';
+import { formatDuration } from '@/utils/format';
+import { modeIcons } from '@/utils/mode';
 
 interface RoutePathCardProps {
     id: string;
@@ -49,29 +55,49 @@ const RoutePathAccordionCard = ({
     </AccordionItem>
 );
 
-interface RoutePathButtonCardProps {
+interface RoutePathOptionProps {
+    id: string;
     steps: Api.RouteStep[];
+    // In its corner
     badge?: ReactNode;
-    selected: boolean;
-    onClick: () => void;
 }
 
-// Beside the map, which shows the route's details in its label
-const RoutePathButtonCard = ({
-    steps,
-    badge,
-    selected,
-    onClick,
-}: RoutePathButtonCardProps) => (
-    <button
-        type="button"
-        aria-pressed={selected}
-        onClick={onClick}
-        className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-medium ring-1 ring-foreground/10 ring-inset outline-none hover:bg-card focus-visible:ring-3 focus-visible:ring-ring/50 aria-pressed:bg-card aria-pressed:ring-primary/50"
-    >
-        <RoutePathCardHeader steps={steps} badge={badge} selected={selected} />
-    </button>
-);
+// Beside the map, which shows the route's details in its label. Its modes'
+// icons tell it apart from routes with the same main mode.
+const RoutePathOption = ({ id, steps, badge }: RoutePathOptionProps) => {
+    const { i18n } = useTranslation();
+    const modeLabels = useModeLabels();
+    const { rankedModes, travelTimeSeconds } = createRouteSummary(steps);
+    const mainMode = rankedModes.at(0) ?? 'other';
+    // E.g. "Plane + Bus", as the icons alone don't say it
+    const title = rankedModes
+        .map((rankedMode) => modeLabels[rankedMode])
+        .join(' + ');
+
+    return (
+        <ToggleGroupItem
+            value={id}
+            className="relative h-auto flex-col gap-1 rounded-md px-1 py-2 text-muted-foreground hover:border-primary/60 hover:bg-transparent aria-pressed:border-primary aria-pressed:bg-primary/10 aria-pressed:text-primary aria-pressed:hover:text-primary [&_svg:not([class*='size-'])]:size-auto"
+        >
+            {badge && (
+                <span className="absolute top-0.5 right-0.5 flex">{badge}</span>
+            )}
+            <span aria-hidden className="flex items-center gap-1 text-lg">
+                {rankedModes.map((rankedMode) => {
+                    const ModeIcon = modeIcons[rankedMode];
+                    return <ModeIcon key={rankedMode} />;
+                })}
+            </span>
+            <span className="sr-only">{title}</span>
+            <span aria-hidden className="text-xs">
+                {modeLabels[mainMode]}
+            </span>
+            <span className="text-sm font-normal text-foreground tabular-nums">
+                {formatDuration(travelTimeSeconds, i18n.language)}
+            </span>
+        </ToggleGroupItem>
+    );
+};
 
 const RoutePathCardSkeleton = () => (
     <div className="flex h-18.5 items-center gap-3 rounded-lg px-4 ring-1 ring-foreground/10 ring-inset">
@@ -101,10 +127,9 @@ const RoutePathCards = ({
     const { t } = useTranslation();
     const isPhone = useIsPhone();
     // Only stands out when there's more than one
+    const isBest = (index: number) => index === 0 && routes.length > 1;
     const getBadge = (index: number) =>
-        index === 0 && routes.length > 1 ? (
-            <BestRouteBadge order={order} />
-        ) : null;
+        isBest(index) ? <BestRouteBadge order={order} /> : null;
     return (
         <div className="flex flex-col gap-2">
             {isPhone ? (
@@ -126,19 +151,30 @@ const RoutePathCards = ({
                     ))}
                 </Accordion>
             ) : (
-                <div className="flex flex-col gap-2">
+                <ToggleGroup
+                    aria-label={t('tripComparison.routes')}
+                    variant="outline"
+                    spacing={1}
+                    className="grid w-full grid-cols-3"
+                    value={selectedId ? [selectedId] : []}
+                    // Pressing the selected route again unselects it
+                    onValueChange={(value: string[]) => {
+                        onSelect(value.at(0) ?? null);
+                    }}
+                >
                     {routes.map(({ id, steps }, index) => (
-                        <RoutePathButtonCard
+                        <RoutePathOption
                             key={id}
+                            id={id}
                             steps={steps}
-                            badge={getBadge(index)}
-                            selected={selectedId === id}
-                            onClick={() => {
-                                onSelect(selectedId === id ? null : id);
-                            }}
+                            badge={
+                                isBest(index) && (
+                                    <BestRouteIconBadge order={order} />
+                                )
+                            }
                         />
                     ))}
-                </div>
+                </ToggleGroup>
             )}
             {isLoading && (
                 <div role="status" className="flex flex-col gap-2">

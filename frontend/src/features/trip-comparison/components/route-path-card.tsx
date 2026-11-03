@@ -1,4 +1,4 @@
-import { RulerIcon } from '@phosphor-icons/react';
+import { RulerIcon, TrophyIcon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 import * as m from 'motion/react-m';
 import type { ReactNode } from 'react';
@@ -35,6 +35,24 @@ export interface RouteSummaryLayoutIds {
     icon: string;
     travelTime: string;
 }
+
+// Where there's no room for the badge's text, which it still gives to screen
+// readers and as a tooltip
+export const BestRouteIconBadge = ({ order }: BestRouteBadgeProps) => {
+    const { t } = useTranslation();
+    const labels: Record<RouteOrder, string> = {
+        travelTime: t('bestRoute.travelTime'),
+    };
+    return (
+        <Badge
+            title={labels[order]}
+            className="h-auto rounded-sm bg-highlight p-0.5 text-highlight-foreground [&>svg]:size-2.5!"
+        >
+            <TrophyIcon weight="fill" aria-hidden />
+            <span className="sr-only">{labels[order]}</span>
+        </Badge>
+    );
+};
 
 interface RoutePathCardHeaderProps {
     steps: Api.RouteStep[];
