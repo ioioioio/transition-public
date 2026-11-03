@@ -65,7 +65,8 @@ function TripComparison({
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
 
     return (
-        <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
+        // Beside a phone's map, but over the whole of a larger screen's
+        <div className="relative flex min-h-dvh flex-col bg-background md:h-dvh">
             <SidePanel>
                 <TripComparisonForm
                     origin={origin}
@@ -85,7 +86,7 @@ function TripComparison({
                     onSelect={onSelectedRouteIdChange}
                 />
             </SidePanel>
-            <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
+            <div className="order-first h-[60svh] md:absolute md:inset-0 md:h-auto">
                 <MapView
                     camera={mapCamera}
                     onCameraChange={onMapCameraChange}
