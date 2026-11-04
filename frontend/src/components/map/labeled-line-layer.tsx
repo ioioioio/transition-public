@@ -1,7 +1,9 @@
+import type { Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
 import type { ReactNode } from 'react';
 
+import { MapIconImage } from '@/components/map/map-icon-image';
 import { useLayerClick } from '@/hooks/use-layer-click';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -25,8 +27,13 @@ export interface LabeledLineLayerProps {
     emphasis: LineEmphasis;
     /** Shown in a pill on the line. */
     label?: ReactNode;
+    /** Repeated along the line, drawn by the map. */
+    icon: Icon;
     onClick?: () => void;
 }
+
+// Between repeated icons, in pixels
+const iconSpacing = 75;
 
 // A line, with an optional label on it
 export const LabeledLineLayer = ({
@@ -35,6 +42,7 @@ export const LabeledLineLayer = ({
     styles,
     emphasis,
     label,
+    icon,
     onClick,
 }: LabeledLineLayerProps) => {
     const { dashArray, labelPosition = 0.5 } = styles;
@@ -46,6 +54,8 @@ export const LabeledLineLayer = ({
     useLayerClick(hitLayerId, onClick);
     // A finger needs a wider target than a mouse
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
+    const haloColor = useThemeColor('--background');
+    const iconImageId = `${id}-icon-${color}-${haloColor}`;
 
     return (
         <>
@@ -77,7 +87,26 @@ export const LabeledLineLayer = ({
                     type="line"
                     paint={{ 'line-width': hitWidth, 'line-opacity': 0 }}
                 />
+                <Layer
+                    id={`${id}-icon`}
+                    type="symbol"
+                    layout={{
+                        visibility: emphasis === 'muted' ? 'none' : 'visible',
+                        'symbol-placement': 'line',
+                        'symbol-spacing': iconSpacing,
+                        'icon-image': iconImageId,
+                        'icon-allow-overlap': true,
+                        'icon-keep-upright': true,
+                    }}
+                />
             </Source>
+            <MapIconImage
+                id={iconImageId}
+                icon={icon}
+                color={color}
+                haloColor={haloColor}
+                size={16}
+            />
             {shownLabel && (
                 <LineLabel
                     position={getPointAlong(geometry, labelPosition)}

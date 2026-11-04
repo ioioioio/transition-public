@@ -1,3 +1,4 @@
+import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 import type { ReactNode } from 'react';
 
@@ -18,6 +19,7 @@ export interface RouteStepLayerProps {
     id: string;
     step: Api.RouteStep;
     label?: ReactNode;
+    icon: Icon;
     styles: RouteStepLayerStyles;
     emphasis: LineEmphasis;
     onClick?: () => void;
@@ -27,6 +29,7 @@ export const RouteStepLayer = ({
     id,
     step,
     label,
+    icon,
     styles,
     emphasis,
     onClick,
@@ -55,6 +58,7 @@ export const RouteStepLayer = ({
             styles={styles.line}
             emphasis={emphasis}
             label={label}
+            icon={icon}
             onClick={onClick}
         />
     );

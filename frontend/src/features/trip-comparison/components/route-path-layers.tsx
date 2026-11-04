@@ -6,6 +6,7 @@ import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { formatDuration } from '@/utils/format';
+import { getRouteStepIcon } from '@/utils/route-step';
 
 /**
  * Styles a path by its rank, from the fastest (`0`) to the slowest
@@ -65,6 +66,7 @@ const RoutePathLayers = ({
                 id={`route-${id}`}
                 steps={steps}
                 renderStepLabel={(step) => <RouteStepLabel step={step} />}
+                getStepIcon={getRouteStepIcon}
                 styles={createRoutePathStyles(rank, drawnRoutes.length)}
                 emphasis={
                     selectedId === null
