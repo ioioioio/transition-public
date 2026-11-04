@@ -1,6 +1,8 @@
 import { Marker } from '@vis.gl/react-maplibre';
 import type { Utils } from 'common';
 
+import { markerStacking } from '@/utils/marker-stacking';
+
 interface PlaceMarkerProps {
     label: string;
     position: Utils.LngLat;
@@ -12,6 +14,7 @@ const PlaceMarker = ({ label, position, onMove }: PlaceMarkerProps) => {
         <Marker
             longitude={position.lng}
             latitude={position.lat}
+            style={{ zIndex: markerStacking.place }}
             draggable
             onClick={(event) => {
                 event.originalEvent.stopPropagation();

@@ -104,21 +104,22 @@ const RoutePathLayers = ({
             {drawnRoutes
                 .filter(({ route }) => isShown(route.id))
                 .map(({ route }) => {
-                    const position =
-                        labelPositions.get(route.id) ??
-                        defaultLabelPositions.get(route.id);
-                    if (!position) {
+                    const defaultPosition = defaultLabelPositions.get(route.id);
+                    if (!defaultPosition) {
                         return null;
                     }
                     return (
                         <RoutePathLabel
                             key={route.id}
-                            position={position}
+                            position={
+                                labelPositions.get(route.id) ?? defaultPosition
+                            }
                             steps={route.steps}
                             selected={selectedId === route.id}
                             onClick={() => {
                                 toggle(route.id);
                             }}
+                            anchor={defaultPosition}
                             onDrag={(draggedTo) => {
                                 moveLabel(route.id, draggedTo);
                             }}

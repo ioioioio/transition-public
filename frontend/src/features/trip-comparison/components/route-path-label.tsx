@@ -17,6 +17,7 @@ interface RoutePathLabelProps {
     steps: Api.RouteStep[];
     selected: boolean;
     onClick: () => void;
+    anchor: LineLabelProps['anchor'];
     onDrag: LineLabelProps['onDrag'];
 }
 
@@ -26,6 +27,7 @@ const RoutePathLabel = ({
     steps,
     selected,
     onClick,
+    anchor,
     onDrag,
 }: RoutePathLabelProps) => {
     const { i18n } = useTranslation();
@@ -39,6 +41,7 @@ const RoutePathLabel = ({
             position={position}
             selected={selected}
             onClick={onClick}
+            anchor={anchor}
             onDrag={onDrag}
         >
             <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />
