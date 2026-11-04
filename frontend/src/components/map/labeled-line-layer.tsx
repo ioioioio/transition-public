@@ -7,6 +7,7 @@ import { MapIconImage } from '@/components/map/map-icon-image';
 import { useLayerClick } from '@/hooks/use-layer-click';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
 import { getPointAlong } from '@/utils/geo';
 
@@ -56,6 +57,7 @@ export const LabeledLineLayer = ({
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
     const haloColor = useThemeColor('--background');
     const iconImageId = `${id}-icon-${color}-${haloColor}`;
+    const iconRepeatZoom = useZoomForLength(geometry, iconSpacing * 2);
 
     return (
         <>
@@ -87,9 +89,24 @@ export const LabeledLineLayer = ({
                     type="line"
                     paint={{ 'line-width': hitWidth, 'line-opacity': 0 }}
                 />
+                {/* Repeated icons start near the line's start, so they'd
+                    crowd its start while the line is short on screen */}
+                <Layer
+                    id={`${id}-icon-center`}
+                    type="symbol"
+                    maxzoom={iconRepeatZoom}
+                    layout={{
+                        visibility: emphasis === 'muted' ? 'none' : 'visible',
+                        'symbol-placement': 'line-center',
+                        'icon-image': iconImageId,
+                        'icon-allow-overlap': true,
+                        'icon-keep-upright': true,
+                    }}
+                />
                 <Layer
                     id={`${id}-icon`}
                     type="symbol"
+                    minzoom={iconRepeatZoom}
                     layout={{
                         visibility: emphasis === 'muted' ? 'none' : 'visible',
                         'symbol-placement': 'line',
