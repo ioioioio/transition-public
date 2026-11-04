@@ -7,9 +7,12 @@ import {
     type LabeledLineLayerStyles,
     type LineEmphasis,
 } from '@/components/map/labeled-line-layer';
-import { createCurve } from '@/utils/geo';
 import { modeColors } from '@/utils/mode';
-import { getRouteStepMode } from '@/utils/route-step';
+import {
+    createRouteStepGeometry,
+    getRouteStepMode,
+    isTravelRouteStep,
+} from '@/utils/route-step';
 
 export interface RouteStepLayerStyles {
     line: LabeledLineLayerStyles;
@@ -37,21 +40,10 @@ export const RouteStepLayer = ({
     onClick,
 }: RouteStepLayerProps) => {
     // Stops aren't drawn
-    if (
-        step.activity === 'waitingAtStop' ||
-        step.activity === 'boarding' ||
-        step.activity === 'unboarding'
-    ) {
+    if (!isTravelRouteStep(step)) {
         return null;
     }
-    const { coordinates } = step.geometry;
-    const start = coordinates.at(0);
-    const end = coordinates.at(-1);
-    // A step known only by its ends is drawn as an arc between them
-    const geometry =
-        coordinates.length === 2 && start && end
-            ? createCurve(start, end, styles.bend)
-            : step.geometry;
+    const geometry = createRouteStepGeometry(step, styles.bend);
 
     return (
         <LabeledLineLayer
