@@ -1,4 +1,6 @@
 import type { Api } from 'common';
+import type { Position } from 'geojson';
+import { useMemo, useState } from 'react';
 
 import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
@@ -39,13 +41,42 @@ const RoutePathLayers = ({
         onSelect(selectedId === id ? null : id);
     };
 
-    const drawnRoutes = sortRoutes(
-        routes.filter(({ steps }) => steps.length > 0),
-        'travelTime',
-    ).map((route, rank, sortedRoutes) => ({
-        route,
-        styles: createRoutePathStyles(rank, sortedRoutes.length),
-    }));
+    // memo: Need to keep identity for defaultLabelPositions
+    const drawnRoutes = useMemo(
+        () =>
+            sortRoutes(
+                routes.filter(({ steps }) => steps.length > 0),
+                'travelTime',
+            ).map((route, rank, sortedRoutes) => ({
+                route,
+                styles: createRoutePathStyles(rank, sortedRoutes.length),
+            })),
+        [routes],
+    );
+
+    // memo: "Heavy" computation
+    const defaultLabelPositions = useMemo(
+        () =>
+            new Map(
+                drawnRoutes.map(({ route, styles }) => [
+                    route.id,
+                    getPointAlong(
+                        createRoutePathGeometry(route.steps, styles.bend),
+                        0.5,
+                    ),
+                ]),
+            ),
+        [drawnRoutes],
+    );
+
+    const [labelPositions, setLabelPositions] = useState<
+        ReadonlyMap<string, Position>
+    >(() => new Map());
+
+    const moveLabel = (id: string, position: Position) => {
+        setLabelPositions((previous) => new Map(previous).set(id, position));
+    };
+
     // When a route is selected, the others' label is hidden
     const isShown = (id: string) => selectedId === null || selectedId === id;
 
@@ -72,21 +103,28 @@ const RoutePathLayers = ({
             ))}
             {drawnRoutes
                 .filter(({ route }) => isShown(route.id))
-                .map(({ route, styles }) => (
-                    <RoutePathLabel
-                        key={route.id}
-                        // Halfway along the whole path
-                        position={getPointAlong(
-                            createRoutePathGeometry(route.steps, styles.bend),
-                            0.5,
-                        )}
-                        steps={route.steps}
-                        selected={selectedId === route.id}
-                        onClick={() => {
-                            toggle(route.id);
-                        }}
-                    />
-                ))}
+                .map(({ route }) => {
+                    const position =
+                        labelPositions.get(route.id) ??
+                        defaultLabelPositions.get(route.id);
+                    if (!position) {
+                        return null;
+                    }
+                    return (
+                        <RoutePathLabel
+                            key={route.id}
+                            position={position}
+                            steps={route.steps}
+                            selected={selectedId === route.id}
+                            onClick={() => {
+                                toggle(route.id);
+                            }}
+                            onDrag={(draggedTo) => {
+                                moveLabel(route.id, draggedTo);
+                            }}
+                        />
+                    );
+                })}
         </>
     );
 };

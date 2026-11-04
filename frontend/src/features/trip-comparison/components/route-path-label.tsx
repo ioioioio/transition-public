@@ -2,7 +2,10 @@ import type { Api } from 'common';
 import type { Position } from 'geojson';
 import { useTranslation } from 'react-i18next';
 
-import { LineLabel } from '@/components/map/labeled-line-layer';
+import {
+    LineLabel,
+    type LineLabelProps,
+} from '@/components/map/labeled-line-layer';
 import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
@@ -14,6 +17,7 @@ interface RoutePathLabelProps {
     steps: Api.RouteStep[];
     selected: boolean;
     onClick: () => void;
+    onDrag: LineLabelProps['onDrag'];
 }
 
 // Sums up a route on the map
@@ -22,6 +26,7 @@ const RoutePathLabel = ({
     steps,
     selected,
     onClick,
+    onDrag,
 }: RoutePathLabelProps) => {
     const { i18n } = useTranslation();
     const modeLabels = useModeLabels();
@@ -30,7 +35,12 @@ const RoutePathLabel = ({
     const MainModeIcon = modeIcons[mainMode];
 
     return (
-        <LineLabel position={position} selected={selected} onClick={onClick}>
+        <LineLabel
+            position={position}
+            selected={selected}
+            onClick={onClick}
+            onDrag={onDrag}
+        >
             <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />
             {formatDuration(travelTimeSeconds, i18n.language)}
         </LineLabel>

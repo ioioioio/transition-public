@@ -1,7 +1,7 @@
 import { CaretRightIcon, type Icon } from '@phosphor-icons/react';
 import { Layer, Marker, Source } from '@vis.gl/react-maplibre';
 import type { LineString, Position } from 'geojson';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
 import { useLayerClick } from '@/hooks/use-layer-click';
@@ -157,11 +157,10 @@ const stopPropagation = (event: Event) => {
     event.stopPropagation();
 };
 
-// So clicking a label twice doesn't zoom. Layers need to be handled
-// differently, see MapView.
-const stopGesturesReachingMap = (button: HTMLButtonElement | null) => {
+// So double-clicking a label doesn't zoom. As a listener on the element, since
+// React's run after the map's.
+const stopDoubleClickReachingMap = (button: HTMLButtonElement | null) => {
     button?.addEventListener('dblclick', stopPropagation);
-    button?.addEventListener('touchstart', stopPropagation);
 };
 
 export interface LineLabelProps {
@@ -169,6 +168,8 @@ export interface LineLabelProps {
     position: Position;
     selected: boolean;
     onClick?: () => void;
+    /** Where the label was dragged to, as `[longitude, latitude]`. */
+    onDrag: (position: Position) => void;
     children: ReactNode;
 }
 
@@ -176,30 +177,54 @@ export const LineLabel = ({
     position,
     selected,
     onClick,
+    onDrag,
     children,
 }: LineLabelProps) => {
-    const [longitude, latitude] = position;
+    const [longitude = 0, latitude = 0] = position;
+    const isDragging = useRef(false);
 
     return (
         <Marker
             longitude={longitude}
             latitude={latitude}
+            draggable
+            onDragStart={() => {
+                isDragging.current = true;
+            }}
+            onDrag={(event) => {
+                onDrag([event.lngLat.lng, event.lngLat.lat]);
+            }}
+            onDragEnd={() => {
+                // Keep isDragging true until this event is handled,
+                // so onClick still sees it as a drag
+                setTimeout(() => {
+                    isDragging.current = false;
+                });
+            }}
             onClick={(event) => {
-                // Keeps the click off the map, but also from reaching the
-                // button's `onClick`, so it's handled here instead.
+                // Keeps the click off the map, which would take it as its own
                 event.originalEvent.stopPropagation();
+
+                if (isDragging.current) {
+                    // Ignore the click when a drag ends
+                    return;
+                }
+
                 onClick?.();
             }}
         >
             <button
-                ref={stopGesturesReachingMap}
+                ref={(element) => {
+                    stopDoubleClickReachingMap(element);
+                }}
                 type="button"
                 aria-pressed={selected}
                 className={cn(
-                    'flex cursor-pointer items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
+                    'flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
                     selected
                         ? 'border-primary text-primary'
                         : 'border-foreground/20 text-foreground/80',
+                    'cursor-grab touch-none active:cursor-grabbing',
                 )}
             >
                 {children}
