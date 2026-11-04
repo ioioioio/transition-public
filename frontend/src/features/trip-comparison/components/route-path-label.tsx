@@ -19,6 +19,7 @@ interface RoutePathLabelProps {
     onClick: () => void;
     anchor: LineLabelProps['anchor'];
     onDrag: LineLabelProps['onDrag'];
+    onDrop: LineLabelProps['onDrop'];
 }
 
 // Sums up a route on the map
@@ -29,6 +30,7 @@ const RoutePathLabel = ({
     onClick,
     anchor,
     onDrag,
+    onDrop,
 }: RoutePathLabelProps) => {
     const { i18n } = useTranslation();
     const modeLabels = useModeLabels();
@@ -43,6 +45,7 @@ const RoutePathLabel = ({
             onClick={onClick}
             anchor={anchor}
             onDrag={onDrag}
+            onDrop={onDrop}
         >
             <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />
             {formatDuration(travelTimeSeconds, i18n.language)}

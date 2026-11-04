@@ -6,7 +6,7 @@ import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
-import { getPointAlong } from '@/utils/geo';
+import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
 /**
@@ -41,7 +41,7 @@ const RoutePathLayers = ({
         onSelect(selectedId === id ? null : id);
     };
 
-    // memo: Need to keep identity for defaultLabelPositions
+    // memo: Need to keep identity for labeledPaths
     const drawnRoutes = useMemo(
         () =>
             sortRoutes(
@@ -55,16 +55,20 @@ const RoutePathLayers = ({
     );
 
     // memo: "Heavy" computation
-    const defaultLabelPositions = useMemo(
+    // Each path's line, and its label's default position halfway along it
+    const labeledPaths = useMemo(
         () =>
             new Map(
-                drawnRoutes.map(({ route, styles }) => [
-                    route.id,
-                    getPointAlong(
-                        createRoutePathGeometry(route.steps, styles.bend),
-                        0.5,
-                    ),
-                ]),
+                drawnRoutes.map(({ route, styles }) => {
+                    const line = createRoutePathGeometry(
+                        route.steps,
+                        styles.bend,
+                    );
+                    return [
+                        route.id,
+                        { line, defaultPosition: getPointAlong(line, 0.5) },
+                    ];
+                }),
             ),
         [drawnRoutes],
     );
@@ -75,6 +79,22 @@ const RoutePathLayers = ({
 
     const moveLabel = (id: string, position: Position) => {
         setLabelPositions((previous) => new Map(previous).set(id, position));
+    };
+    // The closest point of each path to its label
+    const [labelAnchors, setLabelAnchors] = useState<
+        ReadonlyMap<string, Position>
+    >(() => new Map());
+    const moveLabelAnchor = (id: string, position: Position) => {
+        const path = labeledPaths.get(id);
+        if (!path) {
+            return;
+        }
+        setLabelAnchors((previous) =>
+            new Map(previous).set(
+                id,
+                findNearestPointOnLine(path.line, position),
+            ),
+        );
     };
 
     // When a route is selected, the others' label is hidden
@@ -104,24 +124,31 @@ const RoutePathLayers = ({
             {drawnRoutes
                 .filter(({ route }) => isShown(route.id))
                 .map(({ route }) => {
-                    const defaultPosition = defaultLabelPositions.get(route.id);
-                    if (!defaultPosition) {
+                    const path = labeledPaths.get(route.id);
+                    if (!path) {
                         return null;
                     }
                     return (
                         <RoutePathLabel
                             key={route.id}
                             position={
-                                labelPositions.get(route.id) ?? defaultPosition
+                                labelPositions.get(route.id) ??
+                                path.defaultPosition
                             }
                             steps={route.steps}
                             selected={selectedId === route.id}
                             onClick={() => {
                                 toggle(route.id);
                             }}
-                            anchor={defaultPosition}
+                            anchor={
+                                labelAnchors.get(route.id) ??
+                                path.defaultPosition
+                            }
                             onDrag={(draggedTo) => {
                                 moveLabel(route.id, draggedTo);
+                            }}
+                            onDrop={(droppedAt) => {
+                                moveLabelAnchor(route.id, droppedAt);
                             }}
                         />
                     );

@@ -175,6 +175,8 @@ export interface LineLabelProps {
     anchor: Position;
     /** Where the label was dragged to, as `[longitude, latitude]`. */
     onDrag: (position: Position) => void;
+    /** Where the label was dropped at the end of a drag, as `[longitude, latitude]`. */
+    onDrop: (position: Position) => void;
     children: ReactNode;
 }
 
@@ -184,6 +186,7 @@ export const LineLabel = ({
     onClick,
     anchor,
     onDrag,
+    onDrop,
     children,
 }: LineLabelProps) => {
     const [longitude = 0, latitude = 0] = position;
@@ -237,7 +240,8 @@ export const LineLabel = ({
                         onDrag([event.lngLat.lng, event.lngLat.lat]);
                     });
                 }}
-                onDragEnd={() => {
+                onDragEnd={(event) => {
+                    onDrop([event.lngLat.lng, event.lngLat.lat]);
                     // Keep isDragging true until this event is handled,
                     // so onClick still sees it as a drag
                     setTimeout(() => {
