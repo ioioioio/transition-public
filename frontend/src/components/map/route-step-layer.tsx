@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import {
     LabeledLineLayer,
     type LabeledLineLayerStyles,
+    type LineEmphasis,
 } from '@/components/map/labeled-line-layer';
 import { createCurve } from '@/utils/geo';
 
@@ -18,7 +19,7 @@ export interface RouteStepLayerProps {
     step: Api.RouteStep;
     label?: ReactNode;
     styles: RouteStepLayerStyles;
-    selected?: boolean;
+    emphasis: LineEmphasis;
     onClick?: () => void;
 }
 
@@ -27,7 +28,7 @@ export const RouteStepLayer = ({
     step,
     label,
     styles,
-    selected,
+    emphasis,
     onClick,
 }: RouteStepLayerProps) => {
     // Stops aren't drawn
@@ -52,7 +53,7 @@ export const RouteStepLayer = ({
             id={id}
             geometry={geometry}
             styles={styles.line}
-            selected={selected}
+            emphasis={emphasis}
             label={label}
             onClick={onClick}
         />

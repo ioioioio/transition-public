@@ -1,6 +1,7 @@
 import type { Api } from 'common';
 import type { ReactNode } from 'react';
 
+import type { LineEmphasis } from '@/components/map/labeled-line-layer';
 import {
     RouteStepLayer,
     type RouteStepLayerStyles,
@@ -13,7 +14,7 @@ export interface RoutePathLayerProps {
     renderStepLabel?: (step: Api.RouteStep) => ReactNode;
     // The same for all the steps of the path
     styles: RouteStepLayerStyles;
-    selected?: boolean;
+    emphasis: LineEmphasis;
     onClick?: () => void;
 }
 
@@ -22,7 +23,7 @@ export const RoutePathLayer = ({
     steps,
     renderStepLabel,
     styles,
-    selected,
+    emphasis,
     onClick,
 }: RoutePathLayerProps) => {
     return steps.map((step, index) => (
@@ -32,7 +33,7 @@ export const RoutePathLayer = ({
             step={step}
             label={renderStepLabel?.(step)}
             styles={styles}
-            selected={selected}
+            emphasis={emphasis}
             onClick={onClick}
         />
     ));

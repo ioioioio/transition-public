@@ -58,24 +58,27 @@ const RoutePathLayers = ({
         'travelTime',
     );
 
-    return drawnRoutes.map(({ id, steps }, rank) => (
-        <RoutePathLayer
-            key={id}
-            id={`route-${id}`}
-            steps={steps}
-            // When a route is selected, the others' labels are hidden
-            renderStepLabel={
-                selectedId === null || selectedId === id
-                    ? (step) => <RouteStepLabel step={step} />
-                    : undefined
-            }
-            styles={createRoutePathStyles(rank, drawnRoutes.length)}
-            selected={selectedId === id}
-            onClick={() => {
-                toggle(id);
-            }}
-        />
-    ));
+    return drawnRoutes.map(({ id, steps }, rank) => {
+        return (
+            <RoutePathLayer
+                key={id}
+                id={`route-${id}`}
+                steps={steps}
+                renderStepLabel={(step) => <RouteStepLabel step={step} />}
+                styles={createRoutePathStyles(rank, drawnRoutes.length)}
+                emphasis={
+                    selectedId === null
+                        ? 'default'
+                        : selectedId === id
+                          ? 'selected'
+                          : 'muted'
+                }
+                onClick={() => {
+                    toggle(id);
+                }}
+            />
+        );
+    });
 };
 
 export default RoutePathLayers;

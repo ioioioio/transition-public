@@ -15,11 +15,14 @@ export interface LabeledLineLayerStyles {
     labelPosition?: number;
 }
 
+export type LineEmphasis = 'default' | 'selected' | 'muted';
+
 export interface LabeledLineLayerProps {
     id: string;
     geometry: LineString;
     styles: LabeledLineLayerStyles;
-    selected?: boolean;
+    /** How much the line stands out from the others. */
+    emphasis: LineEmphasis;
     /** Shown in a pill on the line. */
     label?: ReactNode;
     onClick?: () => void;
@@ -30,11 +33,14 @@ export const LabeledLineLayer = ({
     id,
     geometry,
     styles,
-    selected = false,
+    emphasis,
     label,
     onClick,
 }: LabeledLineLayerProps) => {
     const { dashArray, labelPosition = 0.5 } = styles;
+    const selected = emphasis === 'selected';
+    // Out of the way of the selected line's labels
+    const shownLabel = emphasis === 'muted' ? undefined : label;
     const color = useThemeColor(selected ? '--primary' : '--foreground');
     const hitLayerId = `${id}-hit`;
     useLayerClick(hitLayerId, onClick);
@@ -72,13 +78,13 @@ export const LabeledLineLayer = ({
                     paint={{ 'line-width': hitWidth, 'line-opacity': 0 }}
                 />
             </Source>
-            {label && (
+            {shownLabel && (
                 <LineLabel
                     position={getPointAlong(geometry, labelPosition)}
                     selected={selected}
                     onClick={onClick}
                 >
-                    {label}
+                    {shownLabel}
                 </LineLabel>
             )}
         </>
