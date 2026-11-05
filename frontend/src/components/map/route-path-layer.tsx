@@ -17,6 +17,7 @@ export interface RoutePathLayerProps {
     styles: RouteStepLayerStyles;
     emphasis: LineEmphasis;
     onClick?: () => void;
+    onPress?: () => void;
 }
 
 export const RoutePathLayer = ({
@@ -26,6 +27,7 @@ export const RoutePathLayer = ({
     styles,
     emphasis,
     onClick,
+    onPress,
 }: RoutePathLayerProps) => {
     return steps.map((step, index) => (
         <RouteStepLayer
@@ -36,6 +38,7 @@ export const RoutePathLayer = ({
             styles={styles}
             emphasis={emphasis}
             onClick={onClick}
+            onPress={onPress}
         />
     ));
 };

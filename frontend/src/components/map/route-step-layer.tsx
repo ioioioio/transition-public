@@ -26,6 +26,7 @@ export interface RouteStepLayerProps {
     styles: RouteStepLayerStyles;
     emphasis: LineEmphasis;
     onClick?: () => void;
+    onPress?: () => void;
 }
 
 export const RouteStepLayer = ({
@@ -35,6 +36,7 @@ export const RouteStepLayer = ({
     styles,
     emphasis,
     onClick,
+    onPress,
 }: RouteStepLayerProps) => {
     // Stops aren't drawn
     if (!isTravelRouteStep(step)) {
@@ -51,6 +53,7 @@ export const RouteStepLayer = ({
             emphasis={emphasis}
             icon={icon}
             onClick={onClick}
+            onPress={onPress}
         />
     );
 };

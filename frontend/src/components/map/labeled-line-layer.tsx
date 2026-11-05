@@ -32,6 +32,7 @@ export interface LabeledLineLayerProps {
     /** Repeated along the line, drawn by the map. */
     icon: Icon;
     onClick?: () => void;
+    onPress?: () => void;
 }
 
 const lineOpacities: Record<LineEmphasis, number> = {
@@ -53,6 +54,7 @@ export const LabeledLineLayer = ({
     emphasis,
     icon,
     onClick,
+    onPress,
 }: LabeledLineLayerProps) => {
     const { dashArray } = styles;
     const selected = emphasis === 'selected';
@@ -60,7 +62,7 @@ export const LabeledLineLayer = ({
         emphasis === 'muted' ? '--foreground' : colorVariable,
     );
     const hitLayerId = createNestedId(id, 'hit');
-    useLayerClick(hitLayerId, onClick);
+    useLayerClick(hitLayerId, onClick, onPress);
     // A finger needs a wider target than a mouse
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
     const haloColor = useThemeColor('--background');

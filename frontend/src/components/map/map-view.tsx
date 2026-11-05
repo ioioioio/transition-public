@@ -1,4 +1,8 @@
-import { Map, type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
+import {
+    Map,
+    type MapLayerMouseEvent,
+    type MapLayerTouchEvent,
+} from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Utils } from 'common';
 import {
@@ -53,11 +57,26 @@ const MapView = ({
     const [handlers] = useState(createLayerClickHandlers);
     const [imageCreators] = useState(createMapImageCreators);
     // The topmost of the clickable layers under the pointer
-    const findClickedLayerId = ({ target, point }: MapLayerMouseEvent) => {
+    const findClickedLayerId = ({
+        target,
+        point,
+    }: MapLayerMouseEvent | MapLayerTouchEvent) => {
         const layers = [...handlers.keys()].filter((id) => target.getLayer(id));
         return layers.length > 0
             ? target.queryRenderedFeatures(point, { layers }).at(0)?.layer.id
             : undefined;
+    };
+    const pressLayer = (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
+        const isOnCanvas =
+            event.originalEvent.target === event.target.getCanvas();
+        if (!isOnCanvas) {
+            // A marker over the map, like a label, handles its own presses
+            return;
+        }
+        const layerId = findClickedLayerId(event);
+        if (layerId) {
+            handlers.get(layerId)?.onPress?.();
+        }
     };
     const zoomPause = useRef<ReturnType<typeof setTimeout>>(undefined);
     // So clicking a layer twice doesn't zoom.
@@ -88,11 +107,13 @@ const MapView = ({
                 const layerId = findClickedLayerId(event);
                 if (layerId) {
                     pauseDoubleClickZoom(event);
-                    handlers.get(layerId)?.();
+                    handlers.get(layerId)?.onClick?.();
                 } else {
                     onMapClick(event.lngLat);
                 }
             }}
+            onMouseDown={pressLayer}
+            onTouchStart={pressLayer}
             onMouseMove={(event) => {
                 event.target.getCanvas().style.cursor = findClickedLayerId(
                     event,

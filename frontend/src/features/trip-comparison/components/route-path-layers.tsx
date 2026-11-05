@@ -6,7 +6,7 @@ import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
-import { useStackingOrder } from '@/hooks/use-stacking-order';
+import { useLayerStack } from '@/hooks/use-layer-stack';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createNestedId } from '@/utils/nested-id';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
@@ -106,7 +106,7 @@ const RoutePathLayers = ({
     // When a route is selected, the others' label is hidden
     const isShown = (id: string) => selectedId === null || selectedId === id;
 
-    const routeStack = useStackingOrder();
+    const routeStack = useLayerStack();
 
     return (
         <>
@@ -127,11 +127,14 @@ const RoutePathLayers = ({
                     onClick={() => {
                         toggle(route.id);
                     }}
+                    onPress={() => {
+                        routeStack.raise(pathId);
+                    }}
                 />
             ))}
             {drawnRoutes
                 .filter(({ route }) => isShown(route.id))
-                .map(({ route }) => {
+                .map(({ route, pathId }) => {
                     const path = labeledPaths.get(route.id);
                     if (!path) {
                         return null;
@@ -145,12 +148,12 @@ const RoutePathLayers = ({
                             }
                             steps={route.steps}
                             selected={selectedId === route.id}
-                            stackOrder={routeStack.ids.indexOf(route.id) + 1}
+                            stackOrder={routeStack.ids.indexOf(pathId) + 1}
                             onClick={() => {
                                 toggle(route.id);
                             }}
                             onPress={() => {
-                                routeStack.raise(route.id);
+                                routeStack.raise(pathId);
                             }}
                             anchor={
                                 labelAnchors.get(route.id) ??
