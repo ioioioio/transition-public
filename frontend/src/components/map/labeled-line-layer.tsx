@@ -11,6 +11,7 @@ import { useScreenOffset } from '@/hooks/use-screen-offset';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
+import { isLongPress } from '@/utils/long-press';
 import { markerStacking } from '@/utils/marker-stacking';
 import { createNestedId } from '@/utils/nested-id';
 
@@ -201,6 +202,8 @@ export const LineLabel = ({
     const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
     const labelOffset = useScreenOffset(anchor, position);
     const isDragging = useRef(false);
+    // Null unless pressed by a mouse or finger: keyboard clicks aren't long presses
+    const pressStartedAt = useRef<number | null>(null);
 
     return (
         <>
@@ -260,8 +263,12 @@ export const LineLabel = ({
                     // Keeps the click off the map, which would take it as its own
                     event.originalEvent.stopPropagation();
 
-                    if (isDragging.current) {
-                        // Ignore the click when a drag ends
+                    const wasLongPress =
+                        pressStartedAt.current !== null &&
+                        isLongPress(pressStartedAt.current);
+                    pressStartedAt.current = null;
+                    if (isDragging.current || wasLongPress) {
+                        // Ignore the click when a drag or a long press ends
                         return;
                     }
 
@@ -274,7 +281,10 @@ export const LineLabel = ({
                     }}
                     type="button"
                     aria-pressed={selected}
-                    onPointerDown={onPress}
+                    onPointerDown={() => {
+                        pressStartedAt.current = Date.now();
+                        onPress?.();
+                    }}
                     className={cn(
                         'flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
                         selected

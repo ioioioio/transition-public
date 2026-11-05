@@ -24,6 +24,7 @@ import {
     type MapImageCreators,
 } from '@/hooks/use-map-image-creators';
 import { useTheme } from '@/hooks/use-theme';
+import { isLongPress } from '@/utils/long-press';
 
 // MapLibre locates its worker relative to its own file, which breaks once Vite bundles it.
 setWorkerUrl(maplibreWorkerUrl);
@@ -66,6 +67,10 @@ const MapView = ({
             ? target.queryRenderedFeatures(point, { layers }).at(0)?.layer.id
             : undefined;
     };
+    const lastLayerPress = useRef<{
+        layerId: string;
+        pressStartedAt: number;
+    } | null>(null);
     const pressLayer = (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
         const isOnCanvas =
             event.originalEvent.target === event.target.getCanvas();
@@ -75,9 +80,13 @@ const MapView = ({
         }
         const layerId = findClickedLayerId(event);
         if (layerId) {
+            lastLayerPress.current = { layerId, pressStartedAt: Date.now() };
             handlers.get(layerId)?.onPress?.();
         }
     };
+    const wasLongPressed = (layerId: string) =>
+        lastLayerPress.current?.layerId === layerId &&
+        isLongPress(lastLayerPress.current.pressStartedAt);
     const zoomPause = useRef<ReturnType<typeof setTimeout>>(undefined);
     // So clicking a layer twice doesn't zoom.
     const pauseDoubleClickZoom = ({ target }: MapLayerMouseEvent) => {
@@ -107,7 +116,9 @@ const MapView = ({
                 const layerId = findClickedLayerId(event);
                 if (layerId) {
                     pauseDoubleClickZoom(event);
-                    handlers.get(layerId)?.onClick?.();
+                    if (!wasLongPressed(layerId)) {
+                        handlers.get(layerId)?.onClick?.();
+                    }
                 } else {
                     onMapClick(event.lngLat);
                 }
