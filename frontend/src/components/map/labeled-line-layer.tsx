@@ -170,7 +170,10 @@ export interface LineLabelProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
+    /** Among the labels, higher is in front. `0` by default. */
+    stackOrder?: number;
     onClick?: () => void;
+    onPress?: () => void;
     /** The point the label refers to, linked to it by a leader. As `[longitude, latitude]`. */
     anchor: Position;
     /** Where the label was dragged to, as `[longitude, latitude]`. */
@@ -183,7 +186,9 @@ export interface LineLabelProps {
 export const LineLabel = ({
     position,
     selected,
+    stackOrder = 0,
     onClick,
+    onPress,
     anchor,
     onDrag,
     onDrop,
@@ -229,7 +234,7 @@ export const LineLabel = ({
             <Marker
                 longitude={longitude}
                 latitude={latitude}
-                style={{ zIndex: markerStacking.label }}
+                style={{ zIndex: markerStacking.label + stackOrder }}
                 draggable
                 onDragStart={() => {
                     isDragging.current = true;
@@ -266,6 +271,7 @@ export const LineLabel = ({
                     }}
                     type="button"
                     aria-pressed={selected}
+                    onPointerDown={onPress}
                     className={cn(
                         'flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
                         selected

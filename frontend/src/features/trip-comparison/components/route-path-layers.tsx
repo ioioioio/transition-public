@@ -6,6 +6,7 @@ import { RoutePathLayer } from '@/components/map/route-path-layer';
 import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
+import { useStackingOrder } from '@/hooks/use-stacking-order';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
@@ -100,6 +101,8 @@ const RoutePathLayers = ({
     // When a route is selected, the others' label is hidden
     const isShown = (id: string) => selectedId === null || selectedId === id;
 
+    const routeStack = useStackingOrder();
+
     return (
         <>
             {drawnRoutes.map(({ route, styles }) => (
@@ -137,8 +140,12 @@ const RoutePathLayers = ({
                             }
                             steps={route.steps}
                             selected={selectedId === route.id}
+                            stackOrder={routeStack.ids.indexOf(route.id) + 1}
                             onClick={() => {
                                 toggle(route.id);
+                            }}
+                            onPress={() => {
+                                routeStack.raise(route.id);
                             }}
                             anchor={
                                 labelAnchors.get(route.id) ??

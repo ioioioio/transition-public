@@ -16,7 +16,9 @@ interface RoutePathLabelProps {
     position: Position;
     steps: Api.RouteStep[];
     selected: boolean;
+    stackOrder: number;
     onClick: () => void;
+    onPress?: LineLabelProps['onPress'];
     anchor: LineLabelProps['anchor'];
     onDrag: LineLabelProps['onDrag'];
     onDrop: LineLabelProps['onDrop'];
@@ -27,7 +29,9 @@ const RoutePathLabel = ({
     position,
     steps,
     selected,
+    stackOrder,
     onClick,
+    onPress,
     anchor,
     onDrag,
     onDrop,
@@ -42,7 +46,9 @@ const RoutePathLabel = ({
         <LineLabel
             position={position}
             selected={selected}
+            stackOrder={stackOrder}
             onClick={onClick}
+            onPress={onPress}
             anchor={anchor}
             onDrag={onDrag}
             onDrop={onDrop}
