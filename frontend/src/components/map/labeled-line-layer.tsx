@@ -170,7 +170,7 @@ const stopDoubleClickReachingMap = (button: HTMLButtonElement | null) => {
     button?.addEventListener('dblclick', stopPropagation);
 };
 
-export interface LineLabelProps {
+export interface MapCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
@@ -187,7 +187,7 @@ export interface LineLabelProps {
     children: ReactNode;
 }
 
-export const LineLabel = ({
+export const MapCallout = ({
     position,
     selected,
     stackOrder = 0,
@@ -197,7 +197,7 @@ export const LineLabel = ({
     onDrag,
     onDrop,
     children,
-}: LineLabelProps) => {
+}: MapCalloutProps) => {
     const [longitude = 0, latitude = 0] = position;
     const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
     const labelOffset = useScreenOffset(anchor, position);

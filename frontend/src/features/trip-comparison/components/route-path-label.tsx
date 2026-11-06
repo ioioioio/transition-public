@@ -3,8 +3,8 @@ import type { Position } from 'geojson';
 import { useTranslation } from 'react-i18next';
 
 import {
-    LineLabel,
-    type LineLabelProps,
+    MapCallout,
+    type MapCalloutProps,
 } from '@/components/map/labeled-line-layer';
 import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
@@ -18,10 +18,10 @@ interface RoutePathLabelProps {
     selected: boolean;
     stackOrder: number;
     onClick: () => void;
-    onPress?: LineLabelProps['onPress'];
-    anchor: LineLabelProps['anchor'];
-    onDrag: LineLabelProps['onDrag'];
-    onDrop: LineLabelProps['onDrop'];
+    onPress?: MapCalloutProps['onPress'];
+    anchor: MapCalloutProps['anchor'];
+    onDrag: MapCalloutProps['onDrag'];
+    onDrop: MapCalloutProps['onDrop'];
 }
 
 // Sums up a route on the map
@@ -43,7 +43,7 @@ const RoutePathLabel = ({
     const MainModeIcon = modeIcons[mainMode];
 
     return (
-        <LineLabel
+        <MapCallout
             position={position}
             selected={selected}
             stackOrder={stackOrder}
@@ -55,7 +55,7 @@ const RoutePathLabel = ({
         >
             <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />
             {formatDuration(travelTimeSeconds, i18n.language)}
-        </LineLabel>
+        </MapCallout>
     );
 };
 
