@@ -20,7 +20,7 @@ interface TripComparisonProps {
     mapCamera: Utils.MapCamera;
     onMapCameraChange?: (camera: Utils.MapCamera) => void;
     selectedRouteId: string | null;
-    onSelectedRouteIdChange: (id: string | null) => void;
+    onSelectedRouteIdChange: (routeId: string | null) => void;
 }
 
 function TripComparison({
@@ -81,7 +81,7 @@ function TripComparison({
                     routes={routes}
                     isLoading={routeQueries.isFetching}
                     order={order}
-                    selectedId={selectedRoute?.id ?? null}
+                    selectedRouteId={selectedRoute?.id ?? null}
                     onSelect={onSelectedRouteIdChange}
                 />
             </SidePanel>
@@ -100,7 +100,7 @@ function TripComparison({
                 >
                     <MapRoutePaths
                         routes={routes}
-                        selectedId={selectedRoute?.id ?? null}
+                        selectedRouteId={selectedRoute?.id ?? null}
                         onSelect={onSelectedRouteIdChange}
                     />
                     {originPosition && (

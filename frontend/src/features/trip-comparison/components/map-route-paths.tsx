@@ -33,17 +33,17 @@ const createRoutePathStyles = (
 
 interface MapRoutePathsProps {
     routes: Api.Route[];
-    selectedId: string | null;
-    onSelect: (id: string | null) => void;
+    selectedRouteId: string | null;
+    onSelect: (routeId: string | null) => void;
 }
 
 const MapRoutePaths = ({
     routes,
-    selectedId,
+    selectedRouteId,
     onSelect,
 }: MapRoutePathsProps) => {
-    const toggle = (id: string) => {
-        onSelect(selectedId === id ? null : id);
+    const toggle = (routeId: string) => {
+        onSelect(selectedRouteId === routeId ? null : routeId);
     };
 
     // memo: Need to keep identity for labeledPaths
@@ -83,28 +83,31 @@ const MapRoutePaths = ({
         ReadonlyMap<string, Position>
     >(() => new Map());
 
-    const moveLabel = (id: string, position: Position) => {
-        setLabelPositions((previous) => new Map(previous).set(id, position));
+    const moveLabel = (routeId: string, position: Position) => {
+        setLabelPositions((previous) =>
+            new Map(previous).set(routeId, position),
+        );
     };
     // The closest point of each path to its label
     const [labelAnchors, setLabelAnchors] = useState<
         ReadonlyMap<string, Position>
     >(() => new Map());
-    const moveLabelAnchor = (id: string, position: Position) => {
-        const path = labeledPaths.get(id);
+    const moveLabelAnchor = (routeId: string, position: Position) => {
+        const path = labeledPaths.get(routeId);
         if (!path) {
             return;
         }
         setLabelAnchors((previous) =>
             new Map(previous).set(
-                id,
+                routeId,
                 findNearestPointOnLine(path.line, position),
             ),
         );
     };
 
     // When a route is selected, the others' label is hidden
-    const isShown = (id: string) => selectedId === null || selectedId === id;
+    const isShown = (routeId: string) =>
+        selectedRouteId === null || selectedRouteId === routeId;
 
     const routeStack = useLayerStack();
 
@@ -118,9 +121,9 @@ const MapRoutePaths = ({
                     getStepIcon={getRouteStepIcon}
                     styles={styles}
                     emphasis={
-                        selectedId === null
+                        selectedRouteId === null
                             ? 'default'
-                            : selectedId === route.id
+                            : selectedRouteId === route.id
                               ? 'selected'
                               : 'muted'
                     }
@@ -147,7 +150,7 @@ const MapRoutePaths = ({
                                 path.defaultPosition
                             }
                             steps={route.steps}
-                            selected={selectedId === route.id}
+                            selected={selectedRouteId === route.id}
                             stackOrder={routeStack.ids.indexOf(pathId) + 1}
                             onClick={() => {
                                 toggle(route.id);
