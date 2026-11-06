@@ -1,26 +1,27 @@
 import { createContext, useContext, useEffect } from 'react';
 
-export interface LayerPointerHandlers {
+export interface LayerHandlers {
     onClick?: () => void;
     onPress?: () => void;
 }
 
-export type LayerClickHandlers = Map<string, LayerPointerHandlers>;
+export type HandlersByLayer = Map<string, LayerHandlers>;
 
-export const createLayerClickHandlers = (): LayerClickHandlers => new Map();
+export const createHandlersByLayer = (): HandlersByLayer => new Map();
 
-export const LayerClickHandlersContext =
-    createContext<LayerClickHandlers | null>(null);
+export const HandlersByLayerContext = createContext<HandlersByLayer | null>(
+    null,
+);
 
 // Clicks on the layer call `onClick` instead of the map's own click
-export const useLayerClick = (
+export const useLayerHandlers = (
     layerId: string,
     onClick?: () => void,
     onPress?: () => void,
 ) => {
-    const handlers = useContext(LayerClickHandlersContext);
+    const handlers = useContext(HandlersByLayerContext);
     if (!handlers) {
-        throw new Error('useLayerClick must be used within a MapView');
+        throw new Error('useLayerHandlers must be used within a MapView');
     }
     useEffect(() => {
         if (!onClick && !onPress) {

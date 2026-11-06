@@ -15,9 +15,9 @@ import { useRef, useState, type ReactNode } from 'react';
 
 import { config } from '@/config/config';
 import {
-    createLayerClickHandlers,
-    LayerClickHandlersContext,
-} from '@/hooks/use-layer-click';
+    createHandlersByLayer,
+    HandlersByLayerContext,
+} from '@/hooks/use-layer-handlers';
 import {
     createMapImageCreators,
     MapImageCreatorsContext,
@@ -55,7 +55,7 @@ const MapView = ({
     children,
 }: MapViewProps) => {
     const { theme } = useTheme();
-    const [handlers] = useState(createLayerClickHandlers);
+    const [handlers] = useState(createHandlersByLayer);
     const [imageCreators] = useState(createMapImageCreators);
     // The topmost of the clickable layers under the pointer
     const findClickedLayerId = ({
@@ -142,11 +142,11 @@ const MapView = ({
                 })
             }
         >
-            <LayerClickHandlersContext value={handlers}>
+            <HandlersByLayerContext value={handlers}>
                 <MapImageCreatorsContext value={imageCreators}>
                     {children}
                 </MapImageCreatorsContext>
-            </LayerClickHandlersContext>
+            </HandlersByLayerContext>
         </Map>
     );
 };
