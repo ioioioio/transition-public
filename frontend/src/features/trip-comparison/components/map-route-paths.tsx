@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { MapRoutePath } from '@/components/map/map-route-path';
 import type { MapRouteStepStyles } from '@/components/map/map-route-step';
-import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
+import MapRoutePathCallout from '@/features/trip-comparison/components/map-route-path-callout';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { useLayerStack } from '@/hooks/use-layer-stack';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
@@ -140,7 +140,7 @@ const MapRoutePaths = ({
                         return null;
                     }
                     return (
-                        <RoutePathLabel
+                        <MapRoutePathCallout
                             key={route.id}
                             position={
                                 labelPositions.get(route.id) ??
