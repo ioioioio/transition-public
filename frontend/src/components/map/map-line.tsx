@@ -9,17 +9,17 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { createNestedId } from '@/utils/nested-id';
 
-export interface LabeledLineLayerStyles {
+export interface MapLineStyles {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
     dashArray?: [number, number];
 }
 
 export type LineEmphasis = 'default' | 'selected' | 'muted';
 
-export interface LabeledLineLayerProps {
+export interface MapLineProps {
     id: string;
     geometry: LineString;
-    styles: LabeledLineLayerStyles;
+    styles: MapLineStyles;
     /** The theme variable of the line's own color. */
     color: `--${string}`;
     /** How much the line stands out from the others. */
@@ -41,7 +41,7 @@ const iconSpacingPixels = 75;
 const arrowSizePixels = 12;
 const arrowSpacingPixels = 15;
 
-export const LabeledLineLayer = ({
+export const MapLine = ({
     id,
     geometry,
     styles,
@@ -50,7 +50,7 @@ export const LabeledLineLayer = ({
     icon,
     onClick,
     onPress,
-}: LabeledLineLayerProps) => {
+}: MapLineProps) => {
     const { dashArray } = styles;
     const selected = emphasis === 'selected';
     const color = useThemeColor(

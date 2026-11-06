@@ -1,7 +1,7 @@
 import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 
-import type { LineEmphasis } from '@/components/map/labeled-line-layer';
+import type { LineEmphasis } from '@/components/map/map-line';
 import {
     RouteStepLayer,
     type RouteStepLayerStyles,

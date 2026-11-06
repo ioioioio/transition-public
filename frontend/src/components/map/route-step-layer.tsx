@@ -2,10 +2,10 @@ import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 
 import {
-    LabeledLineLayer,
-    type LabeledLineLayerStyles,
+    MapLine,
+    type MapLineStyles,
     type LineEmphasis,
-} from '@/components/map/labeled-line-layer';
+} from '@/components/map/map-line';
 import { modeColors } from '@/utils/mode';
 import {
     createRouteStepGeometry,
@@ -14,7 +14,7 @@ import {
 } from '@/utils/route-step';
 
 export interface RouteStepLayerStyles {
-    line: LabeledLineLayerStyles;
+    line: MapLineStyles;
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
 }
@@ -45,7 +45,7 @@ export const RouteStepLayer = ({
     const geometry = createRouteStepGeometry(step, styles.bend);
 
     return (
-        <LabeledLineLayer
+        <MapLine
             id={id}
             geometry={geometry}
             styles={styles.line}
