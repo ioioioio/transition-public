@@ -2,10 +2,7 @@ import type { Api } from 'common';
 import type { Position } from 'geojson';
 import { useTranslation } from 'react-i18next';
 
-import {
-    MapCallout,
-    type MapCalloutProps,
-} from '@/components/map/labeled-line-layer';
+import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
 import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
