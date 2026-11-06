@@ -5,7 +5,7 @@ import type { LineEmphasis } from '@/components/map/map-line';
 import {
     MapRouteStep,
     type MapRouteStepStyles,
-} from '@/components/map/map-route-step';
+} from '@/features/trip-comparison/components/map-route-step';
 import { createNestedId } from '@/utils/nested-id';
 
 export interface MapRoutePathProps {
