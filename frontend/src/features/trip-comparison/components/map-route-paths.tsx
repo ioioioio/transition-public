@@ -10,7 +10,7 @@ import {
     createRoutePathGeometry,
     getRouteStepIcon,
 } from '@/features/trip-comparison/utils/route-step';
-import { useLayerStack } from '@/hooks/use-layer-stack';
+import { useLayerStack } from '@/hooks/map/use-layer-stack';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createNestedId } from '@/utils/nested-id';
 

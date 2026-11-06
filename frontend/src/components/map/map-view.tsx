@@ -17,12 +17,12 @@ import { config } from '@/config/config';
 import {
     createHandlersByLayer,
     HandlersByLayerContext,
-} from '@/hooks/use-layer-handlers';
+} from '@/hooks/map/use-layer-handlers';
 import {
     createMapImageCreators,
     MapImageCreatorsContext,
     type MapImageCreators,
-} from '@/hooks/use-map-image-creators';
+} from '@/hooks/map/use-map-image-creators';
 import { useTheme } from '@/hooks/use-theme';
 import { isLongPress } from '@/utils/long-press';
 

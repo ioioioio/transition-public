@@ -3,7 +3,7 @@ import type { Position } from 'geojson';
 import { useRef, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 
-import { useScreenOffset } from '@/hooks/use-screen-offset';
+import { useScreenOffset } from '@/hooks/map/use-screen-offset';
 import { cn } from '@/lib/utils';
 import { isLongPress } from '@/utils/long-press';
 import { markerStacking } from '@/utils/marker-stacking';
