@@ -3,7 +3,7 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 import type { LineString } from 'geojson';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
-import { useLayerClick } from '@/hooks/use-layer-click';
+import { useLayerHandlers } from '@/hooks/use-layer-handlers';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
@@ -57,7 +57,7 @@ export const MapLine = ({
         emphasis === 'muted' ? '--foreground' : colorVariable,
     );
     const hitLayerId = createNestedId(id, 'hit');
-    useLayerClick(hitLayerId, onClick, onPress);
+    useLayerHandlers(hitLayerId, onClick, onPress);
     // A finger needs a wider target than a mouse
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
     const haloColor = useThemeColor('--background');
