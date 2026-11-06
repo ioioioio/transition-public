@@ -152,7 +152,7 @@ export const MapCallout = ({
                         onPress?.();
                     }}
                     className={cn(
-                        'cursor-grab touch-none border bg-background text-sm font-medium shadow-[0_4px_14px_rgba(0,0,0,0.45)] active:cursor-grabbing has-focus-visible:ring-3 has-focus-visible:ring-ring/50',
+                        'cursor-grab touch-none overflow-hidden border bg-background text-sm font-medium shadow-[0_4px_14px_rgba(0,0,0,0.45)] transition-[width] duration-150 ease-[cubic-bezier(0.2,0,0,1)] [interpolate-size:allow-keywords] active:cursor-grabbing has-focus-visible:ring-3 has-focus-visible:ring-ring/50 motion-reduce:transition-none',
                         selected
                             ? 'w-72 rounded-lg border-primary text-foreground'
                             : 'rounded-md border-foreground/20 text-foreground/80',
@@ -165,7 +165,7 @@ export const MapCallout = ({
                         className={cn(
                             'flex cursor-[inherit] items-center gap-2 px-3 py-2 whitespace-nowrap tabular-nums outline-none [&_svg]:size-4',
                             selected &&
-                                'w-full gap-3 px-4 py-3 text-left whitespace-normal [&_svg]:size-auto',
+                                'w-72 shrink-0 gap-3 px-4 py-3 text-left whitespace-normal [&_svg]:size-auto',
                         )}
                     >
                         {children}
@@ -174,9 +174,11 @@ export const MapCallout = ({
                         ref={(element) => {
                             stopPressReachingMarker(element);
                         }}
-                        className="cursor-auto touch-auto select-text"
+                        className="h-(--collapsible-panel-height) cursor-auto touch-auto overflow-hidden [contain:inline-size] transition-[height,opacity] duration-150 ease-[cubic-bezier(0.2,0,0,1)] select-text data-ending-style:h-0 data-ending-style:opacity-0 data-starting-style:h-0 data-starting-style:opacity-0 motion-reduce:transition-none"
                     >
-                        <div className="px-4 pb-3 font-normal">{details}</div>
+                        <div className="w-72 px-4 pb-3 font-normal">
+                            {details}
+                        </div>
                     </CollapsibleContent>
                 </Collapsible>
             </Marker>
