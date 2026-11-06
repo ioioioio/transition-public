@@ -8,7 +8,7 @@ import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
 import { modeIcons } from '@/utils/mode';
 
-interface RoutePathLabelProps {
+interface MapRouteCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     steps: Api.RouteStep[];
@@ -22,7 +22,7 @@ interface RoutePathLabelProps {
 }
 
 // Sums up a route on the map
-const RoutePathLabel = ({
+const MapRouteCallout = ({
     position,
     steps,
     selected,
@@ -32,7 +32,7 @@ const RoutePathLabel = ({
     anchor,
     onDrag,
     onDrop,
-}: RoutePathLabelProps) => {
+}: MapRouteCalloutProps) => {
     const { i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const { rankedModes, travelTimeSeconds } = createRouteSummary(steps);
@@ -56,4 +56,4 @@ const RoutePathLabel = ({
     );
 };
 
-export default RoutePathLabel;
+export default MapRouteCallout;
