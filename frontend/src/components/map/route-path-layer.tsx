@@ -6,6 +6,7 @@ import {
     RouteStepLayer,
     type RouteStepLayerStyles,
 } from '@/components/map/route-step-layer';
+import { createNestedId } from '@/utils/nested-id';
 
 export interface RoutePathLayerProps {
     id: string;
@@ -19,7 +20,7 @@ export interface RoutePathLayerProps {
 }
 
 export const RoutePathLayer = ({
-    id,
+    id: pathId,
     steps,
     getStepIcon,
     styles,
@@ -29,7 +30,7 @@ export const RoutePathLayer = ({
     return steps.map((step, index) => (
         <RouteStepLayer
             key={index}
-            id={`${id}-${index}`}
+            id={createNestedId(pathId, index)}
             step={step}
             icon={getStepIcon(step)}
             styles={styles}

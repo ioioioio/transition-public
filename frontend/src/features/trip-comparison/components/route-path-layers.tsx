@@ -8,7 +8,11 @@ import RoutePathLabel from '@/features/trip-comparison/components/route-path-lab
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { useStackingOrder } from '@/hooks/use-stacking-order';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
+import { createNestedId } from '@/utils/nested-id';
 import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
+
+// The id a route's map sources and layers are nested under
+const createRoutePathId = (routeId: string) => createNestedId('route', routeId);
 
 /**
  * Styles a path by its rank, from the fastest (`0`) to the slowest
@@ -50,6 +54,7 @@ const RoutePathLayers = ({
                 'travelTime',
             ).map((route, rank, sortedRoutes) => ({
                 route,
+                pathId: createRoutePathId(route.id),
                 styles: createRoutePathStyles(rank, sortedRoutes.length),
             })),
         [routes],
@@ -105,10 +110,10 @@ const RoutePathLayers = ({
 
     return (
         <>
-            {drawnRoutes.map(({ route, styles }) => (
+            {drawnRoutes.map(({ route, pathId, styles }) => (
                 <RoutePathLayer
                     key={route.id}
-                    id={`route-${route.id}`}
+                    id={pathId}
                     steps={route.steps}
                     getStepIcon={getRouteStepIcon}
                     styles={styles}

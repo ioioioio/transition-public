@@ -12,6 +12,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { cn } from '@/lib/utils';
 import { markerStacking } from '@/utils/marker-stacking';
+import { createNestedId } from '@/utils/nested-id';
 
 export interface LabeledLineLayerStyles {
     /** Dash and gap lengths, in line widths. Solid when omitted. */
@@ -58,7 +59,7 @@ export const LabeledLineLayer = ({
     const color = useThemeColor(
         emphasis === 'muted' ? '--foreground' : colorVariable,
     );
-    const hitLayerId = `${id}-hit`;
+    const hitLayerId = createNestedId(id, 'hit');
     useLayerClick(hitLayerId, onClick);
     // A finger needs a wider target than a mouse
     const hitWidth = useMediaQuery('(pointer: coarse)') ? 40 : 16;
@@ -78,7 +79,7 @@ export const LabeledLineLayer = ({
         <>
             <Source id={id} type="geojson" data={geometry}>
                 <Layer
-                    id={`${id}-glow`}
+                    id={createNestedId(id, 'glow')}
                     type="line"
                     layout={{ 'line-cap': 'round', 'line-join': 'round' }}
                     paint={{
@@ -88,7 +89,7 @@ export const LabeledLineLayer = ({
                     }}
                 />
                 <Layer
-                    id={`${id}-line`}
+                    id={createNestedId(id, 'line')}
                     type="line"
                     layout={{ 'line-cap': 'round', 'line-join': 'round' }}
                     paint={{
@@ -106,7 +107,7 @@ export const LabeledLineLayer = ({
                 />
                 {/* Which way the line goes */}
                 <Layer
-                    id={`${id}-arrows`}
+                    id={createNestedId(id, 'arrows')}
                     type="symbol"
                     layout={{
                         'symbol-placement': 'line',
@@ -119,7 +120,7 @@ export const LabeledLineLayer = ({
                 {/* Repeated icons start near the line's start, so they'd
                     crowd its start while the line is short on screen */}
                 <Layer
-                    id={`${id}-icon-center`}
+                    id={createNestedId(id, 'icon-center')}
                     type="symbol"
                     maxzoom={iconRepeatZoom}
                     layout={{
@@ -128,7 +129,7 @@ export const LabeledLineLayer = ({
                     }}
                 />
                 <Layer
-                    id={`${id}-icon`}
+                    id={createNestedId(id, 'icon')}
                     type="symbol"
                     minzoom={iconRepeatZoom}
                     layout={{
