@@ -2,14 +2,17 @@ import type { Api } from 'common';
 import type { Position } from 'geojson';
 import { useMemo, useState } from 'react';
 
-import { MapRoutePath } from '@/components/map/map-route-path';
-import type { MapRouteStepStyles } from '@/components/map/map-route-step';
 import MapRouteCallout from '@/features/trip-comparison/components/map-route-callout';
+import { MapRoutePath } from '@/features/trip-comparison/components/map-route-path';
+import type { MapRouteStepStyles } from '@/features/trip-comparison/components/map-route-step';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
+import {
+    createRoutePathGeometry,
+    getRouteStepIcon,
+} from '@/features/trip-comparison/utils/route-step';
 import { useLayerStack } from '@/hooks/use-layer-stack';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createNestedId } from '@/utils/nested-id';
-import { createRoutePathGeometry, getRouteStepIcon } from '@/utils/route-step';
 
 // The id a route's map sources and layers are nested under
 const createRoutePathId = (routeId: string) => createNestedId('route', routeId);

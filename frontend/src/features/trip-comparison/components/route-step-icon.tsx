@@ -2,8 +2,8 @@ import type { Api } from 'common';
 import { useTranslation } from 'react-i18next';
 
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
+import { getRouteStepIcon } from '@/features/trip-comparison/utils/route-step';
 import { useModeLabels } from '@/hooks/use-mode-labels';
-import { getRouteStepIcon } from '@/utils/route-step';
 
 interface RouteStepIconProps {
     step: Api.RouteStep;

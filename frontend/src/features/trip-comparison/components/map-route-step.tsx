@@ -6,12 +6,12 @@ import {
     type MapLineStyles,
     type LineEmphasis,
 } from '@/components/map/map-line';
-import { modeColors } from '@/utils/mode';
 import {
     createRouteStepGeometry,
     getRouteStepMode,
     isTravelRouteStep,
-} from '@/utils/route-step';
+} from '@/features/trip-comparison/utils/route-step';
+import { modeColors } from '@/utils/mode';
 
 export interface MapRouteStepStyles {
     line: MapLineStyles;
