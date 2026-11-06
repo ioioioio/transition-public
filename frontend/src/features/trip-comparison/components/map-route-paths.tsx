@@ -31,17 +31,17 @@ const createRoutePathStyles = (
     };
 };
 
-interface RoutePathLayersProps {
+interface MapRoutePathsProps {
     routes: Api.Route[];
     selectedId: string | null;
     onSelect: (id: string | null) => void;
 }
 
-const RoutePathLayers = ({
+const MapRoutePaths = ({
     routes,
     selectedId,
     onSelect,
-}: RoutePathLayersProps) => {
+}: MapRoutePathsProps) => {
     const toggle = (id: string) => {
         onSelect(selectedId === id ? null : id);
     };
@@ -172,4 +172,4 @@ const RoutePathLayers = ({
     );
 };
 
-export default RoutePathLayers;
+export default MapRoutePaths;

@@ -4,8 +4,8 @@ import { useRouteQueries } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
+import MapRoutePaths from '@/features/trip-comparison/components/map-route-paths';
 import RoutePathCards from '@/features/trip-comparison/components/route-path-cards';
-import RoutePathLayers from '@/features/trip-comparison/components/route-path-layers';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteOrder } from '@/features/trip-comparison/types/route';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
@@ -98,7 +98,7 @@ function TripComparison({
                         }
                     }}
                 >
-                    <RoutePathLayers
+                    <MapRoutePaths
                         routes={routes}
                         selectedId={selectedRoute?.id ?? null}
                         onSelect={onSelectedRouteIdChange}
