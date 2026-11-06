@@ -4,7 +4,7 @@ import { createElement, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
-import { useMapImageCreators } from '@/hooks/use-map-image-creators';
+import { useMapImageCreators } from '@/hooks/map/use-map-image-creators';
 
 export interface MapImageData {
     data: ImageData;

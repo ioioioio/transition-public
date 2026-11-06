@@ -3,10 +3,10 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 import type { LineString } from 'geojson';
 
 import { MapIconImage } from '@/components/map/map-icon-image';
-import { useLayerHandlers } from '@/hooks/use-layer-handlers';
+import { useLayerHandlers } from '@/hooks/map/use-layer-handlers';
+import { useZoomForLength } from '@/hooks/map/use-zoom-for-length';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { useZoomForLength } from '@/hooks/use-zoom-for-length';
 import { createNestedId } from '@/utils/nested-id';
 
 export interface MapLineStyles {
