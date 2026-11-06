@@ -3,9 +3,9 @@ import type { Api } from 'common';
 
 import type { LineEmphasis } from '@/components/map/map-line';
 import {
-    RouteStepLayer,
-    type RouteStepLayerStyles,
-} from '@/components/map/route-step-layer';
+    MapRouteStep,
+    type MapRouteStepStyles,
+} from '@/components/map/map-route-step';
 import { createNestedId } from '@/utils/nested-id';
 
 export interface RoutePathLayerProps {
@@ -14,7 +14,7 @@ export interface RoutePathLayerProps {
     steps: Api.RouteStep[];
     getStepIcon: (step: Api.RouteStep) => Icon;
     // The same for all the steps of the path
-    styles: RouteStepLayerStyles;
+    styles: MapRouteStepStyles;
     emphasis: LineEmphasis;
     onClick?: () => void;
     onPress?: () => void;
@@ -30,7 +30,7 @@ export const RoutePathLayer = ({
     onPress,
 }: RoutePathLayerProps) => {
     return steps.map((step, index) => (
-        <RouteStepLayer
+        <MapRouteStep
             key={index}
             id={createNestedId(pathId, index)}
             step={step}

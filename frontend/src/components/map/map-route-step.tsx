@@ -13,23 +13,23 @@ import {
     isTravelRouteStep,
 } from '@/utils/route-step';
 
-export interface RouteStepLayerStyles {
+export interface MapRouteStepStyles {
     line: MapLineStyles;
     /** How far the arc bends from the straight line, as a fraction of its length. */
     bend: number;
 }
 
-export interface RouteStepLayerProps {
+export interface MapRouteStepProps {
     id: string;
     step: Api.RouteStep;
     icon: Icon;
-    styles: RouteStepLayerStyles;
+    styles: MapRouteStepStyles;
     emphasis: LineEmphasis;
     onClick?: () => void;
     onPress?: () => void;
 }
 
-export const RouteStepLayer = ({
+export const MapRouteStep = ({
     id,
     step,
     icon,
@@ -37,7 +37,7 @@ export const RouteStepLayer = ({
     emphasis,
     onClick,
     onPress,
-}: RouteStepLayerProps) => {
+}: MapRouteStepProps) => {
     // Stops aren't drawn
     if (!isTravelRouteStep(step)) {
         return null;

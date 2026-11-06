@@ -2,8 +2,8 @@ import type { Api } from 'common';
 import type { Position } from 'geojson';
 import { useMemo, useState } from 'react';
 
+import type { MapRouteStepStyles } from '@/components/map/map-route-step';
 import { RoutePathLayer } from '@/components/map/route-path-layer';
-import type { RouteStepLayerStyles } from '@/components/map/route-step-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { useLayerStack } from '@/hooks/use-layer-stack';
@@ -20,7 +20,7 @@ const createRoutePathId = (routeId: string) => createNestedId('route', routeId);
 const createRoutePathStyles = (
     rank: number,
     count: number,
-): RouteStepLayerStyles => {
+): MapRouteStepStyles => {
     // From 0 for the fastest to 1 for the slowest
     const slowness = count > 1 ? rank / (count - 1) : 0;
     const side = rank % 2 === 0 ? 1 : -1;
