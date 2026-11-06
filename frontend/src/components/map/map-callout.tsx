@@ -3,6 +3,7 @@ import type { Position } from 'geojson';
 import { useRef, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { useScreenOffset } from '@/hooks/map/use-screen-offset';
 import { cn } from '@/lib/utils';
 import { isLongPress } from '@/utils/long-press';
@@ -14,8 +15,14 @@ const stopPropagation = (event: Event) => {
 
 // So double-clicking a label doesn't zoom. As a listener on the element, since
 // React's run after the map's.
-const stopDoubleClickReachingMap = (button: HTMLButtonElement | null) => {
-    button?.addEventListener('dblclick', stopPropagation);
+const stopDoubleClickReachingMap = (element: HTMLElement | null) => {
+    element?.addEventListener('dblclick', stopPropagation);
+};
+
+// So pressing its details doesn't drag it, and their text can be selected
+const stopPressReachingMarker = (element: HTMLElement | null) => {
+    element?.addEventListener('mousedown', stopPropagation);
+    element?.addEventListener('touchstart', stopPropagation);
 };
 
 export interface MapCalloutProps {
@@ -33,6 +40,8 @@ export interface MapCalloutProps {
     /** Where the label was dropped at the end of a drag, as `[longitude, latitude]`. */
     onDrop: (position: Position) => void;
     children: ReactNode;
+    /** Under its button, while `selected`. Clicking them doesn't call `onClick`. */
+    details: ReactNode;
 }
 
 export const MapCallout = ({
@@ -45,6 +54,7 @@ export const MapCallout = ({
     onDrag,
     onDrop,
     children,
+    details,
 }: MapCalloutProps) => {
     const [longitude = 0, latitude = 0] = position;
     const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
@@ -52,6 +62,7 @@ export const MapCallout = ({
     const isDragging = useRef(false);
     // Null unless pressed by a mouse or finger: keyboard clicks aren't long presses
     const pressStartedAt = useRef<number | null>(null);
+    const button = useRef<HTMLButtonElement>(null);
 
     return (
         <>
@@ -119,30 +130,55 @@ export const MapCallout = ({
                         // Ignore the click when a drag or a long press ends
                         return;
                     }
+                    const { target } = event.originalEvent;
+                    const isOnButton =
+                        target instanceof Node &&
+                        button.current?.contains(target) === true;
+                    // So clicking its details doesn't close it
+                    if (!isOnButton) {
+                        return;
+                    }
 
                     onClick?.();
                 }}
             >
-                <button
+                <Collapsible
+                    open={selected}
                     ref={(element) => {
                         stopDoubleClickReachingMap(element);
                     }}
-                    type="button"
-                    aria-pressed={selected}
                     onPointerDown={() => {
                         pressStartedAt.current = Date.now();
                         onPress?.();
                     }}
                     className={cn(
-                        'flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm font-medium whitespace-nowrap tabular-nums shadow-[0_4px_14px_rgba(0,0,0,0.45)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4',
+                        'cursor-grab touch-none border bg-background text-sm font-medium shadow-[0_4px_14px_rgba(0,0,0,0.45)] active:cursor-grabbing has-focus-visible:ring-3 has-focus-visible:ring-ring/50',
                         selected
-                            ? 'border-primary text-primary'
-                            : 'border-foreground/20 text-foreground/80',
-                        'cursor-grab touch-none active:cursor-grabbing',
+                            ? 'w-72 rounded-lg border-primary text-foreground'
+                            : 'rounded-md border-foreground/20 text-foreground/80',
                     )}
                 >
-                    {children}
-                </button>
+                    <button
+                        ref={button}
+                        type="button"
+                        aria-pressed={selected}
+                        className={cn(
+                            'flex cursor-[inherit] items-center gap-2 px-3 py-2 whitespace-nowrap tabular-nums outline-none [&_svg]:size-4',
+                            selected &&
+                                'w-full gap-3 px-4 py-3 text-left whitespace-normal [&_svg]:size-auto',
+                        )}
+                    >
+                        {children}
+                    </button>
+                    <CollapsibleContent
+                        ref={(element) => {
+                            stopPressReachingMarker(element);
+                        }}
+                        className="cursor-auto touch-auto select-text"
+                    >
+                        <div className="px-4 pb-3 font-normal">{details}</div>
+                    </CollapsibleContent>
+                </Collapsible>
             </Marker>
         </>
     );

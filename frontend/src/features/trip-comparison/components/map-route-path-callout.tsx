@@ -1,8 +1,11 @@
 import type { Api } from 'common';
 import type { Position } from 'geojson';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
+import { RoutePathDetails } from '@/features/trip-comparison/components/route-path-details';
+import { RoutePathSummary } from '@/features/trip-comparison/components/route-path-summary';
 import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
 import { formatDuration } from '@/utils/format';
@@ -12,6 +15,7 @@ interface MapRoutePathCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     steps: Api.RouteStep[];
+    badge?: ReactNode;
     selected: boolean;
     stackOrder: number;
     onClick: () => void;
@@ -25,6 +29,7 @@ interface MapRoutePathCalloutProps {
 const MapRoutePathCallout = ({
     position,
     steps,
+    badge,
     selected,
     stackOrder,
     onClick,
@@ -49,9 +54,23 @@ const MapRoutePathCallout = ({
             anchor={anchor}
             onDrag={onDrag}
             onDrop={onDrop}
+            details={<RoutePathDetails steps={steps} />}
         >
-            <MainModeIcon role="img" aria-label={modeLabels[mainMode]} />
-            {formatDuration(travelTimeSeconds, i18n.language)}
+            {selected ? (
+                <RoutePathSummary
+                    steps={steps}
+                    badge={badge}
+                    selected={selected}
+                />
+            ) : (
+                <>
+                    <MainModeIcon
+                        role="img"
+                        aria-label={modeLabels[mainMode]}
+                    />
+                    {formatDuration(travelTimeSeconds, i18n.language)}
+                </>
+            )}
         </MapCallout>
     );
 };

@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { MapRoutePath } from '@/features/trip-comparison/components/map-route-path';
 import MapRoutePathCallout from '@/features/trip-comparison/components/map-route-path-callout';
 import type { MapRouteStepStyles } from '@/features/trip-comparison/components/map-route-step';
+import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-summary';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import {
     createRoutePathGeometry,
@@ -113,6 +114,7 @@ const MapRoutePaths = ({
         selectedRouteId === null || selectedRouteId === routeId;
 
     const routeStack = useLayerStack();
+    const bestRouteId = drawnRoutes.at(0)?.route.id;
 
     return (
         <>
@@ -153,6 +155,11 @@ const MapRoutePaths = ({
                                 path.defaultPosition
                             }
                             steps={route.steps}
+                            badge={
+                                route.id === bestRouteId && (
+                                    <BestRouteBadge order="travelTime" />
+                                )
+                            }
                             selected={selectedRouteId === route.id}
                             stackOrder={routeStack.ids.indexOf(pathId) + 1}
                             onClick={() => {
