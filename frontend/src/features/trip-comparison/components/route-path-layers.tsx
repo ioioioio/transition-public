@@ -2,8 +2,8 @@ import type { Api } from 'common';
 import type { Position } from 'geojson';
 import { useMemo, useState } from 'react';
 
+import { MapRoutePath } from '@/components/map/map-route-path';
 import type { MapRouteStepStyles } from '@/components/map/map-route-step';
-import { RoutePathLayer } from '@/components/map/route-path-layer';
 import RoutePathLabel from '@/features/trip-comparison/components/route-path-label';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import { useLayerStack } from '@/hooks/use-layer-stack';
@@ -111,7 +111,7 @@ const RoutePathLayers = ({
     return (
         <>
             {drawnRoutes.map(({ route, pathId, styles }) => (
-                <RoutePathLayer
+                <MapRoutePath
                     key={route.id}
                     id={pathId}
                     steps={route.steps}

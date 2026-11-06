@@ -8,7 +8,7 @@ import {
 } from '@/components/map/map-route-step';
 import { createNestedId } from '@/utils/nested-id';
 
-export interface RoutePathLayerProps {
+export interface MapRoutePathProps {
     id: string;
     // Drawn in order, e.g. a single one for a path with one mode
     steps: Api.RouteStep[];
@@ -20,7 +20,7 @@ export interface RoutePathLayerProps {
     onPress?: () => void;
 }
 
-export const RoutePathLayer = ({
+export const MapRoutePath = ({
     id: pathId,
     steps,
     getStepIcon,
@@ -28,7 +28,7 @@ export const RoutePathLayer = ({
     emphasis,
     onClick,
     onPress,
-}: RoutePathLayerProps) => {
+}: MapRoutePathProps) => {
     return steps.map((step, index) => (
         <MapRouteStep
             key={index}
