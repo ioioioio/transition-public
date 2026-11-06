@@ -57,13 +57,13 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
 };
 
 interface RoutePathCardProps {
-    id: string;
+    routeId: string;
     steps: Api.RouteStep[];
     badge?: ReactNode;
 }
 
 // An accordion item, styled as a card
-const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
+const RoutePathCard = ({ routeId, steps, badge }: RoutePathCardProps) => {
     const { rankedModes, travelTimeSeconds, distanceMeters } =
         createRouteSummary(steps);
     const { t, i18n } = useTranslation();
@@ -116,7 +116,7 @@ const RoutePathCard = ({ id, steps, badge }: RoutePathCardProps) => {
 
     return (
         <AccordionItem
-            value={id}
+            value={routeId}
             className="rounded-lg ring-1 ring-foreground/10 ring-inset not-last:border-b-0 hover:bg-card data-open:bg-card data-open:ring-primary/50"
         >
             <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
@@ -179,15 +179,15 @@ interface RoutePathCardsProps {
     routes: Api.Route[];
     isLoading: boolean;
     order: RouteOrder;
-    selectedId: string | null;
-    onSelect: (id: string | null) => void;
+    selectedRouteId: string | null;
+    onSelect: (routeId: string | null) => void;
 }
 
 const RoutePathCards = ({
     routes,
     isLoading,
     order,
-    selectedId,
+    selectedRouteId,
     onSelect,
 }: RoutePathCardsProps) => {
     const { t } = useTranslation();
@@ -195,7 +195,7 @@ const RoutePathCards = ({
         <div className="flex flex-col gap-2">
             <Accordion
                 className="gap-2"
-                value={selectedId ? [selectedId] : []}
+                value={selectedRouteId ? [selectedRouteId] : []}
                 onValueChange={(value: string[]) => {
                     onSelect(value.at(0) ?? null);
                 }}
@@ -203,7 +203,7 @@ const RoutePathCards = ({
                 {routes.map(({ id, steps }, index) => (
                     <RoutePathCard
                         key={id}
-                        id={id}
+                        routeId={id}
                         steps={steps}
                         badge={
                             index === 0 &&
