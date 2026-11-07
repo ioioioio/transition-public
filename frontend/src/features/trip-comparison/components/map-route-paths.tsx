@@ -114,6 +114,18 @@ const MapRoutePaths = ({
         selectedRouteId === null || selectedRouteId === routeId;
 
     const routeStack = useLayerStack();
+
+    // Raises the newly selected route, whatever selected it
+    const [lastSelectedRouteId, setLastSelectedRouteId] = useState<
+        string | null
+    >(null);
+    if (selectedRouteId !== lastSelectedRouteId) {
+        setLastSelectedRouteId(selectedRouteId);
+        if (selectedRouteId !== null) {
+            routeStack.raise(createRoutePathId(selectedRouteId));
+        }
+    }
+
     const bestRouteId = drawnRoutes.at(0)?.route.id;
 
     return (
