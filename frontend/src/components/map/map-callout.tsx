@@ -39,7 +39,8 @@ export interface MapCalloutProps {
     onDrag: (position: Position) => void;
     /** Where the label was dropped at the end of a drag, as `[longitude, latitude]`. */
     onDrop: (position: Position) => void;
-    children: ReactNode;
+    /** In its button. */
+    header: ReactNode;
     /** Under its button, while `selected`. Clicking them doesn't call `onClick`. */
     details: ReactNode;
 }
@@ -53,7 +54,7 @@ export const MapCallout = ({
     anchor,
     onDrag,
     onDrop,
-    children,
+    header,
     details,
 }: MapCalloutProps) => {
     const [longitude = 0, latitude = 0] = position;
@@ -193,7 +194,7 @@ export const MapCallout = ({
                                 `,
                         )}
                     >
-                        {children}
+                        {header}
                     </button>
                     <CollapsibleContent
                         ref={(element) => {

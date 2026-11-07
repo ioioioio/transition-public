@@ -54,24 +54,25 @@ const MapRoutePathCallout = ({
             anchor={anchor}
             onDrag={onDrag}
             onDrop={onDrop}
-            details={<RoutePathDetails steps={steps} />}
-        >
-            {selected ? (
-                <RoutePathSummary
-                    steps={steps}
-                    badge={badge}
-                    selected={selected}
-                />
-            ) : (
-                <>
-                    <MainModeIcon
-                        role="img"
-                        aria-label={modeLabels[mainMode]}
+            header={
+                selected ? (
+                    <RoutePathSummary
+                        steps={steps}
+                        badge={badge}
+                        selected={selected}
                     />
-                    {formatDuration(travelTimeSeconds, i18n.language)}
-                </>
-            )}
-        </MapCallout>
+                ) : (
+                    <>
+                        <MainModeIcon
+                            role="img"
+                            aria-label={modeLabels[mainMode]}
+                        />
+                        {formatDuration(travelTimeSeconds, i18n.language)}
+                    </>
+                )
+            }
+            details={<RoutePathDetails steps={steps} />}
+        />
     );
 };
 
