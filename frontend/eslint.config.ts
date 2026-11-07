@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import pluginRouter from '@tanstack/eslint-plugin-router';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import checkFile from 'eslint-plugin-check-file';
 import { importX } from 'eslint-plugin-import-x';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -76,6 +77,20 @@ export default defineConfig([
                         },
                     ],
                 },
+            ],
+        },
+    },
+    {
+        files: ['src/**/*.tsx'],
+        extends: [betterTailwindcss.configs.recommended],
+        settings: {
+            'better-tailwindcss': { entryPoint: 'src/index.css' },
+        },
+        rules: {
+            'better-tailwindcss/enforce-consistent-line-wrapping': [
+                'warn',
+                // Like Prettier's tabWidth, and leaving it the final say
+                { indent: 4, strictness: 'loose' },
             ],
         },
     },
