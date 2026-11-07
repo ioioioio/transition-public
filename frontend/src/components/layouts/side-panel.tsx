@@ -11,14 +11,20 @@ const SidePanel = ({ children }: SidePanelProps) => {
     return (
         <aside
             className="
-                flex flex-1 flex-col border-border
-                md:w-110 md:flex-none md:overflow-y-auto md:border-r-2
+                flex flex-1 flex-col
+                md:absolute md:top-3 md:left-3 md:z-10
+                md:max-h-[calc(100dvh-1.5rem)] md:w-110 md:overflow-y-auto
+                md:rounded-xl md:border md:border-border md:bg-background/94
+                md:shadow-[0_16px_40px_rgb(0_0_0/0.2)] md:ring-1
+                md:ring-foreground/15 md:backdrop-blur-sm
+                dark:md:shadow-[0_16px_40px_rgb(0_0_0/0.65)]
+                dark:md:ring-foreground/45
             "
         >
             <div
                 className="
                     flex flex-1 flex-col gap-6 p-4
-                    md:p-6
+                    md:gap-4
                 "
             >
                 {children}

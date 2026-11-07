@@ -70,8 +70,8 @@ function TripComparison({
     return (
         <div
             className="
-                flex min-h-dvh flex-col bg-background
-                md:h-dvh md:flex-row
+                relative flex min-h-dvh flex-col bg-background
+                md:h-dvh
             "
         >
             <SidePanel>
@@ -103,7 +103,12 @@ function TripComparison({
                     />
                 )}
             </SidePanel>
-            <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
+            <div
+                className="
+                    isolate order-first h-[60svh]
+                    md:absolute md:inset-0 md:h-auto
+                "
+            >
                 <MapView
                     camera={mapCamera}
                     onCameraChange={onMapCameraChange}

@@ -54,7 +54,7 @@ const TripComparisonForm = ({
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="relative flex flex-col gap-1.5">
+            <div className="relative me-4 flex flex-col gap-1.5">
                 <PlaceInput
                     icon={
                         <CircleIcon
