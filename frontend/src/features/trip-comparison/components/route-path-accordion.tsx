@@ -78,7 +78,7 @@ const RoutePathCardSkeleton = () => (
     </div>
 );
 
-interface RoutePathCardsProps {
+interface RoutePathAccordionProps {
     routes: Api.Route[];
     isLoading: boolean;
     order: RouteOrder;
@@ -86,13 +86,13 @@ interface RoutePathCardsProps {
     onSelect: (routeId: string | null) => void;
 }
 
-const RoutePathCards = ({
+const RoutePathAccordion = ({
     routes,
     isLoading,
     order,
     selectedRouteId,
     onSelect,
-}: RoutePathCardsProps) => {
+}: RoutePathAccordionProps) => {
     const { t } = useTranslation();
     return (
         <div className="flex flex-col gap-2">
@@ -136,4 +136,4 @@ const RoutePathCards = ({
     );
 };
 
-export default RoutePathCards;
+export default RoutePathAccordion;
