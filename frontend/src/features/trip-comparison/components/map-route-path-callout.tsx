@@ -1,15 +1,10 @@
 import type { Api } from 'common';
 import type { Position } from 'geojson';
 import type { ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
 import { RoutePathDetails } from '@/features/trip-comparison/components/route-path-details';
 import { RoutePathSummary } from '@/features/trip-comparison/components/route-path-summary';
-import { createRouteSummary } from '@/features/trip-comparison/utils/route';
-import { useModeLabels } from '@/hooks/use-mode-labels';
-import { formatDuration } from '@/utils/format';
-import { modeIcons } from '@/utils/mode';
 
 interface MapRoutePathCalloutProps {
     /** As `[longitude, latitude]`. */
@@ -38,12 +33,6 @@ const MapRoutePathCallout = ({
     onDrag,
     onDrop,
 }: MapRoutePathCalloutProps) => {
-    const { i18n } = useTranslation();
-    const modeLabels = useModeLabels();
-    const { rankedModes, travelTimeSeconds } = createRouteSummary(steps);
-    const mainMode = rankedModes.at(0) ?? 'other';
-    const MainModeIcon = modeIcons[mainMode];
-
     return (
         <MapCallout
             position={position}
@@ -55,21 +44,12 @@ const MapRoutePathCallout = ({
             onDrag={onDrag}
             onDrop={onDrop}
             header={
-                selected ? (
-                    <RoutePathSummary
-                        steps={steps}
-                        badge={badge}
-                        selected={selected}
-                    />
-                ) : (
-                    <>
-                        <MainModeIcon
-                            role="img"
-                            aria-label={modeLabels[mainMode]}
-                        />
-                        {formatDuration(travelTimeSeconds, i18n.language)}
-                    </>
-                )
+                <RoutePathSummary
+                    steps={steps}
+                    badge={badge}
+                    selected={selected}
+                    compact={!selected}
+                />
             }
             details={<RoutePathDetails steps={steps} />}
         />

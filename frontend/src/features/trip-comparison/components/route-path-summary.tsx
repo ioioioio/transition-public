@@ -35,17 +35,20 @@ interface RoutePathSummaryProps {
     steps: Api.RouteStep[];
     badge?: ReactNode;
     selected: boolean;
+    compact?: boolean;
 }
 
 export const RoutePathSummary = ({
     steps,
     badge,
     selected,
+    compact = false,
 }: RoutePathSummaryProps) => {
     const { i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const { rankedModes, travelTimeSeconds } = createRouteSummary(steps);
-    const MainModeIcon = modeIcons[rankedModes.at(0) ?? 'other'];
+    const mainMode = rankedModes.at(0) ?? 'other';
+    const MainModeIcon = modeIcons[mainMode];
     // E.g. "Plane + Bus"
     const title = rankedModes
         .map((rankedMode) => modeLabels[rankedMode])
@@ -55,18 +58,36 @@ export const RoutePathSummary = ({
         <>
             <span
                 className={cn(
-                    'text-lg',
-                    selected ? 'text-primary' : 'text-muted-foreground',
+                    compact
+                        ? 'flex'
+                        : [
+                              'text-lg',
+                              selected
+                                  ? 'text-primary'
+                                  : 'text-muted-foreground',
+                          ],
                 )}
             >
-                <MainModeIcon aria-hidden />
+                {/* Named by the title when there's one */}
+                <MainModeIcon
+                    role={compact ? 'img' : undefined}
+                    aria-label={compact ? modeLabels[mainMode] : undefined}
+                    aria-hidden={!compact}
+                />
             </span>
             <span className="flex flex-1 flex-col gap-1">
-                <span className="flex items-center justify-between gap-2">
-                    {title}
-                    {badge}
-                </span>
-                <span className="text-[17px] tracking-tight tabular-nums">
+                {!compact && (
+                    <span className="flex items-center justify-between gap-2">
+                        {title}
+                        {badge}
+                    </span>
+                )}
+                <span
+                    className={cn(
+                        'tabular-nums',
+                        !compact && 'text-[17px] tracking-tight',
+                    )}
+                >
                     {formatDuration(travelTimeSeconds, i18n.language)}
                 </span>
             </span>
