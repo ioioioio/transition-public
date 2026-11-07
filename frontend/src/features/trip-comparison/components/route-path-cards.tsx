@@ -32,7 +32,12 @@ const RoutePathCard = ({
 }: RoutePathCardProps) => (
     <AccordionItem
         value={routeId}
-        className="rounded-lg ring-1 ring-foreground/10 ring-inset not-last:border-b-0 hover:bg-card data-open:bg-card data-open:ring-primary/50"
+        className="
+            rounded-lg ring-1 ring-foreground/10 ring-inset
+            not-last:border-b-0
+            hover:bg-card
+            data-open:bg-card data-open:ring-primary/50
+        "
     >
         <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
             <RoutePathSummary steps={steps} badge={badge} selected={selected} />
@@ -44,11 +49,31 @@ const RoutePathCard = ({
 );
 
 const RoutePathCardSkeleton = () => (
-    <div className="flex h-18.5 items-center gap-3 rounded-lg px-4 ring-1 ring-foreground/10 ring-inset">
-        <Skeleton className="size-4.5 rounded-full motion-reduce:animate-none" />
+    <div
+        className="
+            flex h-18.5 items-center gap-3 rounded-lg px-4 ring-1
+            ring-foreground/10 ring-inset
+        "
+    >
+        <Skeleton
+            className="
+                size-4.5 rounded-full
+                motion-reduce:animate-none
+            "
+        />
         <div className="flex flex-col gap-2.5">
-            <Skeleton className="h-3 w-16 motion-reduce:animate-none" />
-            <Skeleton className="h-4 w-14 motion-reduce:animate-none" />
+            <Skeleton
+                className="
+                    h-3 w-16
+                    motion-reduce:animate-none
+                "
+            />
+            <Skeleton
+                className="
+                    h-4 w-14
+                    motion-reduce:animate-none
+                "
+            />
         </div>
     </div>
 );

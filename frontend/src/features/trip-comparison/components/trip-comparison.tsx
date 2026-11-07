@@ -65,7 +65,12 @@ function TripComparison({
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
 
     return (
-        <div className="flex min-h-dvh flex-col bg-background md:h-dvh md:flex-row">
+        <div
+            className="
+                flex min-h-dvh flex-col bg-background
+                md:h-dvh md:flex-row
+            "
+        >
             <SidePanel>
                 <TripComparisonForm
                     origin={origin}

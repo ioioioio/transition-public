@@ -20,7 +20,12 @@ export const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
         travelTime: t('bestRoute.travelTime'),
     };
     return (
-        <Badge className="h-auto rounded-sm bg-highlight font-normal px-2.5 py-0.75 text-[11px] tracking-[0.02em] text-highlight-foreground">
+        <Badge
+            className="
+                h-auto rounded-sm bg-highlight px-2.5 py-0.75 text-[11px]
+                font-normal tracking-[0.02em] text-highlight-foreground
+            "
+        >
             {labels[order]}
         </Badge>
     );

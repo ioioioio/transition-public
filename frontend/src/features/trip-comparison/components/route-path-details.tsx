@@ -19,7 +19,12 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     const { i18n } = useTranslation();
     return (
         <li className="flex items-center gap-2">
-            <span className="flex text-muted-foreground [&>svg]:size-3.5">
+            <span
+                className="
+                    flex text-muted-foreground
+                    [&>svg]:size-3.5
+                "
+            >
                 {icon}
             </span>
             <span>{label}</span>

@@ -121,7 +121,10 @@ const PlaceInput = ({
                     ref={inputRef}
                     placeholder={placeholder}
                     showTrigger={false}
-                    className="h-10.5 rounded-md bg-card dark:bg-card"
+                    className="
+                        h-10.5 rounded-md bg-card
+                        dark:bg-card
+                    "
                 >
                     <InputGroupAddon align="inline-start" className="ps-3.5">
                         {icon}
@@ -141,14 +144,20 @@ const PlaceInput = ({
             </div>
             <ComboboxContent
                 anchor={anchorRef}
-                className="ring-popover-border dark:shadow-[0_6px_18px_rgb(0_0_0/0.55)]"
+                className="
+                    ring-popover-border
+                    dark:shadow-[0_6px_18px_rgb(0_0_0/0.55)]
+                "
             >
                 <ComboboxList>
                     {(place: Api.Place) => (
                         <ComboboxItem
                             key={place.id}
                             value={place}
-                            className="min-h-11 cursor-pointer gap-1.5 rounded-sm py-0 ps-2.75 pe-3"
+                            className="
+                                min-h-11 cursor-pointer gap-1.5 rounded-sm py-0
+                                ps-2.75 pe-3
+                            "
                         >
                             <MapPinIcon
                                 aria-hidden

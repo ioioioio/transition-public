@@ -85,7 +85,12 @@ const TripComparisonForm = ({
                     variant="outline"
                     size="icon"
                     aria-label={t('tripComparison.swapPlaces')}
-                    className="absolute -inset-e-4 top-[calc(50%-1rem)] z-10 rounded-full bg-card bg-clip-border dark:bg-card dark:hover:bg-muted"
+                    className="
+                        absolute -inset-e-4 top-[calc(50%-1rem)] z-10
+                        rounded-full bg-card bg-clip-border
+                        dark:bg-card
+                        dark:hover:bg-muted
+                    "
                     disabled={!origin && !destination}
                     onClick={onPlacesSwap}
                 >
@@ -110,7 +115,13 @@ const TripComparisonForm = ({
                         <ToggleGroupItem
                             key={type}
                             value={type}
-                            className="bg-card not-first:border-s! aria-pressed:border-primary aria-pressed:bg-card aria-pressed:text-primary aria-pressed:hover:text-primary"
+                            className="
+                                bg-card
+                                not-first:border-s!
+                                aria-pressed:border-primary aria-pressed:bg-card
+                                aria-pressed:text-primary
+                                aria-pressed:hover:text-primary
+                            "
                         >
                             {timeTypeLabels[type]}
                         </ToggleGroupItem>
@@ -132,7 +143,12 @@ const TripComparisonForm = ({
                         <ToggleGroupItem
                             key={tripHour}
                             value={String(tripHour)}
-                            className="bg-card aria-pressed:border-primary aria-pressed:bg-card aria-pressed:text-primary aria-pressed:hover:text-primary"
+                            className="
+                                bg-card
+                                aria-pressed:border-primary aria-pressed:bg-card
+                                aria-pressed:text-primary
+                                aria-pressed:hover:text-primary
+                            "
                         >
                             {formatHour(tripHour, i18n.language)}
                         </ToggleGroupItem>
