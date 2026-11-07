@@ -84,7 +84,7 @@ function TripComparison({
                 />
                 <RoutePathAccordion
                     routes={routes}
-                    isLoading={routeQueries.isFetching}
+                    pendingRequestCount={routeQueries.pendingRequestCount}
                     order={order}
                     selectedRouteId={selectedRoute?.id ?? null}
                     onSelect={onSelectedRouteIdChange}

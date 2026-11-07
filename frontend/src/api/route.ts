@@ -53,7 +53,8 @@ export const useRouteQueries = (
         ),
         combine: (results) => ({
             routes: results.flatMap(({ data }) => data?.route ?? []),
-            isFetching: results.some(({ isFetching }) => isFetching),
+            pendingRequestCount: results.filter(({ isFetching }) => isFetching)
+                .length,
         }),
     });
 };

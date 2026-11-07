@@ -80,7 +80,7 @@ const RoutePathCardSkeleton = () => (
 
 interface RoutePathAccordionProps {
     routes: Api.Route[];
-    isLoading: boolean;
+    pendingRequestCount: number;
     order: RouteOrder;
     selectedRouteId: string | null;
     onSelect: (routeId: string | null) => void;
@@ -88,7 +88,7 @@ interface RoutePathAccordionProps {
 
 const RoutePathAccordion = ({
     routes,
-    isLoading,
+    pendingRequestCount,
     order,
     selectedRouteId,
     onSelect,
@@ -118,18 +118,14 @@ const RoutePathAccordion = ({
                     />
                 ))}
             </Accordion>
-            {isLoading && (
+            {pendingRequestCount > 0 && (
                 <div role="status" className="flex flex-col gap-2">
                     <span className="sr-only">
                         {t('tripComparison.loadingRoutes')}
                     </span>
-                    {/* Fewer once some routes are shown */}
-                    {Array.from(
-                        { length: routes.length > 0 ? 1 : 3 },
-                        (_, index) => (
-                            <RoutePathCardSkeleton key={index} />
-                        ),
-                    )}
+                    {Array.from({ length: pendingRequestCount }, (_, index) => (
+                        <RoutePathCardSkeleton key={index} />
+                    ))}
                 </div>
             )}
         </div>
