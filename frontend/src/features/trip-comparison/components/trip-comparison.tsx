@@ -6,10 +6,12 @@ import MapView from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
 import MapRoutePaths from '@/features/trip-comparison/components/map-route-paths';
 import RoutePathAccordion from '@/features/trip-comparison/components/route-path-accordion';
+import RoutePathGrid from '@/features/trip-comparison/components/route-path-grid';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
 import type { RouteOrder } from '@/features/trip-comparison/types/route';
 import type { TripPlaces } from '@/features/trip-comparison/types/trip-places';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
+import { useIsPhone } from '@/hooks/use-is-phone';
 import type { PlaceRef } from '@/types/place';
 
 interface TripComparisonProps {
@@ -63,6 +65,7 @@ function TripComparison({
     const routes = sortRoutes(routeQueries.routes, order);
     // Not found when the URL is older than the routes
     const selectedRoute = routes.find(({ id }) => id === selectedRouteId);
+    const isPhone = useIsPhone();
 
     return (
         <div
@@ -82,13 +85,23 @@ function TripComparison({
                     onTimeChange={onTimeChange}
                     searchFocus={mapCamera.center}
                 />
-                <RoutePathAccordion
-                    routes={routes}
-                    pendingRequestCount={routeQueries.pendingRequestCount}
-                    order={order}
-                    selectedRouteId={selectedRoute?.id ?? null}
-                    onSelect={onSelectedRouteIdChange}
-                />
+                {isPhone ? (
+                    <RoutePathAccordion
+                        routes={routes}
+                        pendingRequestCount={routeQueries.pendingRequestCount}
+                        order={order}
+                        selectedRouteId={selectedRoute?.id ?? null}
+                        onSelect={onSelectedRouteIdChange}
+                    />
+                ) : (
+                    <RoutePathGrid
+                        routes={routes}
+                        pendingRequestCount={routeQueries.pendingRequestCount}
+                        order={order}
+                        selectedRouteId={selectedRoute?.id ?? null}
+                        onSelect={onSelectedRouteIdChange}
+                    />
+                )}
             </SidePanel>
             <div className="order-first h-[60svh] md:order-0 md:h-auto md:flex-1">
                 <MapView
