@@ -29,6 +29,8 @@ export interface MapCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
+    /** Shows `details`. */
+    expanded: boolean;
     /** Among the labels, higher is in front. `0` by default. */
     stackOrder?: number;
     onClick?: () => void;
@@ -41,13 +43,14 @@ export interface MapCalloutProps {
     onDrop: (position: Position) => void;
     /** In its button. */
     header: ReactNode;
-    /** Under its button, while `selected`. Clicking them doesn't call `onClick`. */
+    /** Under its button, while `expanded`. Clicking them doesn't call `onClick`. */
     details: ReactNode;
 }
 
 export const MapCallout = ({
     position,
     selected,
+    expanded,
     stackOrder = 0,
     onClick,
     onPress,
@@ -147,7 +150,7 @@ export const MapCallout = ({
                 }}
             >
                 <Collapsible
-                    open={selected}
+                    open={expanded}
                     ref={(element) => {
                         stopDoubleClickReachingMap(element);
                     }}
@@ -168,12 +171,17 @@ export const MapCallout = ({
                             has-focus-visible:ring-ring/50
                             motion-reduce:transition-none
                         `,
-                        selected
+                        expanded
                             ? 'w-72 rounded-lg border-primary text-foreground'
-                            : `
-                                rounded-md border-foreground/20
-                                text-foreground/80
-                            `,
+                            : [
+                                  'rounded-md',
+                                  selected
+                                      ? 'border-primary text-primary'
+                                      : `
+                                          border-foreground/20
+                                          text-foreground/80
+                                      `,
+                              ],
                     )}
                 >
                     <button
@@ -186,7 +194,7 @@ export const MapCallout = ({
                                 py-2 whitespace-nowrap tabular-nums outline-none
                                 [&_svg]:size-4
                             `,
-                            selected &&
+                            expanded &&
                                 `
                                     w-72 shrink-0 gap-3 px-4 py-3 text-left
                                     whitespace-normal

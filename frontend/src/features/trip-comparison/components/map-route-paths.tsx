@@ -12,6 +12,7 @@ import {
     getRouteStepIcon,
 } from '@/features/trip-comparison/utils/route-step';
 import { useLayerStack } from '@/hooks/map/use-layer-stack';
+import { useIsPhone } from '@/hooks/use-is-phone';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createNestedId } from '@/utils/nested-id';
 
@@ -127,6 +128,7 @@ const MapRoutePaths = ({
     }
 
     const bestRouteId = drawnRoutes.at(0)?.route.id;
+    const isPhone = useIsPhone();
 
     return (
         <>
@@ -173,6 +175,8 @@ const MapRoutePaths = ({
                                 )
                             }
                             selected={selectedRouteId === route.id}
+                            // A card would cover too much of a phone's map
+                            expanded={selectedRouteId === route.id && !isPhone}
                             stackOrder={routeStack.ids.indexOf(pathId) + 1}
                             onClick={() => {
                                 toggle(route.id);

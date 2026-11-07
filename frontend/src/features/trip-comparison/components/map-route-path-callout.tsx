@@ -12,6 +12,7 @@ interface MapRoutePathCalloutProps {
     steps: Api.RouteStep[];
     badge?: ReactNode;
     selected: boolean;
+    expanded: boolean;
     stackOrder: number;
     onClick: () => void;
     onPress?: MapCalloutProps['onPress'];
@@ -26,6 +27,7 @@ const MapRoutePathCallout = ({
     steps,
     badge,
     selected,
+    expanded,
     stackOrder,
     onClick,
     onPress,
@@ -37,6 +39,7 @@ const MapRoutePathCallout = ({
         <MapCallout
             position={position}
             selected={selected}
+            expanded={expanded}
             stackOrder={stackOrder}
             onClick={onClick}
             onPress={onPress}
@@ -48,7 +51,7 @@ const MapRoutePathCallout = ({
                     steps={steps}
                     badge={badge}
                     selected={selected}
-                    compact={!selected}
+                    compact={!expanded}
                 />
             }
             details={<RoutePathDetails steps={steps} />}
