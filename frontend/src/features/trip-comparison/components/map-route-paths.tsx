@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { MapRoutePath } from '@/features/trip-comparison/components/map-route-path';
 import MapRoutePathCallout from '@/features/trip-comparison/components/map-route-path-callout';
 import type { MapRouteStepStyles } from '@/features/trip-comparison/components/map-route-step';
-import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-summary';
+import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import {
     createRoutePathGeometry,

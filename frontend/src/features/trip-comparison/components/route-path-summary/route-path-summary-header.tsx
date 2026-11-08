@@ -31,19 +31,19 @@ export const BestRouteBadge = ({ order }: BestRouteBadgeProps) => {
     );
 };
 
-interface RoutePathSummaryProps {
+interface RoutePathSummaryHeaderProps {
     steps: Api.RouteStep[];
     badge?: ReactNode;
     selected: boolean;
     compact?: boolean;
 }
 
-export const RoutePathSummary = ({
+export const RoutePathSummaryHeader = ({
     steps,
     badge,
     selected,
     compact = false,
-}: RoutePathSummaryProps) => {
+}: RoutePathSummaryHeaderProps) => {
     const { i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const { rankedModes, travelTimeSeconds } = createRouteSummary(steps);

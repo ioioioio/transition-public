@@ -35,11 +35,11 @@ const TimeRow = ({ icon, label, seconds }: TimeRowProps) => {
     );
 };
 
-interface RoutePathDetailsProps {
+interface RoutePathSummaryBodyProps {
     steps: Api.RouteStep[];
 }
 
-export const RoutePathDetails = ({ steps }: RoutePathDetailsProps) => {
+export const RoutePathSummaryBody = ({ steps }: RoutePathSummaryBodyProps) => {
     const { t, i18n } = useTranslation();
     const modeLabels = useModeLabels();
     const { getWalkingToLabel, getWaitingAtLabel } = useTransitStepLabels();

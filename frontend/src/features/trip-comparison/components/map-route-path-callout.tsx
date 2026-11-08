@@ -3,8 +3,8 @@ import type { Position } from 'geojson';
 import type { ReactNode } from 'react';
 
 import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
-import { RoutePathDetails } from '@/features/trip-comparison/components/route-path-details';
-import { RoutePathSummary } from '@/features/trip-comparison/components/route-path-summary';
+import { RoutePathSummaryBody } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-body';
+import { RoutePathSummaryHeader } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 
 interface MapRoutePathCalloutProps {
     /** As `[longitude, latitude]`. */
@@ -47,14 +47,14 @@ const MapRoutePathCallout = ({
             onDrag={onDrag}
             onDrop={onDrop}
             header={
-                <RoutePathSummary
+                <RoutePathSummaryHeader
                     steps={steps}
                     badge={badge}
                     selected={selected}
                     compact={!expanded}
                 />
             }
-            details={<RoutePathDetails steps={steps} />}
+            details={<RoutePathSummaryBody steps={steps} />}
         />
     );
 };

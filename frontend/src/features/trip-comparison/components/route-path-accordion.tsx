@@ -9,11 +9,11 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RoutePathDetails } from '@/features/trip-comparison/components/route-path-details';
+import { RoutePathSummaryBody } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-body';
 import {
     BestRouteBadge,
-    RoutePathSummary,
-} from '@/features/trip-comparison/components/route-path-summary';
+    RoutePathSummaryHeader,
+} from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 import type { RouteOrder } from '@/features/trip-comparison/types/route';
 
 interface RoutePathCardProps {
@@ -40,10 +40,14 @@ const RoutePathCard = ({
         "
     >
         <AccordionTrigger className="items-center gap-3 px-4 py-3 hover:no-underline">
-            <RoutePathSummary steps={steps} badge={badge} selected={selected} />
+            <RoutePathSummaryHeader
+                steps={steps}
+                badge={badge}
+                selected={selected}
+            />
         </AccordionTrigger>
         <AccordionContent className="px-4 pb-3">
-            <RoutePathDetails steps={steps} />
+            <RoutePathSummaryBody steps={steps} />
         </AccordionContent>
     </AccordionItem>
 );
