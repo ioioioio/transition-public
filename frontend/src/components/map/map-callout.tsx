@@ -133,16 +133,11 @@ export const MapCallout = ({
                         pressStartedAt.current !== null &&
                         isLongPress(pressStartedAt.current);
                     pressStartedAt.current = null;
-                    if (isDragging.current || wasLongPress) {
-                        // Ignore the click when a drag or a long press ends
-                        return;
-                    }
                     const { target } = event.originalEvent;
                     const isOnButton =
                         target instanceof Node &&
                         button.current?.contains(target) === true;
-                    // So clicking its body doesn't close it
-                    if (!isOnButton) {
+                    if (isDragging.current || wasLongPress || !isOnButton) {
                         return;
                     }
 
