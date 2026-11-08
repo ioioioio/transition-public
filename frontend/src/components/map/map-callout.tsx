@@ -45,6 +45,8 @@ export interface MapCalloutProps {
     header: ReactNode;
     /** Under its button, while `expanded`. Clicking it doesn't call `onClick`. */
     body: ReactNode;
+    /** Under its body, while `expanded`. */
+    footer: ReactNode;
 }
 
 export const MapCallout = ({
@@ -59,6 +61,7 @@ export const MapCallout = ({
     onDrop,
     header,
     body,
+    footer,
 }: MapCalloutProps) => {
     const [longitude = 0, latitude = 0] = position;
     const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
@@ -215,7 +218,16 @@ export const MapCallout = ({
                             motion-reduce:transition-none
                         "
                     >
-                        <div className="w-72 px-4 pb-3 font-normal">{body}</div>
+                        <div
+                            className="
+                                flex w-72 flex-col gap-2 px-4 pb-3 font-normal
+                            "
+                        >
+                            <div className="border-t border-border pt-2">
+                                {body}
+                            </div>
+                            {footer}
+                        </div>
                     </CollapsibleContent>
                 </Collapsible>
             </Marker>

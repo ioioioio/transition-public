@@ -1,13 +1,11 @@
-import { RulerIcon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RouteStepIcon from '@/features/trip-comparison/components/route-step-icon';
 import { useTransitStepLabels } from '@/features/trip-comparison/hooks/use-transit-step-labels';
-import { createRouteSummary } from '@/features/trip-comparison/utils/route';
 import { useModeLabels } from '@/hooks/use-mode-labels';
-import { formatDistance, formatDuration } from '@/utils/format';
+import { formatDuration } from '@/utils/format';
 
 interface TimeRowProps {
     icon: ReactNode;
@@ -40,10 +38,9 @@ interface RoutePathSummaryBodyProps {
 }
 
 export const RoutePathSummaryBody = ({ steps }: RoutePathSummaryBodyProps) => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const modeLabels = useModeLabels();
     const { getWalkingToLabel, getWaitingAtLabel } = useTransitStepLabels();
-    const { distanceMeters } = createRouteSummary(steps);
     const describeStep = (
         step: Api.RouteStep,
     ): { icon: ReactNode; label: string } => {
@@ -84,29 +81,19 @@ export const RoutePathSummaryBody = ({ steps }: RoutePathSummaryBodyProps) => {
         }
     };
 
+    // A single step would only repeat the travel time
+    if (steps.length <= 1) {
+        return null;
+    }
     return (
-        <div className="flex flex-col gap-2 border-t border-border pt-2 text-xs">
-            {/* A single step would only repeat the travel time */}
-            {steps.length > 1 && (
-                <ul className="flex flex-col gap-0.75">
-                    {steps.map((step, index) => (
-                        <TimeRow
-                            key={index}
-                            {...describeStep(step)}
-                            seconds={step.durationSeconds}
-                        />
-                    ))}
-                </ul>
-            )}
-            <div className="flex items-center gap-1.5">
-                <RulerIcon aria-hidden className="text-muted-foreground" />
-                <span className="text-muted-foreground">
-                    {t('tripComparison.distance')}
-                </span>
-                <span className="font-medium tabular-nums">
-                    {formatDistance(distanceMeters, i18n.language)}
-                </span>
-            </div>
-        </div>
+        <ul className="flex flex-col gap-0.75 text-xs">
+            {steps.map((step, index) => (
+                <TimeRow
+                    key={index}
+                    {...describeStep(step)}
+                    seconds={step.durationSeconds}
+                />
+            ))}
+        </ul>
     );
 };

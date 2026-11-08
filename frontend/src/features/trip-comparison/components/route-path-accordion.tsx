@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RoutePathSummaryBody } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-body';
+import { RoutePathSummaryFooter } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-footer';
 import {
     BestRouteBadge,
     RoutePathSummaryHeader,
@@ -47,7 +48,10 @@ const RoutePathCard = ({
             />
         </AccordionTrigger>
         <AccordionContent className="px-4 pb-3">
-            <RoutePathSummaryBody steps={steps} />
+            <div className="flex flex-col gap-2 border-t border-border pt-2">
+                <RoutePathSummaryBody steps={steps} />
+                <RoutePathSummaryFooter steps={steps} />
+            </div>
         </AccordionContent>
     </AccordionItem>
 );

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
 import { RoutePathSummaryBody } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-body';
+import { RoutePathSummaryFooter } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-footer';
 import { RoutePathSummaryHeader } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 
 interface MapRoutePathCalloutProps {
@@ -55,6 +56,7 @@ const MapRoutePathCallout = ({
                 />
             }
             body={<RoutePathSummaryBody steps={steps} />}
+            footer={<RoutePathSummaryFooter steps={steps} />}
         />
     );
 };
