@@ -25,6 +25,11 @@ const stopPressReachingMarker = (element: HTMLElement | null) => {
     element?.addEventListener('touchstart', stopPropagation);
 };
 
+// So scrolling its body doesn't zoom the map
+const stopWheelReachingMap = (element: HTMLElement | null) => {
+    element?.addEventListener('wheel', stopPropagation);
+};
+
 export interface MapCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
@@ -205,6 +210,7 @@ export const MapCallout = ({
                     <CollapsibleContent
                         ref={(element) => {
                             stopPressReachingMarker(element);
+                            stopWheelReachingMap(element);
                         }}
                         className="
                             h-(--collapsible-panel-height) cursor-auto
@@ -223,7 +229,13 @@ export const MapCallout = ({
                                 flex w-72 flex-col gap-2 px-4 pb-3 font-normal
                             "
                         >
-                            <div className="border-t border-border pt-2">
+                            <div
+                                className="
+                                    max-h-25 scrollbar-thin
+                                    [scrollbar-color:var(--border)_transparent]
+                                    overflow-y-auto border-t border-border pt-2
+                                "
+                            >
                                 {body}
                             </div>
                             {footer}
