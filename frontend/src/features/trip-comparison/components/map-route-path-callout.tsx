@@ -54,7 +54,7 @@ const MapRoutePathCallout = ({
                     compact={!expanded}
                 />
             }
-            details={<RoutePathSummaryBody steps={steps} />}
+            body={<RoutePathSummaryBody steps={steps} />}
         />
     );
 };

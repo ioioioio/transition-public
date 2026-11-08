@@ -19,7 +19,7 @@ const stopDoubleClickReachingMap = (element: HTMLElement | null) => {
     element?.addEventListener('dblclick', stopPropagation);
 };
 
-// So pressing its details doesn't drag it, and their text can be selected
+// So pressing its body doesn't drag it, and its text can be selected
 const stopPressReachingMarker = (element: HTMLElement | null) => {
     element?.addEventListener('mousedown', stopPropagation);
     element?.addEventListener('touchstart', stopPropagation);
@@ -29,7 +29,7 @@ export interface MapCalloutProps {
     /** As `[longitude, latitude]`. */
     position: Position;
     selected: boolean;
-    /** Shows `details`. */
+    /** Shows `body`. */
     expanded: boolean;
     /** Among the labels, higher is in front. `0` by default. */
     stackOrder?: number;
@@ -43,8 +43,8 @@ export interface MapCalloutProps {
     onDrop: (position: Position) => void;
     /** In its button. */
     header: ReactNode;
-    /** Under its button, while `expanded`. Clicking them doesn't call `onClick`. */
-    details: ReactNode;
+    /** Under its button, while `expanded`. Clicking it doesn't call `onClick`. */
+    body: ReactNode;
 }
 
 export const MapCallout = ({
@@ -58,7 +58,7 @@ export const MapCallout = ({
     onDrag,
     onDrop,
     header,
-    details,
+    body,
 }: MapCalloutProps) => {
     const [longitude = 0, latitude = 0] = position;
     const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
@@ -141,7 +141,7 @@ export const MapCallout = ({
                     const isOnButton =
                         target instanceof Node &&
                         button.current?.contains(target) === true;
-                    // So clicking its details doesn't close it
+                    // So clicking its body doesn't close it
                     if (!isOnButton) {
                         return;
                     }
@@ -220,9 +220,7 @@ export const MapCallout = ({
                             motion-reduce:transition-none
                         "
                     >
-                        <div className="w-72 px-4 pb-3 font-normal">
-                            {details}
-                        </div>
+                        <div className="w-72 px-4 pb-3 font-normal">{body}</div>
                     </CollapsibleContent>
                 </Collapsible>
             </Marker>
