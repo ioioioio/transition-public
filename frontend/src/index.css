@@ -29,6 +29,8 @@
     --color-ring: var(--ring);
     --color-input: var(--input);
     --color-border: var(--border);
+    --color-floating-border: var(--floating-border);
+    --color-floating-outline: var(--floating-outline);
     --color-destructive: var(--destructive);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
@@ -76,6 +78,13 @@
     --accent-foreground: oklch(0.21 0.006 285.885);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.92 0.004 286.32);
+    /* Opaque, so what's behind a floating element doesn't show at its edge */
+    --floating-border: var(--border);
+    --floating-outline: color-mix(
+        in srgb,
+        var(--foreground) 15%,
+        var(--background)
+    );
     --input: oklch(0.92 0.004 286.32);
     --ring: oklch(0.705 0.015 286.067);
     --chart-1: oklch(0.811 0.111 293.571);
@@ -124,6 +133,16 @@
     --accent-foreground: #e9e9ed;
     --destructive: oklch(0.704 0.191 22.216);
     --border: color-mix(in srgb, #e9e9ed 16%, transparent);
+    --floating-border: color-mix(
+        in srgb,
+        var(--foreground) 16%,
+        var(--background)
+    );
+    --floating-outline: color-mix(
+        in srgb,
+        var(--foreground) 45%,
+        var(--background)
+    );
     --input: color-mix(in srgb, #e9e9ed 16%, transparent);
     --ring: #9184d9;
     --chart-1: oklch(0.811 0.111 293.571);

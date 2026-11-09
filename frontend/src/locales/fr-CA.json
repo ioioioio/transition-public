@@ -12,6 +12,10 @@
         "rail": "Train",
         "walking": "Marche"
     },
+    "sidePanel": {
+        "hide": "Masquer le panneau",
+        "show": "Afficher le panneau"
+    },
     "theme": {
         "switchToDark": "Passer au mode sombre",
         "switchToLight": "Passer au mode clair"

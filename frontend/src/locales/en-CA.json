@@ -12,6 +12,10 @@
         "rail": "Train",
         "walking": "Walking"
     },
+    "sidePanel": {
+        "hide": "Hide panel",
+        "show": "Show panel"
+    },
     "theme": {
         "switchToDark": "Switch to dark mode",
         "switchToLight": "Switch to light mode"
