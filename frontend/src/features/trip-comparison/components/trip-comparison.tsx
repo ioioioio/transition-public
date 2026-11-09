@@ -4,7 +4,7 @@ import { useRouteQueries } from '@/api/route';
 import SidePanel from '@/components/layouts/side-panel';
 import MapView from '@/components/map/map-view';
 import PlaceMarker from '@/components/map/place-marker';
-import MapRoutePaths from '@/features/trip-comparison/components/map-route-paths';
+import MapRoutePaths from '@/features/trip-comparison/components/map/map-route-paths';
 import RoutePathAccordion from '@/features/trip-comparison/components/route-path-accordion';
 import RoutePathGrid from '@/features/trip-comparison/components/route-path-grid';
 import TripComparisonForm from '@/features/trip-comparison/components/trip-comparison-form';
