@@ -1,6 +1,6 @@
 import { CaretDownIcon } from '@phosphor-icons/react';
 import { Marker } from '@vis.gl/react-maplibre';
-import type { Position } from 'geojson';
+import type { Utils } from 'common';
 import { useRef, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -32,8 +32,7 @@ const stopWheelReachingMap = (element: HTMLElement | null) => {
 };
 
 export interface MapCalloutProps {
-    /** As `[longitude, latitude]`. */
-    position: Position;
+    position: Utils.LngLat;
     selected: boolean;
     /** Shows `body`. */
     expanded: boolean;
@@ -43,12 +42,12 @@ export interface MapCalloutProps {
     stackOrder?: number;
     onClick?: () => void;
     onPress?: () => void;
-    /** The point the label refers to, linked to it by a leader. As `[longitude, latitude]`. */
-    anchor: Position;
-    /** Where the label was dragged to, as `[longitude, latitude]`. */
-    onDrag: (position: Position) => void;
-    /** Where the label was dropped at the end of a drag, as `[longitude, latitude]`. */
-    onDrop: (position: Position) => void;
+    /** The point the label refers to, linked to it by a leader. */
+    anchor: Utils.LngLat;
+    /** Where the label was dragged to. */
+    onDrag: (position: Utils.LngLat) => void;
+    /** Where the label was dropped at the end of a drag. */
+    onDrop: (position: Utils.LngLat) => void;
     /** In its button. */
     header: ReactNode;
     /** Under its button, while `expanded`. Clicking it doesn't call `onClick`. */
@@ -72,8 +71,6 @@ export const MapCallout = ({
     body,
     footer,
 }: MapCalloutProps) => {
-    const [longitude = 0, latitude = 0] = position;
-    const [anchorLongitude = 0, anchorLatitude = 0] = anchor;
     const labelOffset = useScreenOffset(anchor, position);
     const isDragging = useRef(false);
     // Null unless pressed by a mouse or finger: keyboard clicks aren't long presses
@@ -86,8 +83,8 @@ export const MapCallout = ({
             {/* Not a MapLibre line layer, which would trail the label by a
                 frame as it's dragged */}
             <Marker
-                longitude={anchorLongitude}
-                latitude={anchorLatitude}
+                longitude={anchor.lng}
+                latitude={anchor.lat}
                 style={{ zIndex: markerStacking.leader }}
             >
                 <div className="relative size-0">
@@ -116,8 +113,8 @@ export const MapCallout = ({
                 </div>
             </Marker>
             <Marker
-                longitude={longitude}
-                latitude={latitude}
+                longitude={position.lng}
+                latitude={position.lat}
                 style={{ zIndex: markerStacking.label + stackOrder }}
                 draggable
                 onDragStart={() => {
@@ -126,11 +123,11 @@ export const MapCallout = ({
                 onDrag={(event) => {
                     // At once, as the map moves the label, so its leader keeps up
                     flushSync(() => {
-                        onDrag([event.lngLat.lng, event.lngLat.lat]);
+                        onDrag(event.lngLat);
                     });
                 }}
                 onDragEnd={(event) => {
-                    onDrop([event.lngLat.lng, event.lngLat.lat]);
+                    onDrop(event.lngLat);
                     // Keep isDragging true until this event is handled,
                     // so onClick still sees it as a drag
                     setTimeout(() => {

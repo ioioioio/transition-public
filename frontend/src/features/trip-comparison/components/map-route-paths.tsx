@@ -1,5 +1,4 @@
-import type { Api } from 'common';
-import type { Position } from 'geojson';
+import type { Api, Utils } from 'common';
 import { useMemo, useState } from 'react';
 
 import { MapRoutePath } from '@/features/trip-comparison/components/map-route-path';
@@ -85,19 +84,19 @@ const MapRoutePaths = ({
     );
 
     const [labelPositions, setLabelPositions] = useState<
-        ReadonlyMap<string, Position>
+        ReadonlyMap<string, Utils.LngLat>
     >(() => new Map());
 
-    const moveLabel = (routeId: string, position: Position) => {
+    const moveLabel = (routeId: string, position: Utils.LngLat) => {
         setLabelPositions((previous) =>
             new Map(previous).set(routeId, position),
         );
     };
     // The closest point of each path to its label
     const [labelAnchors, setLabelAnchors] = useState<
-        ReadonlyMap<string, Position>
+        ReadonlyMap<string, Utils.LngLat>
     >(() => new Map());
-    const moveLabelAnchor = (routeId: string, position: Position) => {
+    const moveLabelAnchor = (routeId: string, position: Utils.LngLat) => {
         const path = labeledPaths.get(routeId);
         if (!path) {
             return;

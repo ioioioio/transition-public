@@ -7,7 +7,7 @@ import {
 import type { Api } from 'common';
 import type { LineString } from 'geojson';
 
-import { createCurve } from '@/utils/geo';
+import { createCurve, createLngLat } from '@/utils/geo';
 import { modeIcons } from '@/utils/mode';
 
 // A step that goes somewhere, rather than one at a stop
@@ -67,7 +67,7 @@ export const createRouteStepGeometry = (
     const start = coordinates.at(0);
     const end = coordinates.at(-1);
     return coordinates.length === 2 && start && end
-        ? createCurve(start, end, arcBend)
+        ? createCurve(createLngLat(start), createLngLat(end), arcBend)
         : step.geometry;
 };
 

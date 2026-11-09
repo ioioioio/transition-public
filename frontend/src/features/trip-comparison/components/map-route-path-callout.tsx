@@ -1,5 +1,4 @@
 import type { Api } from 'common';
-import type { Position } from 'geojson';
 import type { ReactNode } from 'react';
 
 import { MapCallout, type MapCalloutProps } from '@/components/map/map-callout';
@@ -8,8 +7,7 @@ import { RoutePathSummaryFooter } from '@/features/trip-comparison/components/ro
 import { RoutePathSummaryHeader } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 
 interface MapRoutePathCalloutProps {
-    /** As `[longitude, latitude]`. */
-    position: Position;
+    position: MapCalloutProps['position'];
     steps: Api.RouteStep[];
     badge?: ReactNode;
     selected: boolean;
