@@ -14,6 +14,7 @@ interface MapRoutePathCalloutProps {
     badge?: ReactNode;
     selected: boolean;
     expanded: boolean;
+    expandable: boolean;
     stackOrder: number;
     onClick: () => void;
     onPress?: MapCalloutProps['onPress'];
@@ -29,6 +30,7 @@ const MapRoutePathCallout = ({
     badge,
     selected,
     expanded,
+    expandable,
     stackOrder,
     onClick,
     onPress,
@@ -41,6 +43,7 @@ const MapRoutePathCallout = ({
             position={position}
             selected={selected}
             expanded={expanded}
+            expandable={expandable}
             stackOrder={stackOrder}
             onClick={onClick}
             onPress={onPress}

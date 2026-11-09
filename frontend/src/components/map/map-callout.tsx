@@ -1,3 +1,4 @@
+import { CaretDownIcon } from '@phosphor-icons/react';
 import { Marker } from '@vis.gl/react-maplibre';
 import type { Position } from 'geojson';
 import { useRef, type ReactNode } from 'react';
@@ -36,6 +37,8 @@ export interface MapCalloutProps {
     selected: boolean;
     /** Shows `body`. */
     expanded: boolean;
+    /** Whether clicking it can expand it. */
+    expandable: boolean;
     /** Among the labels, higher is in front. `0` by default. */
     stackOrder?: number;
     onClick?: () => void;
@@ -58,6 +61,7 @@ export const MapCallout = ({
     position,
     selected,
     expanded,
+    expandable,
     stackOrder = 0,
     onClick,
     onPress,
@@ -191,21 +195,37 @@ export const MapCallout = ({
                         ref={button}
                         type="button"
                         aria-pressed={selected}
+                        aria-expanded={expandable ? expanded : undefined}
                         className={cn(
                             `
-                                flex cursor-[inherit] items-center gap-2 px-3
-                                py-2 whitespace-nowrap tabular-nums outline-none
+                                m-1 flex cursor-[inherit] items-center gap-2
+                                rounded-sm px-2 py-1 whitespace-nowrap
+                                tabular-nums outline-none
+                                hover:bg-muted
                                 [&_svg]:size-4
                             `,
                             expanded &&
                                 `
-                                    w-72 shrink-0 gap-3 px-4 py-3 text-left
-                                    whitespace-normal
+                                    w-70 shrink-0 gap-3 rounded-md px-3 py-2
+                                    text-left whitespace-normal
                                     [&_svg]:size-auto
                                 `,
                         )}
                     >
                         {header}
+                        {expandable && (
+                            <CaretDownIcon
+                                aria-hidden
+                                className={cn(
+                                    `
+                                        shrink-0 text-muted-foreground
+                                        transition-transform duration-150
+                                        motion-reduce:transition-none
+                                    `,
+                                    expanded && 'rotate-180',
+                                )}
+                            />
+                        )}
                     </button>
                     <CollapsibleContent
                         ref={(element) => {

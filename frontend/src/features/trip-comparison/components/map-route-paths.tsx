@@ -177,6 +177,7 @@ const MapRoutePaths = ({
                             selected={selectedRouteId === route.id}
                             // A card would cover too much of a phone's map
                             expanded={selectedRouteId === route.id && !isPhone}
+                            expandable={!isPhone}
                             stackOrder={routeStack.ids.indexOf(pathId) + 1}
                             onClick={() => {
                                 toggle(route.id);
