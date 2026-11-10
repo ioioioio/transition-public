@@ -83,3 +83,15 @@ export const getPointAlong = (
         along(line, length(feature(line)) * clamped).geometry.coordinates,
     );
 };
+
+/** Facing from `start` to `end`. */
+export const isLeftOf = (
+    start: Utils.LngLat,
+    end: Utils.LngLat,
+    point: Utils.LngLat,
+) => {
+    const toEnd = { x: end.lng - start.lng, y: end.lat - start.lat };
+    const toPoint = { x: point.lng - start.lng, y: point.lat - start.lat };
+    const crossProduct = toEnd.x * toPoint.y - toEnd.y * toPoint.x;
+    return crossProduct > 0;
+};
