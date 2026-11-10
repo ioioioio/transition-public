@@ -1,5 +1,5 @@
 import type { Api } from 'common';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import type { MapLineStyles } from '@/components/map/map-line';
 import { MapRoutePath } from '@/features/trip-comparison/components/map/map-route-path';
@@ -83,11 +83,14 @@ const MapRoutePaths = ({
     const bestRouteId = drawnRoutes.at(0)?.route.id;
     const isPhone = useIsPhone();
 
-    return (
-        <>
-            {drawnRoutes.map(({ route, pathId, styles, bend }) => (
+    return drawnRoutes.map(({ route, pathId, styles, bend }) => {
+        const calloutPosition = callouts.positions.get(route.id);
+        if (!calloutPosition) {
+            return null;
+        }
+        return (
+            <Fragment key={route.id}>
                 <MapRoutePath
-                    key={route.id}
                     id={pathId}
                     steps={route.steps}
                     getStepIcon={getRouteStepIcon}
@@ -107,46 +110,37 @@ const MapRoutePaths = ({
                         routeStack.raise(pathId);
                     }}
                 />
-            ))}
-            {drawnRoutes
-                .filter(({ route }) => isShown(route.id))
-                .map(({ route, pathId }) => {
-                    const position = callouts.positions.get(route.id);
-                    if (!position) {
-                        return null;
-                    }
-                    return (
-                        <MapRoutePathCallout
-                            key={route.id}
-                            position={position}
-                            steps={route.steps}
-                            badge={
-                                route.id === bestRouteId && (
-                                    <BestRouteBadge order="travelTime" />
-                                )
-                            }
-                            selected={selectedRouteId === route.id}
-                            // A card would cover too much of a phone's map
-                            expanded={selectedRouteId === route.id && !isPhone}
-                            expandable={!isPhone}
-                            stackOrder={routeStack.ids.indexOf(pathId) + 1}
-                            onClick={() => {
-                                toggle(route.id);
-                            }}
-                            onPress={() => {
-                                routeStack.raise(pathId);
-                            }}
-                            onDrag={(draggedTo) => {
-                                callouts.move(route.id, draggedTo);
-                            }}
-                            onDrop={(droppedAt) => {
-                                callouts.drop(route.id, droppedAt);
-                            }}
-                        />
-                    );
-                })}
-        </>
-    );
+                {isShown(route.id) && (
+                    <MapRoutePathCallout
+                        position={calloutPosition}
+                        steps={route.steps}
+                        badge={
+                            route.id === bestRouteId && (
+                                <BestRouteBadge order="travelTime" />
+                            )
+                        }
+                        selected={selectedRouteId === route.id}
+                        // A card would cover too much of a phone's map
+                        expanded={selectedRouteId === route.id && !isPhone}
+                        expandable={!isPhone}
+                        stackOrder={routeStack.ids.indexOf(pathId) + 1}
+                        onClick={() => {
+                            toggle(route.id);
+                        }}
+                        onPress={() => {
+                            routeStack.raise(pathId);
+                        }}
+                        onDrag={(draggedTo) => {
+                            callouts.move(route.id, draggedTo);
+                        }}
+                        onDrop={(droppedAt) => {
+                            callouts.drop(route.id, droppedAt);
+                        }}
+                    />
+                )}
+            </Fragment>
+        );
+    });
 };
 
 export default MapRoutePaths;
