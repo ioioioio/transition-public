@@ -13,17 +13,13 @@ import {
 } from '@/features/trip-comparison/utils/route-step';
 import { modeColors } from '@/utils/mode';
 
-export interface MapRouteStepStyles {
-    line: MapLineStyles;
-    /** How far the arc bends from the straight line, as a fraction of its length. */
-    bend: number;
-}
-
 export interface MapRouteStepProps {
     id: string;
     step: Api.RouteStep;
     icon: Icon;
-    styles: MapRouteStepStyles;
+    styles: MapLineStyles;
+    /** How far the arc bends from the straight line, as a fraction of its length. */
+    bend: number;
     emphasis: LineEmphasis;
     onClick?: () => void;
     onPress?: () => void;
@@ -34,6 +30,7 @@ export const MapRouteStep = ({
     step,
     icon,
     styles,
+    bend,
     emphasis,
     onClick,
     onPress,
@@ -42,13 +39,13 @@ export const MapRouteStep = ({
     if (!isTravelRouteStep(step)) {
         return null;
     }
-    const geometry = createRouteStepGeometry(step, styles.bend);
+    const geometry = createRouteStepGeometry(step, bend);
 
     return (
         <MapLine
             id={id}
             geometry={geometry}
-            styles={styles.line}
+            styles={styles}
             color={modeColors[getRouteStepMode(step)]}
             emphasis={emphasis}
             icon={icon}

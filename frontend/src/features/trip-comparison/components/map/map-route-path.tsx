@@ -1,11 +1,8 @@
 import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 
-import type { LineEmphasis } from '@/components/map/map-line';
-import {
-    MapRouteStep,
-    type MapRouteStepStyles,
-} from '@/features/trip-comparison/components/map/map-route-step';
+import type { LineEmphasis, MapLineStyles } from '@/components/map/map-line';
+import { MapRouteStep } from '@/features/trip-comparison/components/map/map-route-step';
 import { createNestedId } from '@/utils/nested-id';
 
 export interface MapRoutePathProps {
@@ -14,7 +11,8 @@ export interface MapRoutePathProps {
     steps: Api.RouteStep[];
     getStepIcon: (step: Api.RouteStep) => Icon;
     // The same for all the steps of the path
-    styles: MapRouteStepStyles;
+    styles: MapLineStyles;
+    bend: number;
     emphasis: LineEmphasis;
     onClick?: () => void;
     onPress?: () => void;
@@ -25,6 +23,7 @@ export const MapRoutePath = ({
     steps,
     getStepIcon,
     styles,
+    bend,
     emphasis,
     onClick,
     onPress,
@@ -36,6 +35,7 @@ export const MapRoutePath = ({
             step={step}
             icon={getStepIcon(step)}
             styles={styles}
+            bend={bend}
             emphasis={emphasis}
             onClick={onClick}
             onPress={onPress}

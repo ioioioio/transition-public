@@ -1,9 +1,9 @@
 import type { Api, Utils } from 'common';
 import { useMemo, useState } from 'react';
 
+import type { MapLineStyles } from '@/components/map/map-line';
 import { MapRoutePath } from '@/features/trip-comparison/components/map/map-route-path';
 import MapRoutePathCallout from '@/features/trip-comparison/components/map/map-route-path-callout';
-import type { MapRouteStepStyles } from '@/features/trip-comparison/components/map/map-route-step';
 import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
 import {
@@ -18,21 +18,25 @@ import { createNestedId } from '@/utils/nested-id';
 // The id a route's map sources and layers are nested under
 const createRoutePathId = (routeId: string) => createNestedId('route', routeId);
 
+// From 0 for the fastest to 1 for the slowest
+const findSlowness = (rank: number, count: number) =>
+    count > 1 ? rank / (count - 1) : 0;
+
 /**
  * Styles a path by its rank, from the fastest (`0`) to the slowest
  */
-const createRoutePathStyles = (
-    rank: number,
-    count: number,
-): MapRouteStepStyles => {
-    // From 0 for the fastest to 1 for the slowest
-    const slowness = count > 1 ? rank / (count - 1) : 0;
+const createRoutePathStyles = (rank: number, count: number): MapLineStyles => {
+    const slowness = findSlowness(rank, count);
+    return { dashArray: [3 - 2.75 * slowness, 1 + slowness] };
+};
+
+/**
+ * Bends a path by its rank, from the fastest (`0`) to the slowest, to alternating sides
+ */
+const findRoutePathBend = (rank: number, count: number) => {
     const side = rank % 2 === 0 ? 1 : -1;
-    return {
-        line: { dashArray: [3 - 2.75 * slowness, 1 + slowness] },
-        // More curved when faster, so the fastest is the longest and stands out
-        bend: side * (0.2 - 0.12 * slowness),
-    };
+    // More curved when faster, so the fastest is the longest and stands out
+    return side * (0.2 - 0.12 * findSlowness(rank, count));
 };
 
 interface MapRoutePathsProps {
@@ -60,6 +64,7 @@ const MapRoutePaths = ({
                 route,
                 pathId: createRoutePathId(route.id),
                 styles: createRoutePathStyles(rank, sortedRoutes.length),
+                bend: findRoutePathBend(rank, sortedRoutes.length),
             })),
         [routes],
     );
@@ -69,11 +74,8 @@ const MapRoutePaths = ({
     const labeledPaths = useMemo(
         () =>
             new Map(
-                drawnRoutes.map(({ route, styles }) => {
-                    const line = createRoutePathGeometry(
-                        route.steps,
-                        styles.bend,
-                    );
+                drawnRoutes.map(({ route, bend }) => {
+                    const line = createRoutePathGeometry(route.steps, bend);
                     return [
                         route.id,
                         { line, defaultPosition: getPointAlong(line, 0.5) },
@@ -131,13 +133,14 @@ const MapRoutePaths = ({
 
     return (
         <>
-            {drawnRoutes.map(({ route, pathId, styles }) => (
+            {drawnRoutes.map(({ route, pathId, styles, bend }) => (
                 <MapRoutePath
                     key={route.id}
                     id={pathId}
                     steps={route.steps}
                     getStepIcon={getRouteStepIcon}
                     styles={styles}
+                    bend={bend}
                     emphasis={
                         selectedRouteId === null
                             ? 'default'
