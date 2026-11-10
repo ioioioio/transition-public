@@ -163,10 +163,14 @@ const MapRoutePaths = ({
                     return (
                         <MapRoutePathCallout
                             key={route.id}
-                            position={
-                                labelPositions.get(route.id) ??
-                                path.defaultPosition
-                            }
+                            position={{
+                                label:
+                                    labelPositions.get(route.id) ??
+                                    path.defaultPosition,
+                                anchor:
+                                    labelAnchors.get(route.id) ??
+                                    path.defaultPosition,
+                            }}
                             steps={route.steps}
                             badge={
                                 route.id === bestRouteId && (
@@ -184,10 +188,6 @@ const MapRoutePaths = ({
                             onPress={() => {
                                 routeStack.raise(pathId);
                             }}
-                            anchor={
-                                labelAnchors.get(route.id) ??
-                                path.defaultPosition
-                            }
                             onDrag={(draggedTo) => {
                                 moveLabel(route.id, draggedTo);
                             }}

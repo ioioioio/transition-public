@@ -16,7 +16,6 @@ interface MapRoutePathCalloutProps {
     stackOrder: number;
     onClick: () => void;
     onPress?: MapCalloutProps['onPress'];
-    anchor: MapCalloutProps['anchor'];
     onDrag: MapCalloutProps['onDrag'];
     onDrop: MapCalloutProps['onDrop'];
 }
@@ -32,7 +31,6 @@ const MapRoutePathCallout = ({
     stackOrder,
     onClick,
     onPress,
-    anchor,
     onDrag,
     onDrop,
 }: MapRoutePathCalloutProps) => {
@@ -45,7 +43,6 @@ const MapRoutePathCallout = ({
             stackOrder={stackOrder}
             onClick={onClick}
             onPress={onPress}
-            anchor={anchor}
             onDrag={onDrag}
             onDrop={onDrop}
             header={

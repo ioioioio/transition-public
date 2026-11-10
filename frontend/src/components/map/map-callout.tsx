@@ -31,8 +31,14 @@ const stopWheelReachingMap = (element: HTMLElement | null) => {
     element?.addEventListener('wheel', stopPropagation);
 };
 
+export interface CalloutPosition {
+    label: Utils.LngLat;
+    /** The point the label refers to, linked to it by a leader. */
+    anchor: Utils.LngLat;
+}
+
 export interface MapCalloutProps {
-    position: Utils.LngLat;
+    position: CalloutPosition;
     selected: boolean;
     /** Shows `body`. */
     expanded: boolean;
@@ -42,8 +48,6 @@ export interface MapCalloutProps {
     stackOrder?: number;
     onClick?: () => void;
     onPress?: () => void;
-    /** The point the label refers to, linked to it by a leader. */
-    anchor: Utils.LngLat;
     /** Where the label was dragged to. */
     onDrag: (position: Utils.LngLat) => void;
     /** Where the label was dropped at the end of a drag. */
@@ -64,14 +68,13 @@ export const MapCallout = ({
     stackOrder = 0,
     onClick,
     onPress,
-    anchor,
     onDrag,
     onDrop,
     header,
     body,
     footer,
 }: MapCalloutProps) => {
-    const labelOffset = useScreenOffset(anchor, position);
+    const labelOffset = useScreenOffset(position.anchor, position.label);
     const isDragging = useRef(false);
     // Null unless pressed by a mouse or finger: keyboard clicks aren't long presses
     const pressStartedAt = useRef<number | null>(null);
@@ -83,8 +86,8 @@ export const MapCallout = ({
             {/* Not a MapLibre line layer, which would trail the label by a
                 frame as it's dragged */}
             <Marker
-                longitude={anchor.lng}
-                latitude={anchor.lat}
+                longitude={position.anchor.lng}
+                latitude={position.anchor.lat}
                 style={{ zIndex: markerStacking.leader }}
             >
                 <div className="relative size-0">
@@ -113,8 +116,8 @@ export const MapCallout = ({
                 </div>
             </Marker>
             <Marker
-                longitude={position.lng}
-                latitude={position.lat}
+                longitude={position.label.lng}
+                latitude={position.label.lat}
                 style={{ zIndex: markerStacking.label + stackOrder }}
                 draggable
                 onDragStart={() => {
