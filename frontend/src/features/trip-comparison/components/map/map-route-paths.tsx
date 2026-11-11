@@ -85,8 +85,11 @@ const MapRoutePaths = ({
         }
         const isBestRoute = rank === 0;
         const isSelected = selectedRouteId === route.id;
-        // When a route is selected, the others' label is hidden
-        const isCalloutShown = selectedRouteId === null || isSelected;
+        const isCalloutShown =
+            // When a route is selected, the others' label is hidden
+            (selectedRouteId === null || isSelected) &&
+            // and all are when zoomed out too far
+            !callouts.isZoomedOutTooFar;
         return (
             <Fragment key={route.id}>
                 <MapRoutePath

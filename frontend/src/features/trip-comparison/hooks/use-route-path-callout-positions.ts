@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 
 import type { CalloutPosition } from '@/components/map/map-callout';
 import { createRoutePathGeometry } from '@/features/trip-comparison/utils/route-step';
+import { useScreenOffset } from '@/hooks/map/use-screen-offset';
 import {
     createLngLat,
     findNearestPointOnLine,
@@ -15,6 +16,8 @@ import {
 export interface RoutePathCalloutPositions {
     /** By route id. */
     positions: ReadonlyMap<string, CalloutPosition>;
+    /** When the origin and destination are too close on screen for callouts. */
+    isZoomedOutTooFar: boolean;
     /** While a callout is dragged. */
     move: (routeId: string, position: Utils.LngLat) => void;
     /** When a callout is dropped. */
@@ -26,6 +29,8 @@ const anchorRange = { start: 0.2, end: 0.8 };
 // As fractions of the distance between the lines' ends
 const leaderLength = 0.1;
 const labelGap = 0.1;
+// Below this, the OD pair is too close on screen for its callouts
+const minCalloutsOdPairPixels = 150;
 
 type Side = 'left' | 'right';
 
@@ -163,6 +168,14 @@ const createDefaultPositions = (
     return raiseCrowdedLabels(callouts, gap);
 };
 
+const useIsZoomedOutTooFar = (odPair: OdPair | undefined) => {
+    const odPairOnScreen = useScreenOffset(odPair?.origin, odPair?.destination);
+    return odPairOnScreen
+        ? Math.hypot(odPairOnScreen.x, odPairOnScreen.y) <
+              minCalloutsOdPairPixels
+        : false;
+};
+
 /**
  * Where each route path's callout goes: by default, spread out so the callouts are unlikely to
  * overlap; once dragged, where it was dragged to.
@@ -235,5 +248,7 @@ export const useRoutePathCalloutPositions = (
         );
     };
 
-    return { positions, move, drop };
+    const isZoomedOutTooFar = useIsZoomedOutTooFar(odPair);
+
+    return { positions, isZoomedOutTooFar, move, drop };
 };
