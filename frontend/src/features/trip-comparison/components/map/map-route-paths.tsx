@@ -84,9 +84,9 @@ const MapRoutePaths = ({
             return null;
         }
         const isBestRoute = rank === 0;
+        const isSelected = selectedRouteId === route.id;
         // When a route is selected, the others' label is hidden
-        const isCalloutShown =
-            selectedRouteId === null || selectedRouteId === route.id;
+        const isCalloutShown = selectedRouteId === null || isSelected;
         return (
             <Fragment key={route.id}>
                 <MapRoutePath
@@ -98,7 +98,7 @@ const MapRoutePaths = ({
                     emphasis={
                         selectedRouteId === null
                             ? 'default'
-                            : selectedRouteId === route.id
+                            : isSelected
                               ? 'selected'
                               : 'muted'
                     }
@@ -116,9 +116,9 @@ const MapRoutePaths = ({
                         badge={
                             isBestRoute && <BestRouteBadge order="travelTime" />
                         }
-                        selected={selectedRouteId === route.id}
+                        selected={isSelected}
                         // A card would cover too much of a phone's map
-                        expanded={selectedRouteId === route.id && !isPhone}
+                        expanded={isSelected && !isPhone}
                         expandable={!isPhone}
                         stackOrder={routeStack.ids.indexOf(pathId) + 1}
                         onClick={() => {
