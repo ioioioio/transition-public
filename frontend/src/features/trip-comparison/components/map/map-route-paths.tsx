@@ -63,10 +63,6 @@ const MapRoutePaths = ({
 
     const callouts = useRoutePathCalloutPositions(drawnRoutes);
 
-    // When a route is selected, the others' label is hidden
-    const isShown = (routeId: string) =>
-        selectedRouteId === null || selectedRouteId === routeId;
-
     const routeStack = useLayerStack();
 
     // Raises the newly selected route, whatever selected it
@@ -88,6 +84,9 @@ const MapRoutePaths = ({
         if (!calloutPosition) {
             return null;
         }
+        // When a route is selected, the others' label is hidden
+        const isCalloutShown =
+            selectedRouteId === null || selectedRouteId === route.id;
         return (
             <Fragment key={route.id}>
                 <MapRoutePath
@@ -110,7 +109,7 @@ const MapRoutePaths = ({
                         routeStack.raise(pathId);
                     }}
                 />
-                {isShown(route.id) && (
+                {isCalloutShown && (
                     <MapRoutePathCallout
                         position={calloutPosition}
                         steps={route.steps}
