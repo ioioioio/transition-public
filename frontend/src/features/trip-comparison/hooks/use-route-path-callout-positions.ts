@@ -9,8 +9,10 @@ import { useScreenOffset } from '@/hooks/map/use-screen-offset';
 import {
     createLngLat,
     findNearestPointOnLine,
+    findMiddle,
     getPointAlong,
     isLeftOf,
+    scaleDistanceFrom,
 } from '@/utils/geo';
 
 export interface RoutePathCalloutPositions {
@@ -29,6 +31,9 @@ const anchorRange = { start: 0.2, end: 0.8 };
 // As fractions of the distance between the lines' ends
 const leaderLength = 0.1;
 const labelGap = 0.1;
+// Once the OD pair is closer than this on screen, labels keep their distances
+// on screen rather than on the map, as they don't shrink when zoomed out
+const minOdPairPixels = 600;
 // Below this, the OD pair is too close on screen for its callouts
 const minCalloutsOdPairPixels = 150;
 
@@ -176,6 +181,54 @@ const useIsZoomedOutTooFar = (odPair: OdPair | undefined) => {
         : false;
 };
 
+// How much further apart labels go on the map, from the OD pair's middle, to
+// keep their distances on screen
+const useLabelSpread = (odPair: OdPair | undefined) => {
+    const odPairOnScreen = useScreenOffset(odPair?.origin, odPair?.destination);
+    if (!odPairOnScreen) {
+        return undefined;
+    }
+    return Math.max(
+        1,
+        minOdPairPixels / Math.hypot(odPairOnScreen.x, odPairOnScreen.y),
+    );
+};
+
+const scaleDistanceFromMiddle = (
+    odPair: OdPair,
+    point: Utils.LngLat,
+    factor: number,
+) =>
+    scaleDistanceFrom(
+        findMiddle(odPair.origin, odPair.destination),
+        point,
+        factor,
+    );
+
+const spreadPositions = (
+    defaultPositions: readonly { routeId: string; position: CalloutPosition }[],
+    movedPositions: ReadonlyMap<string, Partial<CalloutPosition>>,
+    odPair: OdPair,
+    labelSpread: number,
+) => {
+    return new Map<string, CalloutPosition>(
+        defaultPositions.map(({ routeId, position }) => {
+            const moved = movedPositions.get(routeId);
+            return [
+                routeId,
+                {
+                    label: scaleDistanceFromMiddle(
+                        odPair,
+                        moved?.label ?? position.label,
+                        labelSpread,
+                    ),
+                    anchor: moved?.anchor ?? position.anchor,
+                },
+            ];
+        }),
+    );
+};
+
 /**
  * Where each route path's callout goes: by default, spread out so the callouts are unlikely to
  * overlap; once dragged, where it was dragged to.
@@ -205,33 +258,36 @@ export const useRoutePathCalloutPositions = (
         [pathGeometryByRouteId, odPair],
     );
 
+    const labelSpread = useLabelSpread(odPair);
+
     const [movedPositions, setMovedPositions] = useState<
         ReadonlyMap<string, Partial<CalloutPosition>>
     >(() => new Map());
-
-    const positions = useMemo(
-        () =>
-            new Map<string, CalloutPosition>(
-                defaultPositions.map(({ routeId, position }) => {
-                    const moved = movedPositions.get(routeId);
-                    return [
-                        routeId,
-                        {
-                            label: moved?.label ?? position.label,
-                            anchor: moved?.anchor ?? position.anchor,
-                        },
-                    ];
-                }),
-            ),
-        [defaultPositions, movedPositions],
-    );
+    const positions = useMemo(() => {
+        // No route paths
+        if (!odPair || !labelSpread) {
+            return new Map<string, CalloutPosition>();
+        }
+        return spreadPositions(
+            defaultPositions,
+            movedPositions,
+            odPair,
+            labelSpread,
+        );
+    }, [defaultPositions, movedPositions, odPair, labelSpread]);
 
     const move = (routeId: string, position: Utils.LngLat) => {
+        if (!odPair || !labelSpread) {
+            return;
+        }
+        // Unspread, as it's spread when shown
+        const label = scaleDistanceFromMiddle(
+            odPair,
+            position,
+            1 / labelSpread,
+        );
         setMovedPositions((previous) =>
-            new Map(previous).set(routeId, {
-                ...previous.get(routeId),
-                label: position,
-            }),
+            new Map(previous).set(routeId, { ...previous.get(routeId), label }),
         );
     };
     const drop = (routeId: string, position: Utils.LngLat) => {

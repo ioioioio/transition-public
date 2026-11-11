@@ -95,3 +95,17 @@ export const isLeftOf = (
     const crossProduct = toEnd.x * toPoint.y - toEnd.y * toPoint.x;
     return crossProduct > 0;
 };
+
+export const findMiddle = (a: Utils.LngLat, b: Utils.LngLat): Utils.LngLat => ({
+    lng: (a.lng + b.lng) / 2,
+    lat: (a.lat + b.lat) / 2,
+});
+
+export const scaleDistanceFrom = (
+    center: Utils.LngLat,
+    point: Utils.LngLat,
+    factor: number,
+): Utils.LngLat => ({
+    lng: center.lng + (point.lng - center.lng) * factor,
+    lat: center.lat + (point.lat - center.lat) * factor,
+});
