@@ -49,7 +49,7 @@ function TripComparison({
     const setOriginOrDestination = (position: Utils.LngLat) => {
         if (origin === null) {
             setOrigin({ position });
-        } else {
+        } else if (destination === null) {
             setDestination({ position });
         }
     };
