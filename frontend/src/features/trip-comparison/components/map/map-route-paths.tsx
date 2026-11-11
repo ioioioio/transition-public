@@ -1,5 +1,5 @@
 import type { Api } from 'common';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import type { MapLineStyles } from '@/components/map/map-line';
 import { MapRoutePath } from '@/features/trip-comparison/components/map/map-route-path';
@@ -51,28 +51,17 @@ const MapRoutePaths = ({
         onSelect(selectedRouteId === routeId ? null : routeId);
     };
 
-    // memo: Need to keep identity for labeledPaths
-    const drawnRoutes = useMemo(
-        () =>
-            sortRoutes(
-                routes.filter(({ steps }) => steps.length > 0),
-                'travelTime',
-            ).map((route, rank, sortedRoutes) => ({
-                route,
-                pathId: createRoutePathId(route.id),
-                styles: createRoutePathStyles(rank, sortedRoutes.length),
-                bend: findRoutePathBend(rank, sortedRoutes.length),
-            })),
-        [routes],
-    );
+    const drawnRoutes = sortRoutes(
+        routes.filter(({ steps }) => steps.length > 0),
+        'travelTime',
+    ).map((route, rank, sortedRoutes) => ({
+        route,
+        pathId: createRoutePathId(route.id),
+        styles: createRoutePathStyles(rank, sortedRoutes.length),
+        bend: findRoutePathBend(rank, sortedRoutes.length),
+    }));
 
-    const {
-        labeledPaths,
-        labelPositions,
-        labelAnchors,
-        moveLabel,
-        moveLabelAnchor,
-    } = useRoutePathCalloutPositions(drawnRoutes);
+    const callouts = useRoutePathCalloutPositions(drawnRoutes);
 
     // When a route is selected, the others' label is hidden
     const isShown = (routeId: string) =>
@@ -122,21 +111,14 @@ const MapRoutePaths = ({
             {drawnRoutes
                 .filter(({ route }) => isShown(route.id))
                 .map(({ route, pathId }) => {
-                    const path = labeledPaths.get(route.id);
-                    if (!path) {
+                    const position = callouts.positions.get(route.id);
+                    if (!position) {
                         return null;
                     }
                     return (
                         <MapRoutePathCallout
                             key={route.id}
-                            position={{
-                                label:
-                                    labelPositions.get(route.id) ??
-                                    path.defaultPosition,
-                                anchor:
-                                    labelAnchors.get(route.id) ??
-                                    path.defaultPosition,
-                            }}
+                            position={position}
                             steps={route.steps}
                             badge={
                                 route.id === bestRouteId && (
@@ -155,10 +137,10 @@ const MapRoutePaths = ({
                                 routeStack.raise(pathId);
                             }}
                             onDrag={(draggedTo) => {
-                                moveLabel(route.id, draggedTo);
+                                callouts.move(route.id, draggedTo);
                             }}
                             onDrop={(droppedAt) => {
-                                moveLabelAnchor(route.id, droppedAt);
+                                callouts.drop(route.id, droppedAt);
                             }}
                         />
                     );

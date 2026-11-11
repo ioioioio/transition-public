@@ -1,59 +1,80 @@
 import type { Api, Utils } from 'common';
 import { useMemo, useState } from 'react';
 
+import type { CalloutPosition } from '@/components/map/map-callout';
 import { createRoutePathGeometry } from '@/features/trip-comparison/utils/route-step';
 import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 
+export interface RoutePathCalloutPositions {
+    /** By route id. */
+    positions: ReadonlyMap<string, CalloutPosition>;
+    /** While a callout is dragged. */
+    move: (routeId: string, position: Utils.LngLat) => void;
+    /** When a callout is dropped. */
+    drop: (routeId: string, position: Utils.LngLat) => void;
+}
+
+/**
+ * Positions each route path's callout, or keeps it where it was dragged.
+ */
 export const useRoutePathCalloutPositions = (
-    drawnRoutes: readonly { route: Api.Route; bend: number }[],
-) => {
+    paths: readonly { route: Api.Route; bend: number }[],
+): RoutePathCalloutPositions => {
     // memo: "Heavy" computation
-    // Each path's line, and its label's default position halfway along it
-    const labeledPaths = useMemo(
+    const pathGeometryByRouteId = useMemo(
         () =>
             new Map(
-                drawnRoutes.map(({ route, bend }) => {
-                    const line = createRoutePathGeometry(route.steps, bend);
+                paths.map(({ route, bend }) => [
+                    route.id,
+                    createRoutePathGeometry(route.steps, bend),
+                ]),
+            ),
+        [paths],
+    );
+
+    const [movedPositions, setMovedPositions] = useState<
+        ReadonlyMap<string, Partial<CalloutPosition>>
+    >(() => new Map());
+
+    const positions = useMemo(
+        () =>
+            new Map<string, CalloutPosition>(
+                [...pathGeometryByRouteId].map(([routeId, pathGeometry]) => {
+                    const middle = getPointAlong(pathGeometry, 0.5);
+                    const moved = movedPositions.get(routeId);
                     return [
-                        route.id,
-                        { line, defaultPosition: getPointAlong(line, 0.5) },
+                        routeId,
+                        {
+                            label: moved?.label ?? middle,
+                            anchor: moved?.anchor ?? middle,
+                        },
                     ];
                 }),
             ),
-        [drawnRoutes],
+        [pathGeometryByRouteId, movedPositions],
     );
 
-    const [labelPositions, setLabelPositions] = useState<
-        ReadonlyMap<string, Utils.LngLat>
-    >(() => new Map());
-
-    const moveLabel = (routeId: string, position: Utils.LngLat) => {
-        setLabelPositions((previous) =>
-            new Map(previous).set(routeId, position),
+    const move = (routeId: string, position: Utils.LngLat) => {
+        setMovedPositions((previous) =>
+            new Map(previous).set(routeId, {
+                ...previous.get(routeId),
+                label: position,
+            }),
         );
     };
-    // The closest point of each path to its label
-    const [labelAnchors, setLabelAnchors] = useState<
-        ReadonlyMap<string, Utils.LngLat>
-    >(() => new Map());
-    const moveLabelAnchor = (routeId: string, position: Utils.LngLat) => {
-        const path = labeledPaths.get(routeId);
-        if (!path) {
+    const drop = (routeId: string, position: Utils.LngLat) => {
+        const pathGeometry = pathGeometryByRouteId.get(routeId);
+        if (!pathGeometry) {
             return;
         }
-        setLabelAnchors((previous) =>
-            new Map(previous).set(
-                routeId,
-                findNearestPointOnLine(path.line, position),
-            ),
+        const anchor = findNearestPointOnLine(pathGeometry, position);
+        setMovedPositions((previous) =>
+            new Map(previous).set(routeId, {
+                ...previous.get(routeId),
+                anchor,
+            }),
         );
     };
 
-    return {
-        labeledPaths,
-        labelPositions,
-        labelAnchors,
-        moveLabel,
-        moveLabelAnchor,
-    };
+    return { positions, move, drop };
 };
