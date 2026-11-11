@@ -76,14 +76,14 @@ const MapRoutePaths = ({
         }
     }
 
-    const bestRouteId = drawnRoutes.at(0)?.route.id;
     const isPhone = useIsPhone();
 
-    return drawnRoutes.map(({ route, pathId, styles, bend }) => {
+    return drawnRoutes.map(({ route, pathId, styles, bend }, rank) => {
         const calloutPosition = callouts.positions.get(route.id);
         if (!calloutPosition) {
             return null;
         }
+        const isBestRoute = rank === 0;
         // When a route is selected, the others' label is hidden
         const isCalloutShown =
             selectedRouteId === null || selectedRouteId === route.id;
@@ -114,9 +114,7 @@ const MapRoutePaths = ({
                         position={calloutPosition}
                         steps={route.steps}
                         badge={
-                            route.id === bestRouteId && (
-                                <BestRouteBadge order="travelTime" />
-                            )
+                            isBestRoute && <BestRouteBadge order="travelTime" />
                         }
                         selected={selectedRouteId === route.id}
                         // A card would cover too much of a phone's map
