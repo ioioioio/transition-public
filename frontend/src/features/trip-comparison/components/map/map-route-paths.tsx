@@ -1,18 +1,15 @@
-import type { Api, Utils } from 'common';
+import type { Api } from 'common';
 import { useMemo, useState } from 'react';
 
 import type { MapLineStyles } from '@/components/map/map-line';
 import { MapRoutePath } from '@/features/trip-comparison/components/map/map-route-path';
 import MapRoutePathCallout from '@/features/trip-comparison/components/map/map-route-path-callout';
 import { BestRouteBadge } from '@/features/trip-comparison/components/route-path-summary/route-path-summary-header';
+import { useRoutePathCalloutPositions } from '@/features/trip-comparison/hooks/use-route-path-callout-positions';
 import { sortRoutes } from '@/features/trip-comparison/utils/route';
-import {
-    createRoutePathGeometry,
-    getRouteStepIcon,
-} from '@/features/trip-comparison/utils/route-step';
+import { getRouteStepIcon } from '@/features/trip-comparison/utils/route-step';
 import { useLayerStack } from '@/hooks/map/use-layer-stack';
 import { useIsPhone } from '@/hooks/use-is-phone';
-import { findNearestPointOnLine, getPointAlong } from '@/utils/geo';
 import { createNestedId } from '@/utils/nested-id';
 
 // The id a route's map sources and layers are nested under
@@ -69,47 +66,13 @@ const MapRoutePaths = ({
         [routes],
     );
 
-    // memo: "Heavy" computation
-    // Each path's line, and its label's default position halfway along it
-    const labeledPaths = useMemo(
-        () =>
-            new Map(
-                drawnRoutes.map(({ route, bend }) => {
-                    const line = createRoutePathGeometry(route.steps, bend);
-                    return [
-                        route.id,
-                        { line, defaultPosition: getPointAlong(line, 0.5) },
-                    ];
-                }),
-            ),
-        [drawnRoutes],
-    );
-
-    const [labelPositions, setLabelPositions] = useState<
-        ReadonlyMap<string, Utils.LngLat>
-    >(() => new Map());
-
-    const moveLabel = (routeId: string, position: Utils.LngLat) => {
-        setLabelPositions((previous) =>
-            new Map(previous).set(routeId, position),
-        );
-    };
-    // The closest point of each path to its label
-    const [labelAnchors, setLabelAnchors] = useState<
-        ReadonlyMap<string, Utils.LngLat>
-    >(() => new Map());
-    const moveLabelAnchor = (routeId: string, position: Utils.LngLat) => {
-        const path = labeledPaths.get(routeId);
-        if (!path) {
-            return;
-        }
-        setLabelAnchors((previous) =>
-            new Map(previous).set(
-                routeId,
-                findNearestPointOnLine(path.line, position),
-            ),
-        );
-    };
+    const {
+        labeledPaths,
+        labelPositions,
+        labelAnchors,
+        moveLabel,
+        moveLabelAnchor,
+    } = useRoutePathCalloutPositions(drawnRoutes);
 
     // When a route is selected, the others' label is hidden
     const isShown = (routeId: string) =>
