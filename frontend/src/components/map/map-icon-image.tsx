@@ -36,13 +36,25 @@ const drawImage = (
     };
 };
 
-// Phosphor icons are a single path on a 256 by 256 grid
+// Icons are a single path on a 256 by 256 grid, like Phosphor's, or scaled to
+// it by the transform of a <g> element around the path
 const iconGridSize = 256;
-const iconPaths = new Map<Icon, string>();
+
+/**
+ * An icon's shape, from the `<path>` element of its SVG.
+ */
+interface IconPath {
+    /** Its `d` attribute: every shape, one after another, each starting with `M`. */
+    data: string;
+    /** Scales the path to the 256 by 256 grid. */
+    transform: DOMMatrix;
+}
+
+const iconPaths = new Map<Icon, IconPath>();
 
 const getIconPath = (icon: Icon) => {
     const cachedPath = iconPaths.get(icon);
-    if (cachedPath !== undefined) {
+    if (cachedPath) {
         return cachedPath;
     }
     const container = document.createElement('div');
@@ -50,9 +62,21 @@ const getIconPath = (icon: Icon) => {
     flushSync(() => {
         root.render(createElement(icon));
     });
-    const path = container.querySelector('path')?.getAttribute('d') ?? '';
+    const pathElement = container.querySelector('path');
+    const path = {
+        data: pathElement?.getAttribute('d') ?? '',
+        transform: new DOMMatrix(
+            pathElement?.closest('g')?.getAttribute('transform') ?? '',
+        ),
+    };
     root.unmount();
     iconPaths.set(icon, path);
+    return path;
+};
+
+const createPath2D = (data: string, transform: DOMMatrix) => {
+    const path = new Path2D();
+    path.addPath(new Path2D(data), transform);
     return path;
 };
 
@@ -74,7 +98,12 @@ interface MapIconImageProps {
 
 const drawIconImage = (props: MapIconImageProps): MapImageData => {
     const { icon, color, haloColor, size } = props;
-    const path = new Path2D(getIconPath(icon));
+    const iconPath = getIconPath(icon);
+    const path = createPath2D(iconPath.data, iconPath.transform);
+    // Each shape of the icon on its own, holes included
+    const shapes = iconPath.data
+        .split(/(?=M)/)
+        .map((shape) => createPath2D(shape, iconPath.transform));
     const imageSize = size + iconHaloWidth * 2;
     const { data, pixelRatio } = drawImage(imageSize, imageSize, (context) => {
         context.translate(iconHaloWidth, iconHaloWidth);
@@ -83,6 +112,11 @@ const drawIconImage = (props: MapIconImageProps): MapImageData => {
         // Centred on the outline, so twice as wide as the halo
         context.lineWidth = (iconHaloWidth * 2) / scale;
         context.lineJoin = 'round';
+        // So what's under the icon doesn't show through its holes
+        context.fillStyle = haloColor;
+        for (const shape of shapes) {
+            context.fill(shape);
+        }
         context.strokeStyle = haloColor;
         context.stroke(path);
         context.fillStyle = color;

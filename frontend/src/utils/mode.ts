@@ -1,26 +1,26 @@
-import {
-    AirplaneTiltIcon,
-    BusIcon,
-    CarIcon,
-    PathIcon,
-    PersonSimpleWalkIcon,
-    SubwayIcon,
-    TrainIcon,
-    TrainSimpleIcon,
-    type Icon,
-} from '@phosphor-icons/react';
+import type { Icon } from '@phosphor-icons/react';
 import type { Api } from 'common';
 
+import airplaneSvg from '@/assets/mode-icons/airplane.svg?raw';
+import busSvg from '@/assets/mode-icons/bus_city.svg?raw';
+import carSvg from '@/assets/mode-icons/car_no_steering_wheel.svg?raw';
+import personWalkingSvg from '@/assets/mode-icons/foot.svg?raw';
+import highSpeedTrainSvg from '@/assets/mode-icons/hsr.svg?raw';
+import questionMarkSvg from '@/assets/mode-icons/question_mark.svg?raw';
+import subwaySvg from '@/assets/mode-icons/subway.svg?raw';
+import trainSvg from '@/assets/mode-icons/train.svg?raw';
+import { createIcon } from '@/components/icons/create-icon';
+
 export const modeIcons: Record<Api.Mode, Icon> = {
-    bus: BusIcon,
-    driving: CarIcon,
-    highSpeedRail: TrainSimpleIcon,
-    metro: SubwayIcon,
-    plane: AirplaneTiltIcon,
-    rail: TrainIcon,
-    walking: PersonSimpleWalkIcon,
+    bus: createIcon(busSvg),
+    driving: createIcon(carSvg),
+    highSpeedRail: createIcon(highSpeedTrainSvg),
+    metro: createIcon(subwaySvg),
+    plane: createIcon(airplaneSvg),
+    rail: createIcon(trainSvg),
+    walking: createIcon(personWalkingSvg),
     // Any other means of transport
-    other: PathIcon,
+    other: createIcon(questionMarkSvg),
 };
 
 // The theme variables of each mode's line on the map
